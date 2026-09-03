@@ -214,6 +214,7 @@ html,body{
 .home-card>*:nth-child(3),.client-home-card>*:nth-child(3){animation-delay:.15s}
 .home-card>*:nth-child(4),.client-home-card>*:nth-child(4){animation-delay:.21s}
 .home-card>*:nth-child(5),.client-home-card>*:nth-child(5){animation-delay:.27s}
+.home-card>*:nth-child(6),.client-home-card>*:nth-child(6){animation-delay:.34s}
 .btn{transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease}
 .btn:hover{transform:translateY(-1px)}
 .btn:active{transform:scale(.97);opacity:.85}
@@ -234,6 +235,32 @@ html,body{
 .toast.show{animation:toastPop .25s ease}
 @keyframes bounceTip{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 .new-tip{animation:bounceTip 1.6s ease infinite}
+
+/* ===== 联系入口：微信/QQ（客户端首页） ===== */
+.contact-row{display:flex;justify-content:center;align-items:flex-start;gap:30px;margin-top:26px}
+.contact-item{display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:transform .18s ease}
+.contact-item:active{transform:scale(.92)}
+.contact-icon{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 12px rgba(0,0,0,.16);animation:contactIn .5s cubic-bezier(.34,1.56,.64,1) both;transition:transform .22s cubic-bezier(.34,1.56,.64,1),box-shadow .22s ease}
+.contact-item:nth-child(2) .contact-icon{animation-delay:.1s}
+.contact-item:hover .contact-icon{transform:translateY(-4px) scale(1.06);box-shadow:0 10px 20px rgba(0,0,0,.24)}
+.contact-item span{font-size:12px;color:var(--text-gray)}
+.contact-wx{background:linear-gradient(135deg,#31c45f,#19a81c)}
+.contact-qq{background:linear-gradient(135deg,#5fc6fa,#12b7f5)}
+@keyframes contactIn{from{opacity:0;transform:translateY(16px) scale(.5)}to{opacity:1;transform:none}}
+/* 微信二维码弹窗 */
+.qr-mask{position:fixed;inset:0;background:rgba(0,0,0,.52);display:none;align-items:center;justify-content:center;z-index:9998;animation:maskIn .25s ease}
+.qr-mask.closing{animation:maskOut .2s ease forwards}
+.qr-mask.closing .qr-box{animation:popOut .2s ease forwards}
+.qr-box{width:330px;background:#fff;border-radius:18px;padding:26px 22px 20px;text-align:center;animation:popIn .36s cubic-bezier(.34,1.56,.64,1);box-shadow:0 14px 44px rgba(0,0,0,.28)}
+.qr-title{font-size:17px;font-weight:600;margin-bottom:16px}
+.qr-img{width:258px;height:258px;object-fit:cover;object-position:50% 46%;border-radius:10px;background:#fff;border:1px solid #ececec;animation:qrFade .45s ease both}
+@keyframes qrFade{from{opacity:0;transform:scale(.78)}to{opacity:1;transform:scale(1)}}
+.qr-tip{font-size:12px;color:var(--text-gray);margin:14px 0 16px}
+.qr-close{border:none;background:var(--primary);color:#fff;padding:9px 28px;border-radius:999px;font-size:14px;cursor:pointer;transition:transform .15s ease,opacity .15s ease}
+.qr-close:active{transform:scale(.95);opacity:.85}
+.qr-btns{display:flex;justify-content:center;gap:12px}
+.qr-save{border:none;background:linear-gradient(135deg,#31c45f,#19a81c);color:#fff;padding:9px 22px;border-radius:999px;font-size:14px;cursor:pointer;transition:transform .15s ease,opacity .15s ease}
+.qr-save:active{transform:scale(.95);opacity:.85}
 </style>
 </head>
 <body>
@@ -241,8 +268,21 @@ html,body{
   <div><img id="previewImg" class="preview-content" style="display:none"/><video id="previewVid" class="preview-content" controls style="display:none"></video></div>
 </div>
 
+<div id="qrMask" class="qr-mask" onclick="hideWxQr()">
+  <div class="qr-box" onclick="event.stopPropagation()">
+    <div class="qr-title">微信客服</div>
+    <img id="wxQrImg" class="qr-img" src="https://pan.29o.cn/view.php/334ad79ab352695df7b5ef8126151ec7.jpg" alt="微信二维码"/>
+    <div class="qr-tip">长按二维码 · 可识别添加 或 保存图片</div>
+    <div class="qr-btns">
+      <button class="qr-save" onclick="saveQr()">保存图片</button>
+      <button class="qr-close" onclick="hideWxQr()">关闭</button>
+    </div>
+  </div>
+</div>
+
+
 <div id="homePage" class="page home-wrap">
-  <div class="home-card">
+<div class="home-card">
     <img class="home-logo" src="https://cccimg.com/view.php/94a6891ae4c817663f2c90c8b1b032b2.png" alt="石昊电竞俱乐部Logo"/>
     <h1>石昊电竞</h1>
     <p class="desc">在线客服 · 全天在线</p>
@@ -268,19 +308,29 @@ html,body{
 <div id="userClientPage" class="page">
   <div id="toast" class="toast"></div>
   <div class="client-home-page" id="clientHomeWrap">
-    <div class="client-home-card">
+<div class="client-home-card">
       <img class="home-logo" src="https://cccimg.com/view.php/94a6891ae4c817663f2c90c8b1b032b2.png" alt="石昊电竞俱乐部Logo"/>
       <h1>石昊电竞</h1>
       <p class="desc">在线客服 · 全天在线</p>
       <input id="visitorNameInput" class="name-input" type="text" placeholder="输入你的昵称（可选）" maxlength="12"/>
       <div class="button-group">
-        <button class="btn" onclick="enterChat()">联系客服</button>
+        <button class="btn" onclick="enterChat()">在线客服</button>
+      </div>
+      <div class="contact-row">
+        <div class="contact-item" onclick="showWxQr()">
+          <div class="contact-icon contact-wx"><svg viewBox="0 0 24 24" width="24" height="24" fill="#fff"><path d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.04-.209-.065-.42-.065-.635 0-3.371 3.286-6.104 7.34-6.104.269 0 .534.014.795.041C17.067 5.12 13.206 2.188 8.691 2.188zm-2.54 4.404c.66 0 1.195.536 1.195 1.196s-.535 1.195-1.195 1.195c-.66 0-1.195-.535-1.195-1.195s.535-1.196 1.195-1.196zm5.098 0c.66 0 1.195.536 1.195 1.196s-.535 1.195-1.195 1.195c-.66 0-1.195-.535-1.195-1.195s.535-1.196 1.195-1.196zM23 14.246c0-3.315-3.254-6.002-7.269-6.002s-7.27 2.687-7.27 6.002 3.255 6.002 7.27 6.002c.76 0 1.494-.1 2.186-.29a.631.631 0 0 1 .524.071l1.392.815a.287.287 0 0 0 .122.04.215.215 0 0 0 .215-.215c0-.052-.022-.103-.035-.155l-.284-1.08a.43.43 0 0 1 .156-.486C21.876 17.93 23 16.21 23 14.246zm-7.985-1.118c-.486 0-.879-.394-.879-.879 0-.486.393-.88.879-.88.486 0 .88.394.88.88 0 .485-.394.879-.88.879zm3.433 0c-.486 0-.879-.394-.879-.879 0-.486.393-.88.879-.88.486 0 .88.394.88.88 0 .485-.394.879-.88.879z"/></svg></div>
+          <span>微信</span>
+        </div>
+        <div class="contact-item" onclick="openQQ()">
+          <div class="contact-icon contact-qq"><svg viewBox="0 0 448 512" width="24" height="24" fill="#fff"><path d="M433.754 420.445c-11.526 1.393-44.86-52.741-44.86-52.741 0 31.345-16.136 72.247-51.051 101.786 16.842 5.192 54.843 19.167 45.803 34.421-7.316 12.343-125.51 7.881-159.632 4.037-34.122 3.844-152.316 8.306-159.632-4.037-9.045-15.25 28.918-29.214 45.783-34.415-34.92-29.539-51.059-70.445-51.059-101.792 0 0-33.334 54.134-44.859 52.741-5.37-.65-12.424-29.644 9.347-99.704 10.261-33.024 21.995-60.478 40.144-105.779C60.683 98.063 108.982.006 224 0c113.737.006 163.156 96.133 160.264 214.963 18.118 45.223 29.912 72.85 40.144 105.778 21.768 70.06 14.716 99.053 9.346 99.704z"/></svg></div>
+          <span>QQ</span>
+        </div>
       </div>
     </div>
   </div>
   <div id="clientChatWrap" class="client-chat-page">
     <div class="client-chat-header">
-      <img id="serviceAvatarTop" class="avatar" src="https://cccimg.com/view.php/94a6891ae4c817663f2c90c8b1b032b2.png" alt=""/>
+      <img id="serviceAvatarTop" class="avatar" src="data:image/webp;base64,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" alt=""/>
       <div class="client-header-info">
         <div class="name" id="serviceNameTop">在线客服</div>
         <div class="status">在线</div>
@@ -292,7 +342,7 @@ html,body{
         </div>
       </div>
     </div>
-    <div id="chatBodyClient" class="client-chat-body"></div>
+<div id="chatBodyClient" class="client-chat-body"></div>
     <div id="newMsgTip" class="new-tip" style="display:none" onclick="scrollBottom()">有新消息</div>
     <div class="client-chat-footer">
       <input type="file" id="userImgUpload" class="file-input" accept="image/*"/>
@@ -572,6 +622,7 @@ async function enterChat(){
   document.getElementById("chatBodyClient").innerHTML = "";
   await loadChatMessages(myUserId,true);
   await sendWelcomeIfNeeded(myUserId);
+  syncMusicUi();
   toast("已进入对话");
 }
 async function sendWelcomeIfNeeded(uid){
@@ -583,6 +634,68 @@ async function sendWelcomeIfNeeded(uid){
   broadcastMsg({type:"NEW_MSG",payload:msgObj});
   await loadChatMessages(uid,true);
 }
+
+function showWxQr(){
+  const m = document.getElementById("qrMask");
+  if(!m) return;
+  m.classList.remove("closing");
+  m.style.display = "flex";
+}
+async function saveQr(){
+  const img = document.getElementById("wxQrImg");
+  const url = img && img.src ? img.src : "";
+  if(!url){ toast("二维码未加载，请稍后再试"); return; }
+  try{
+    const res = await fetch(url);
+    if(!res.ok) throw new Error("bad");
+    const blob = await res.blob();
+    const a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "石昊电竞微信二维码.png";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(a.href), 3000);
+    toast("二维码已保存");
+  }catch(e){
+    try{ window.open(url, "_blank"); }catch(e2){ toast("请长按二维码保存"); }
+  }
+}
+function hideWxQr(){
+  const m = document.getElementById("qrMask");
+  if(!m || m.style.display === "none") return;
+  m.classList.add("closing");
+  setTimeout(()=>{ m.style.display = "none"; m.classList.remove("closing"); },220);
+}
+function openQQ(){
+  window.open("http://a.u9c.cn/5HwdSN","_blank");
+}
+function tryStartBg(){
+  if(!musicPlaying){
+    musicAudio.play().then(()=>{
+      musicPlaying = true;
+      syncMusicUi();
+    }).catch(()=>{});
+  }
+}
+function syncMusicUi(){
+  const av = document.getElementById("clientTopAvatar");
+  const bn = document.getElementById("musicBtn");
+  if(!av) return;
+  const inChat = getComputedStyle(document.getElementById("clientChatWrap")).display !== "none";
+  if(musicPlaying && inChat){
+    av.classList.add("avatar-spin");
+    if(bn) bn.classList.add("on");
+  }else if(!musicPlaying){
+    av.classList.remove("avatar-spin");
+    if(bn) bn.classList.remove("on");
+  }
+}
+document.addEventListener("click", function(){
+  const hp = getComputedStyle(document.getElementById("homePage")).display !== "none";
+  const cp = getComputedStyle(document.getElementById("userClientPage")).display !== "none";
+  if(hp || cp) tryStartBg();
+});
 function toggleMusic(){
   const avatar = document.getElementById("clientTopAvatar");
   const btn = document.getElementById("musicBtn");

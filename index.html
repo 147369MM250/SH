@@ -4,7 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, interactive-widget=resizes-visual"/>
 <title>石昊电竞</title>
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Segoe UI,Roboto}
 :root{
@@ -29,6 +28,7 @@ html,body{
 .home-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px}
 .home-card{background:var(--card);width:min(90%,360px);padding:50px 28px;border-radius:var(--radius);box-shadow:var(--shadow);text-align:center}
 .home-card h1{font-size:22px;margin-bottom:10px}
+.home-logo{width:94px;height:94px;border-radius:50%;object-fit:cover;margin:0 auto 14px;display:block;box-shadow:0 2px 10px rgba(0,0,0,0.18)}
 .home-card .desc{color:var(--text-gray);font-size:14px;margin-bottom:40px}
 .button-group{display:flex;flex-direction:column;gap:20px}
 .btn{border:none;background:var(--primary);color:white;padding:16px 24px;border-radius:999px;font-size:16px;cursor:pointer;transition:0.2s;width:100%}
@@ -36,6 +36,7 @@ html,body{
 .btn-admin{background:#e8e8ed;color:#1d1d1f}
 .btn-small{padding:8px 14px;font-size:13px;width:auto;border-radius:12px}
 .btn-gray{background:#e8e8ed;color:#333}
+
 .mask{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:9999;}
 .pop-box{width:285px;background:#ffffff;border-radius:14px;overflow:hidden;text-align:center;}
 .pop-title{padding:18px 16px 8px;font-weight:600;font-size:17px;}
@@ -45,6 +46,7 @@ html,body{
 .pop-btn-group button{flex:1;padding:13px 0;border:none;background:none;font-size:16px;cursor:pointer;}
 .btn-cancel{color:#007aff;border-right:1px solid #d2d2d7;}
 .btn-confirm{color:#007aff;font-weight:500;}
+
 .page{
   width:100%;
   height:100%;
@@ -53,6 +55,7 @@ html,body{
   overflow:hidden;
 }
 #homePage{display:flex;}
+
 .app-wrap{display:flex;height:100%;width:100%}
 .sidebar{width:var(--sidebar-width);background:#fff;border-right:1px solid #e8e8ed;display:flex;flex-direction:column;transition:0.3s ease;}
 .sidebar.hidden{width:0;overflow:hidden;border:none}
@@ -116,6 +119,7 @@ html,body{
 .file-input{display:none}
 @keyframes fadeIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .msg-animate{animation:fadeIn 0.25s ease}
+
 .toast{position:fixed;left:50%;bottom:120px;transform:translateX(-50%);background:rgba(30,30,32,0.85);color:#fff;padding:10px 18px;border-radius:12px;font-size:14px;z-index:9999;opacity:0;transition:0.25s ease;pointer-events:none}
 .toast.show{opacity:1}
 .client-home-page{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
@@ -186,14 +190,60 @@ html,body{
 .music-btn.on{opacity:0.9}
 .avatar-spin{animation:spin 2s linear infinite}
 @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+/* ===== 动画优化（双端打开/退出/所有动作流畅） ===== */
+@keyframes pageIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+@keyframes pageOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(10px) scale(.985)}}
+.page{animation:pageIn .32s cubic-bezier(.22,.61,.36,1)}
+.page.page-leave{animation:pageOut .22s ease forwards;pointer-events:none}
+@keyframes maskIn{from{opacity:0}to{opacity:1}}
+@keyframes maskOut{from{opacity:1}to{opacity:0}}
+@keyframes popIn{from{opacity:0;transform:scale(.85) translateY(14px)}to{opacity:1;transform:none}}
+@keyframes popOut{from{opacity:1;transform:none}to{opacity:0;transform:scale(.9) translateY(10px)}}
+.mask{animation:maskIn .22s ease}
+.mask.closing{animation:maskOut .2s ease forwards}
+.mask.closing .pop-box{animation:popOut .2s ease forwards}
+.pop-box{animation:popIn .32s cubic-bezier(.34,1.56,.64,1)}
+@keyframes slideInRight{from{opacity:0;transform:translateX(36px)}to{opacity:1;transform:none}}
+#clientChatWrap{animation:slideInRight .36s cubic-bezier(.22,.61,.36,1)}
+@keyframes homeOut{from{opacity:1;transform:scale(1)}to{opacity:0;transform:scale(.94)}}
+.client-home-page.leaving{animation:homeOut .2s ease forwards;pointer-events:none}
+@keyframes riseIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
+.home-card>*,.client-home-card>*{animation:riseIn .42s cubic-bezier(.22,.61,.36,1) both}
+.home-card>*:nth-child(1),.client-home-card>*:nth-child(1){animation-delay:.03s}
+.home-card>*:nth-child(2),.client-home-card>*:nth-child(2){animation-delay:.09s}
+.home-card>*:nth-child(3),.client-home-card>*:nth-child(3){animation-delay:.15s}
+.home-card>*:nth-child(4),.client-home-card>*:nth-child(4){animation-delay:.21s}
+.home-card>*:nth-child(5),.client-home-card>*:nth-child(5){animation-delay:.27s}
+.btn{transition:transform .18s ease, box-shadow .18s ease, opacity .18s ease}
+.btn:hover{transform:translateY(-1px)}
+.btn:active{transform:scale(.97);opacity:.85}
+.btn-admin{transition:.18s ease}
+.btn-admin:hover{background:#dcdce2}
+.action-btn,.toggle-bar,.music-btn,.avatar,.btn-small{transition:transform .15s ease, opacity .2s ease, background .2s ease}
+.action-btn:active,.toggle-bar:active{transform:scale(.86)}
+.music-btn:active{transform:scale(.82);opacity:1}
+.client-avatar-block .avatar:active{transform:scale(.88)}
+.user-item{transition:background .18s ease}
+.user-item:active{background:#e8f2ff}
+.name-input{transition:border-color .2s ease, box-shadow .2s ease}
+.name-input:focus{border-color:var(--primary);box-shadow:0 0 0 3px rgba(0,122,255,.15)}
+.input-box{transition:background .2s ease, box-shadow .2s ease}
+.input-box:focus{background:#fff;box-shadow:0 0 0 2px rgba(0,122,255,.15)}
+#chatBodyClient,#chatBodyAdmin{scroll-behavior:smooth}
+@keyframes toastPop{from{opacity:0;transform:translate(-50%,8px) scale(.92)}to{opacity:1;transform:translate(-50%,0) scale(1)}}
+.toast.show{animation:toastPop .25s ease}
+@keyframes bounceTip{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
+.new-tip{animation:bounceTip 1.6s ease infinite}
 </style>
 </head>
 <body>
 <div id="previewModal" class="preview-modal" onclick="closePreview()">
   <div><img id="previewImg" class="preview-content" style="display:none"/><video id="previewVid" class="preview-content" controls style="display:none"></video></div>
 </div>
+
 <div id="homePage" class="page home-wrap">
   <div class="home-card">
+    <img class="home-logo" src="https://cccimg.com/view.php/94a6891ae4c817663f2c90c8b1b032b2.png" alt="石昊电竞俱乐部Logo"/>
     <h1>石昊电竞</h1>
     <p class="desc">在线客服 · 全天在线</p>
     <div class="button-group">
@@ -202,6 +252,7 @@ html,body{
     </div>
   </div>
 </div>
+
 <div id="pwdMask" class="mask">
   <div class="pop-box">
     <div class="pop-title">验证身份</div>
@@ -213,10 +264,12 @@ html,body{
     </div>
   </div>
 </div>
+
 <div id="userClientPage" class="page">
   <div id="toast" class="toast"></div>
   <div class="client-home-page" id="clientHomeWrap">
     <div class="client-home-card">
+      <img class="home-logo" src="https://cccimg.com/view.php/94a6891ae4c817663f2c90c8b1b032b2.png" alt="石昊电竞俱乐部Logo"/>
       <h1>石昊电竞</h1>
       <p class="desc">在线客服 · 全天在线</p>
       <input id="visitorNameInput" class="name-input" type="text" placeholder="输入你的昵称（可选）" maxlength="12"/>
@@ -251,6 +304,7 @@ html,body{
     </div>
   </div>
 </div>
+
 <div id="adminPage" class="page">
 <div class="app-wrap">
   <div id="sidebar" class="sidebar">
@@ -286,12 +340,27 @@ html,body{
   </div>
 </div>
 </div>
+
 <script>
 const EMAILJS_PUBLIC_KEY = "cb7md1uaMtFlhjRA3";
 const EMAILJS_SERVICE_ID = "service_6f076jk";
 const EMAILJS_TEMPLATE_ID = "template_qu8fj6n";
 const ADMIN_RECEIVE_EMAIL = "3906751671@qq.com";
-try{emailjs.init({publicKey:EMAILJS_PUBLIC_KEY})}catch(e){console.log("emailjs init",e)}
+//emailjs按需加载：不影响页面使用，加载失败则跳过邮件通知
+let emailjsLoading = null;
+function ensureEmailjs(){
+  if(window.emailjs) return Promise.resolve();
+  if(emailjsLoading) return emailjsLoading;
+  emailjsLoading = new Promise(resolve=>{
+    const s = document.createElement('script');
+    s.src = "https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js";
+    s.onload = ()=>{ try{emailjs.init({publicKey:EMAILJS_PUBLIC_KEY})}catch(e){} resolve(); };
+    s.onerror = ()=>resolve();
+    document.head.appendChild(s);
+  });
+  return emailjsLoading;
+}
+
 let db = null;
 let bc = null;
 try{bc = new BroadcastChannel('5h_service_channel_v6')}catch(e){console.log("bc not supported")}
@@ -305,6 +374,7 @@ const MUSIC_URL = "https://music.163.com/song/media/outer/url?id=1394167216.mp3"
 let musicPlaying = false;
 const musicAudio = new Audio(MUSIC_URL);
 musicAudio.loop = true;
+
 let initVisualHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
 function updateKeyboardOffset(){
   if(!window.visualViewport) return;
@@ -326,6 +396,7 @@ document.addEventListener('focusin',function(e){
     },150)
   }
 })
+
 function openDB(){
   return new Promise((res,rej)=>{
     const req = indexedDB.open("5hServiceDBV7",1);
@@ -351,13 +422,18 @@ function formatTime(timestamp){const d=new Date(timestamp);const hh=String(d.get
 function getDateLabel(ts){const d=new Date(ts);const month=String(d.getMonth()+1).padStart(2,"0");const day=String(d.getDate()).padStart(2,"0");return `──── ${month}月${day}日 ────`}
 function uuid(){return Date.now().toString(36)+Math.random().toString(36).slice(2)}
 function toast(msg){const el=document.getElementById("toast");if(!el)return;el.textContent=msg;el.classList.add("show");setTimeout(()=>el.classList.remove("show"),2200)}
+
 async function sendMailNotify(userName,msgContent){
+  await ensureEmailjs();
+  if(!window.emailjs) return; //CDN不可用则跳过邮件通知，不影响聊天
   try{await emailjs.send(EMAILJS_SERVICE_ID,EMAILJS_TEMPLATE_ID,{userid:userName,message:msgContent})}catch(err){console.log("邮件发送失败",err)}
 }
+
 function broadcastMsg(data){
   try{if(bc)bc.postMessage(data)}catch(e){}
   try{localStorage.setItem("5h_msg_"+Date.now(),JSON.stringify(data));setTimeout(()=>{try{localStorage.removeItem("5h_msg_"+Date.now())}catch(e){}},1000)}catch(e){}
 }
+
 window.addEventListener('storage',async function(e){
   if(e.key && e.key.startsWith("5h_msg_") && e.newValue){
     try{
@@ -366,6 +442,7 @@ window.addEventListener('storage',async function(e){
     }catch(err){}
   }
 });
+
 async function handleIncomingMsg(data){
   if(data.type === "NEW_MSG"){
     if(document.getElementById("adminPage").style.display === "flex"){
@@ -374,4 +451,444 @@ async function handleIncomingMsg(data){
         await loadAdminChat(currentSelectUserId);
       }
     }
-    if(document.getElementById("clientChatWrap").style.display =
+    if(document.getElementById("clientChatWrap").style.display === "flex" && myUserId && data.payload.userId === myUserId){
+      await loadChatMessages(myUserId,true);
+    }
+    //自动回复触发逻辑
+    if(data.payload.role === "user"){
+      const setting = await dbGet("settings","autoReplyText");
+      const autoText = setting?.value || "";
+      if(autoText.trim() !== ""){
+        setTimeout(async ()=>{
+          const autoMsg = {
+            id:uuid(),
+            userId:data.payload.userId,
+            role:"service",
+            type:"text",
+            content:autoText.trim(),
+            time:Date.now(),
+            read:false
+          }
+          await dbPut("messages",autoMsg);
+          broadcastMsg({type:"NEW_MSG",payload:autoMsg})
+        },800)
+      }
+    }
+  }
+  if(data.type === "READ_MSG"){
+    if(document.getElementById("clientChatWrap").style.display === "flex" && myUserId && data.userId === myUserId){
+      await loadChatMessages(myUserId,false);
+    }
+    if(document.getElementById("adminPage").style.display === "flex" && currentSelectUserId === data.userId){
+      await loadAdminChat(currentSelectUserId);
+    }
+  }
+}
+
+if(bc){
+  bc.onmessage = async function(e){
+    await handleIncomingMsg(e.data);
+  }
+}
+
+function hideAllPage(){
+  const ids = ["homePage","userClientPage","adminPage"];
+  const visible = ids.find(id=>document.getElementById(id).style.display === "flex");
+  if(visible) document.getElementById(visible).classList.add("page-leave");
+  return new Promise(res=>{
+    setTimeout(()=>{
+      ids.forEach(id=>{
+        const el = document.getElementById(id);
+        el.style.display = "none";
+        el.classList.remove("page-leave");
+      });
+      res();
+    },230);
+  });
+}
+function showPasswordPopup(){
+  const mask = document.getElementById("pwdMask");
+  mask.classList.remove("closing");
+  mask.style.display = "flex";
+  document.getElementById("adminPwd").value = "";
+  setTimeout(()=>document.getElementById("adminPwd").focus(),100);
+}
+function closePopup(instant){
+  const mask = document.getElementById("pwdMask");
+  if(instant){
+    mask.style.display = "none";
+    mask.classList.remove("closing");
+    return;
+  }
+  if(mask.style.display === "none") return;
+  mask.classList.add("closing");
+  setTimeout(()=>{
+    mask.style.display = "none";
+    mask.classList.remove("closing");
+  },220);
+}
+async function verifyPassword(){
+  const inputVal = document.getElementById("adminPwd").value.trim();
+  if(inputVal === ADMIN_PASSWORD){
+    closePopup(true);
+    await hideAllPage();
+    document.getElementById("adminPage").style.display = "flex";
+    await initAdminPanel();
+  }else{alert("密码错误，请重新输入");document.getElementById("adminPwd").value="";document.getElementById("adminPwd").focus();}
+}
+document.getElementById("adminPwd").addEventListener("keydown",e=>{if(e.key==="Enter") verifyPassword()})
+async function openUserClient(){
+  await hideAllPage();
+  document.getElementById("userClientPage").style.display = "flex";
+  document.getElementById("clientHomeWrap").style.display = "flex";
+  document.getElementById("clientChatWrap").style.display = "none";
+  await initUserClient();
+}
+async function initUserClient(){
+  await openDB();
+  await initServiceSetting();
+  const savedName = localStorage.getItem("5h_visitor_name");
+  if(savedName) document.getElementById("visitorNameInput").value = savedName;
+}
+async function initServiceSetting(){}
+
+async function enterChat(){
+  const nick = document.getElementById("visitorNameInput").value.trim() || "访客";
+  localStorage.setItem("5h_visitor_name",nick);
+  await openDB();
+  let uid = localStorage.getItem("visitor_uid");
+  if(!uid){
+    uid = uuid();
+    localStorage.setItem("visitor_uid",uid);
+  }
+  myUserId = uid;
+  const userData = {id:uid,name:nick,createTime:Date.now()};
+  await dbPut("users",userData);
+
+  const homeWrap = document.getElementById("clientHomeWrap");
+  homeWrap.classList.add("leaving");
+  document.getElementById("clientChatWrap").style.display = "flex";
+  setTimeout(()=>{ homeWrap.style.display = "none"; homeWrap.classList.remove("leaving"); },220);
+  document.getElementById("chatBodyClient").innerHTML = "";
+  await loadChatMessages(myUserId,true);
+  await sendWelcomeIfNeeded(myUserId);
+  toast("已进入对话");
+}
+async function sendWelcomeIfNeeded(uid){
+  const allMsg = await dbGetAll("messages");
+  const userMsgs = allMsg.filter(m=>m.userId === uid);
+  if(userMsgs.length > 0) return; //已有对话记录则不重复发送
+  const msgObj = {id:uuid(),userId:uid,role:"service",type:"text",content:WELCOME_TEXT,time:Date.now(),read:false};
+  await dbPut("messages",msgObj);
+  broadcastMsg({type:"NEW_MSG",payload:msgObj});
+  await loadChatMessages(uid,true);
+}
+function toggleMusic(){
+  const avatar = document.getElementById("clientTopAvatar");
+  const btn = document.getElementById("musicBtn");
+  if(!avatar) return;
+  if(musicPlaying){
+    musicAudio.pause();
+    avatar.classList.remove("avatar-spin");
+    if(btn) btn.classList.remove("on");
+    musicPlaying = false;
+  }else{
+    musicAudio.play().then(()=>{
+      avatar.classList.add("avatar-spin");
+      if(btn) btn.classList.add("on");
+    }).catch(()=>{toast("音乐播放失败，请检查网络")});
+    musicPlaying = true;
+  }
+}
+//头像：单击播放/停止音乐，长按清空聊天记录
+let avatarLongPressTimer = null;
+let avatarPressed = false;
+function avatarPointerDown(e){
+  e.preventDefault();
+  avatarPressed = true;
+  if(avatarLongPressTimer) clearTimeout(avatarLongPressTimer);
+  avatarLongPressTimer = setTimeout(()=>{
+    avatarLongPressTimer = null;
+    if(avatarPressed){ clearMyChat(); }
+  },700);
+}
+function avatarPointerUp(){
+  if(avatarLongPressTimer){
+    clearTimeout(avatarLongPressTimer);
+    avatarLongPressTimer = null;
+    if(avatarPressed){ toggleMusic(); }
+  }
+  avatarPressed = false;
+}
+function avatarPointerLeave(){
+  if(avatarLongPressTimer){ clearTimeout(avatarLongPressTimer); avatarLongPressTimer = null; }
+  avatarPressed = false;
+}
+
+async function loadChatMessages(userId,scrollBottomFlag){
+  await markClientReadMsgs(userId);
+  const allMsg = await dbGetAll("messages");
+  const list = allMsg.filter(m=>m.userId === userId);
+  const box = document.getElementById("chatBodyClient");
+  box.innerHTML = "";
+  list.forEach(msg=>{
+    const row = document.createElement("div");
+    if(msg.role === "user"){
+      row.className = "client-msg-row user-right";
+      row.innerHTML = buildClientBubble(msg);
+    }else{
+      row.className = "client-msg-row service-left";
+      row.innerHTML = buildClientBubble(msg);
+    }
+    box.appendChild(row);
+  })
+  if(scrollBottomFlag) scrollBottom();
+}
+//客户端打开/查看对话时，将客服消息标记为已读
+async function markClientReadMsgs(uid){
+  const allMsg = await dbGetAll("messages");
+  let changed = false;
+  for(let m of allMsg.filter(x=>x.userId === uid && x.role === "service" && !x.read)){
+    m.read = true;
+    await dbPut("messages",m);
+    changed = true;
+  }
+  if(changed) broadcastMsg({type:"READ_MSG",userId:uid});
+  return changed;
+}
+function buildClientBubble(msg){
+  let mediaDom = "";
+  if(msg.type === "image"){
+    mediaDom = `<div class="client-msg-media" onclick="openPreview('${msg.content}','img')"><img src="${msg.content}" /></div>`;
+  }else if(msg.type === "video"){
+    mediaDom = `<div class="client-msg-media" onclick="openPreview('${msg.content}','vid')"><video src="${msg.content}" controls></video></div>`;
+  }else{
+    mediaDom = `<div class="client-msg-bubble">${msg.content}</div>`;
+  }
+  const timeText = formatTime(msg.time);
+  const readText = msg.read ? "<span class='read-tag'>已读</span>" : "<span class='unread-tag'>未读</span>";
+  return `<div class="client-msg-wrap msg-animate">${mediaDom}<div class="client-msg-meta">${readText}<span>${timeText}</span></div></div>`;
+}
+
+async function sendUserText(){
+  const inputDom = document.getElementById("userInput");
+  const text = inputDom.value.trim();
+  if(!text) return;
+  const msgId = uuid();
+  const msgData = {
+    id:msgId,
+    userId:myUserId,
+    role:"user",
+    type:"text",
+    content:text,
+    time:Date.now(),
+    read:false
+  };
+  await dbPut("messages",msgData);
+  inputDom.value = "";
+  broadcastMsg({type:"NEW_MSG",payload:msgData});
+  await sendMailNotify(localStorage.getItem("5h_visitor_name"),text);
+  await loadChatMessages(myUserId,true);
+}
+function scrollBottom(){
+  const chatDom = document.getElementById('chatBodyClient') || document.getElementById('chatBodyAdmin');
+  if(chatDom) chatDom.scrollTop = chatDom.scrollHeight + 999;
+}
+function openPreview(src,mode){
+  const modal = document.getElementById("previewModal");
+  const img = document.getElementById("previewImg");
+  const vid = document.getElementById("previewVid");
+  img.style.display = "none";
+  vid.style.display = "none";
+  if(mode === "img"){
+    img.src = src;
+    img.style.display = "block";
+  }else{
+    vid.src = src;
+    vid.style.display = "block";
+  }
+  modal.style.display = "flex";
+}
+function closePreview(){
+  document.getElementById("previewModal").style.display = "none";
+}
+async function clearMyChat(){
+  if(!confirm("清空全部聊天记录？")) return;
+  const allMsg = await dbGetAll("messages");
+  for(let m of allMsg.filter(x=>x.userId === myUserId)) await dbDelete("messages",m.id);
+  await loadChatMessages(myUserId,false);
+  toast("对话已清空");
+}
+
+async function initAdminPanel(){
+  await openDB();
+  await renderUserList();
+}
+async function renderUserList(){
+  const userAll = await dbGetAll("users");
+  const allMsg = await dbGetAll("messages");
+  const wrap = document.getElementById("userListWrap");
+  wrap.innerHTML = "";
+  const items = [];
+  for(let u of userAll){
+    const userMsgs = allMsg.filter(x=>x.userId === u.id);
+    const unreadMsgs = userMsgs.filter(x=>x.role === "user" && !x.read);
+    const sorted = userMsgs.slice().sort((a,b)=>b.time-a.time);
+    const lastMsg = sorted[0];
+    items.push({
+      user:u,
+      hasUnread:unreadMsgs.length > 0,
+      unreadCount:unreadMsgs.length,
+      lastMsg,
+      lastTime: lastMsg ? lastMsg.time : (u.createTime||0)
+    });
+  }
+  //置顶排序：有未读的排最前，其余按最后消息时间倒序
+  items.sort((a,b)=>{
+    if(a.hasUnread !== b.hasUnread) return a.hasUnread ? -1 : 1;
+    return b.lastTime - a.lastTime;
+  });
+  for(let it of items){
+    const u = it.user;
+    const item = document.createElement("div");
+    item.className = "user-item" + (currentSelectUserId === u.id ? " active" : "");
+    item.onclick = async ()=>{
+      currentSelectUserId = u.id;
+      await markReadAll(currentSelectUserId);
+      await renderUserList();
+      await loadAdminChat(u.id);
+      document.getElementById("currentChatName").innerText = u.name;
+    }
+    let lastText = "点击打开对话";
+    if(it.lastMsg){
+      lastText = it.lastMsg.type === "text" ? it.lastMsg.content : (it.lastMsg.type === "image" ? "[图片]" : "[视频]");
+    }
+    item.innerHTML = `
+    <div class="avatar-sm">访</div>
+    <div class="user-info">
+      <div class="uname">${u.name}</div>
+      <div class="last-msg">${lastText}</div>
+    </div>
+    ${it.hasUnread ? `<span class="red-dot"></span>` : ""}`;
+    wrap.appendChild(item);
+  }
+}
+async function markReadAll(uid){
+  const allMsg = await dbGetAll("messages");
+  for(let m of allMsg.filter(x=>x.userId === uid && x.role === "user")){
+    m.read = true;
+    await dbPut("messages",m);
+  }
+  broadcastMsg({type:"READ_MSG",userId:uid})
+}
+async function loadAdminChat(userId){
+  const allMsg = await dbGetAll("messages");
+  const list = allMsg.filter(m=>m.userId === userId);
+  const box = document.getElementById("chatBodyAdmin");
+  box.innerHTML = "";
+  list.forEach(msg=>{
+    const row = document.createElement("div");
+    if(msg.role === "user"){
+      row.className = "msg-row user-left";
+    }else{
+      row.className = "msg-row service-right";
+    }
+    let htmlBubble = "";
+    if(msg.type === "text"){
+      htmlBubble = `<div class="msg-bubble">${msg.content}</div>`;
+    }else if(msg.type === "image"){
+      htmlBubble = `<div class="msg-media"><img src="${msg.content}"/></div>`;
+    }else if(msg.type === "video"){
+      htmlBubble = `<div class="msg-media"><video controls src="${msg.content}"></video></div>`;
+    }
+    const timeStr = formatTime(msg.time);
+    const readTag = msg.read ? "<span class='read-tag'>已读</span>" : "<span class='unread-tag'>未读</span>";
+    row.innerHTML = `<div class="msg-wrap msg-animate">${htmlBubble}<div class="msg-meta">${readTag}<span>${timeStr}</span></div></div>`;
+    box.appendChild(row);
+  })
+  box.scrollTop = box.scrollHeight;
+}
+async function sendServiceMsg(){
+  if(!currentSelectUserId) return toast("请先选择访客会话");
+  const input = document.getElementById("serviceInput");
+  const txt = input.value.trim();
+  if(!txt) return;
+  const msgObj = {
+    id:uuid(),
+    userId:currentSelectUserId,
+    role:"service",
+    type:"text",
+    content:txt,
+    time:Date.now(),
+    read:false
+  }
+  await dbPut("messages",msgObj);
+  input.value = "";
+  broadcastMsg({type:"NEW_MSG",payload:msgObj});
+  await loadAdminChat(currentSelectUserId);
+}
+async function clearCurrentChat(){
+  if(!currentSelectUserId) return;
+  if(!confirm("清空该访客对话？")) return;
+  const allMsg = await dbGetAll("messages");
+  for(let m of allMsg.filter(x=>x.userId === currentSelectUserId)) await dbDelete("messages",m.id);
+  await loadAdminChat(currentSelectUserId);
+}
+function toggleSidebar(){
+  document.getElementById("sidebar").classList.toggle("hidden");
+}
+async function saveAutoReply(){
+  const val = document.getElementById("autoReplyInput").value;
+  await dbPut("settings",{key:"autoReplyText",value:val});
+  toast("自动回复已保存");
+}
+
+//访客视频上传
+document.getElementById("userImgUpload").onchange = async function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const base = await fileToBase64(file);
+  const msgObj = {
+    id:uuid(),userId:myUserId,role:"user",type:"image",content:base,time:Date.now(),read:false
+  }
+  await dbPut("messages",msgObj);
+  broadcastMsg({type:"NEW_MSG",payload:msgObj});
+  await loadChatMessages(myUserId,true);
+  this.value = "";
+}
+document.getElementById("userVidUpload").onchange = async function(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const base = await fileToBase64(file);
+  const msgObj = {
+    id:uuid(),userId:myUserId,role:"user",type:"video",content:base,time:Date.now(),read:false
+  }
+  await dbPut("messages",msgObj);
+  broadcastMsg({type:"NEW_MSG",payload:msgObj});
+  await loadChatMessages(myUserId,true);
+  this.value = "";
+}
+//管理员图片视频上传
+document.getElementById("adminImgUpload").onchange = async function(e){
+  const file = e.target.files[0];
+  if(!file || !currentSelectUserId) return;
+  const base = await fileToBase64(file);
+  const msgObj = {id:uuid(),userId:currentSelectUserId,role:"service",type:"image",content:base,time:Date.now(),read:false};
+  await dbPut("messages",msgObj);
+  broadcastMsg({type:"NEW_MSG",payload:msgObj});
+  await loadAdminChat(currentSelectUserId);
+  this.value = "";
+}
+document.getElementById("adminVidUpload").onchange = async function(e){
+  const file = e.target.files[0];
+  if(!file || !currentSelectUserId) return;
+  const base = await fileToBase64(file);
+  const msgObj = {id:uuid(),userId:currentSelectUserId,role:"service",type:"video",content:base,time:Date.now(),read:false};
+  await dbPut("messages",msgObj);
+  broadcastMsg({type:"NEW_MSG",payload:msgObj});
+  await loadAdminChat(currentSelectUserId);
+  this.value = "";
+}
+</script>
+</body>
+</html>

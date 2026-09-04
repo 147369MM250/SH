@@ -4,7 +4,26 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, user-scalable=no, interactive-widget=resizes-visual"/>
 <title>石昊电竞</title>
-<style>
+<style>/* 返回按钮 */
+.nav-back-btn{background:transparent;border:none;color:#000;font-size:24px;line-height:1;cursor:pointer;padding:6px 10px 6px 4px;margin-right:2px;display:flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent}
+.nav-back-btn svg{display:block}
+.nav-back-btn:active{opacity:.5}
+.nav-back-btn.dark{color:#000}
+.client-home-top{display:flex;align-items:center;width:100%;padding:12px 6px 0;box-sizing:border-box}
+
+.notify-modal{position:fixed;left:0;top:0;width:100%;height:100%;background:rgba(0,0,0,.55);display:none;align-items:center;justify-content:center;z-index:99999;font-family:system-ui,-apple-system,sans-serif}
+.notify-modal-box{width:86%;max-width:420px;background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 30px rgba(0,0,0,.25)}
+.notify-modal-title{font-size:17px;font-weight:700;color:#111;margin-bottom:16px}
+.notify-modal-row{margin-bottom:14px}
+.notify-modal-row label{display:block;font-size:13px;color:#555;margin-bottom:6px}
+.notify-modal-row input{width:100%;box-sizing:border-box;padding:10px;border:1px solid #ddd;border-radius:8px;font-size:14px;outline:none}
+.notify-modal-row input:focus{border-color:#1677ff}
+.notify-modal-hint{font-size:12px;color:#999;margin-top:5px;line-height:1.5}
+.notify-modal-actions{display:flex;gap:10px;margin-top:16px}
+.notify-modal-actions button{flex:1;padding:11px;border:none;border-radius:10px;font-size:15px;cursor:pointer}
+.notify-modal-actions .save{background:#1677ff;color:#fff}
+.notify-modal-actions .close{background:#f2f3f5;color:#333}
+
 *{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display",Segoe UI,Roboto}
 :root{
   --primary:#007AFF;
@@ -37,6 +56,22 @@ html,body{
 .btn-small{padding:8px 14px;font-size:13px;width:auto;border-radius:12px}
 .btn-gray{background:#e8e8ed;color:#333}
 
+.remember-row{display:flex;justify-content:space-between;align-items:center;padding:0 16px 18px}
+.remember-row .remember-text{font-size:14px;color:#333}
+.ios-switch{position:relative;width:50px;height:30px;flex-shrink:0;display:inline-block}
+.ios-switch input{opacity:0;width:0;height:0;position:absolute}
+.ios-switch .slider{position:absolute;inset:0;background:#e9e9eb;border-radius:30px;transition:.3s;cursor:pointer}
+.ios-switch .slider:before{content:"";position:absolute;width:26px;height:26px;left:2px;top:2px;background:#fff;border-radius:50%;box-shadow:0 2px 4px rgba(0,0,0,.2);transition:.3s}
+.ios-switch input:checked + .slider{background:#34c759}
+.ios-switch input:checked + .slider:before{transform:translateX(20px)}
+.ios-alert-mask{position:fixed;inset:0;background:rgba(0,0,0,.4);display:none;align-items:center;justify-content:center;z-index:99999}
+.ios-alert-mask.show{display:flex}
+.ios-alert-box{width:270px;background:#fff;border-radius:14px;overflow:hidden;text-align:center;animation:fadeIn .2s ease}
+.ios-alert-title{padding:20px 16px 6px;font-size:17px;font-weight:600;color:#000}
+.ios-alert-msg{padding:0 16px 20px;font-size:13px;color:#666;line-height:1.5;word-break:break-all}
+.ios-alert-btns{border-top:0.5px solid rgba(60,60,67,.3);display:flex}
+.ios-alert-ok{width:100%;padding:12px 0;border:none;background:none;font-size:17px;color:#007aff;cursor:pointer;font-weight:500}
+.ios-alert-ok:active{background:#f2f2f7}
 .mask{position:fixed;inset:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:9999;}
 .pop-box{width:285px;background:#ffffff;border-radius:14px;overflow:hidden;text-align:center;}
 .pop-title{padding:18px 16px 8px;font-weight:600;font-size:17px;}
@@ -50,6 +85,7 @@ html,body{
 .page{
   width:100%;
   height:100%;
+  height:100dvh;
   display:none;
   flex-direction:column;
   overflow:hidden;
@@ -80,23 +116,28 @@ html,body{
 .chat-body{
   flex:1;
   overflow-y:auto;
-  padding:16px;
+  padding:12px 14px;
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:5px;
+  background:#FFFFFF;
 }
 .date-divider{text-align:center;font-size:12px;color:var(--text-gray);margin:8px 0}
 .msg-row{display:flex;width:100%}
 .msg-row.user-left{justify-content:flex-start}
 .msg-row.service-right{justify-content:flex-end}
-.msg-wrap{max-width:70%;display:flex;flex-direction:column}
-.msg-bubble{padding:10px 14px;border-radius:18px;font-size:15px;word-break:break-all}
-.msg-row.user-left .msg-bubble{background:var(--bubble-user);color:#111;border-bottom-left-radius:4px}
-.msg-row.service-right .msg-bubble{background:var(--bubble-service);color:white;border-bottom-right-radius:4px}
-.msg-media{border-radius:18px;overflow:hidden;max-width:240px;background:#111;cursor:pointer}
+.msg-inner{display:flex;align-items:flex-end;gap:8px;max-width:100%}
+.msg-row.user-left .msg-inner{flex-direction:row}
+.msg-row.service-right .msg-inner{flex-direction:row-reverse}
+.msg-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;object-fit:cover;background:#E9E9EB;margin-bottom:2px}
+.msg-wrap{max-width:72%;display:flex;flex-direction:column}
+.msg-bubble{padding:10px 15px;border-radius:20px;font-size:15px;word-break:break-all;line-height:1.45}
+.msg-row.user-left .msg-bubble{background:var(--bubble-user);color:#111;border-bottom-left-radius:6px}
+.msg-row.service-right .msg-bubble{background:var(--bubble-service);color:white;border-bottom-right-radius:6px}
+.msg-media{border-radius:20px;overflow:hidden;max-width:240px;background:#111;cursor:pointer}
 .msg-media img,.msg-media video{width:100%;display:block;min-height:130px;object-fit:cover}
-.msg-meta{font-size:11px;margin-top:4px;padding:0 6px;color:var(--text-gray);display:flex;justify-content:space-between;align-items:center}
-.msg-row.service-right .msg-meta{color:rgba(255,255,255,0.75)}
+.msg-meta{font-size:11px;margin-bottom:3px;padding:0 4px;color:var(--text-gray);display:flex;justify-content:center;align-items:center;gap:5px}
+.msg-row.service-right .msg-meta{color:var(--text-gray)}
 .read-tag{font-size:10px;color:#34C759}
 .unread-tag{font-size:10px;color:#FF9500}
 .chat-footer{
@@ -109,7 +150,7 @@ html,body{
   border-top:1px solid #e8e8ed;
   flex-shrink:0;
 }
-.action-btn{width:38px;height:38px;border-radius:50%;border:none;background:#eee;cursor:pointer;font-size:18px;flex-shrink:0}
+.action-btn{width:38px;height:38px;border-radius:50%;border:none;background:#eee;cursor:pointer;font-size:18px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .input-box{flex:1;border-radius:18px;background:#eee;padding:10px 14px;border:none;outline:none;font-size:16px;min-width:0;-webkit-appearance:none}
 .btn-send{border:none;background:var(--primary);color:white;padding:10px 16px;border-radius:18px;cursor:pointer;flex-shrink:0}
 .empty-chat{flex:1;display:flex;align-items:center;justify-content:center;color:#aaa;font-size:15px}
@@ -136,18 +177,23 @@ html,body{
 .client-chat-body{
   flex:1;
   overflow-y:auto;
-  padding:16px;
+  padding:12px 14px;
   display:flex;
   flex-direction:column;
-  gap:14px;
+  gap:5px;
+  background:#FFFFFF;
 }
 .client-msg-row{display:flex;width:100%}
 .client-msg-row.user-right{justify-content:flex-end}
 .client-msg-row.service-left{justify-content:flex-start}
-.client-msg-wrap{max-width:70%;display:flex;flex-direction:column}
-.client-msg-bubble{padding:10px 14px;border-radius:18px;font-size:15px;word-break:break-all}
-.client-msg-row.user-right .client-msg-bubble{background:var(--bubble-admin,#007AFF);color:white;border-bottom-right-radius:4px}
-.client-msg-row.service-left .client-msg-bubble{background:var(--bubble-user);color:#111;border-bottom-left-radius:4px}
+.client-msg-inner{display:flex;align-items:flex-end;gap:8px;max-width:100%}
+.client-msg-row.user-right .client-msg-inner{flex-direction:row-reverse}
+.client-msg-row.service-left .client-msg-inner{flex-direction:row}
+.client-msg-avatar{width:28px;height:28px;border-radius:50%;flex-shrink:0;object-fit:cover;background:#E9E9EB;margin-bottom:2px}
+.client-msg-wrap{max-width:72%;display:flex;flex-direction:column}
+.client-msg-bubble{padding:10px 15px;border-radius:20px;font-size:15px;word-break:break-all;line-height:1.45}
+.client-msg-row.user-right .client-msg-bubble{background:var(--bubble-admin,#007AFF);color:white;border-bottom-right-radius:6px}
+.client-msg-row.service-left .client-msg-bubble{background:var(--bubble-user);color:#111;border-bottom-left-radius:6px}
 .client-msg-media{border-radius:18px;overflow:hidden;max-width:240px;background:#111;display:flex;align-items:center;justify-content:center;color:#999;font-size:12px;cursor:pointer}
 .client-msg-media video, .client-msg-media img{width:100%;display:block;min-height:130px;object-fit:cover}
 .vid-box{position:relative;width:100%;height:100%;}
@@ -155,8 +201,8 @@ html,body{
 .video-msg{position:relative;width:100%;height:100%;}
 .video-msg video{width:100%;display:block;background:#000;}
 .vid-uploading{width:100%;height:130px;display:flex;align-items:center;justify-content:center;background:rgba(0,0,0,.06);color:#888;font-size:13px;}
-.client-msg-meta{font-size:11px;margin-top:4px;padding:0 6px;color:var(--text-gray);display:flex;justify-content:space-between}
-.client-msg-row.user-right .client-msg-meta{color:rgba(255,255,255,0.75)}
+.client-msg-meta{font-size:11px;margin-bottom:3px;padding:0 4px;color:var(--text-gray);display:flex;justify-content:center;align-items:center;gap:5px}
+.client-msg-row.user-right .client-msg-meta{color:var(--text-gray)}
 .new-tip{text-align:center;padding:8px;color:var(--primary);font-size:13px;cursor:pointer}
 .client-chat-footer{
   background:var(--card);
@@ -303,6 +349,10 @@ html,body{
     <div class="pop-title">验证身份</div>
     <div class="pop-desc">请输入管理员访问密码</div>
     <input id="adminPwd" type="password" placeholder="请输入密码" autocomplete="off">
+    <div class="remember-row">
+      <span class="remember-text">记住密码</span>
+      <label class="ios-switch"><input type="checkbox" id="rememberPwd" onclick="onRememberToggle(this)"><span class="slider"></span></label>
+    </div>
     <div class="pop-btn-group">
       <button class="btn-cancel" onclick="closePopup()">取消</button>
       <button class="btn-confirm" onclick="verifyPassword()">确定</button>
@@ -310,9 +360,18 @@ html,body{
   </div>
 </div>
 
+<div id="iosAlertMask" class="ios-alert-mask">
+  <div class="ios-alert-box">
+    <div class="ios-alert-title" id="iosAlertTitle">提示</div>
+    <div class="ios-alert-msg" id="iosAlertMsg"></div>
+    <div class="ios-alert-btns"><button class="ios-alert-ok" onclick="closeIOSAlert()">确定</button></div>
+  </div>
+</div>
+
 <div id="userClientPage" class="page">
   <div id="toast" class="toast"></div>
   <div class="client-home-page" id="clientHomeWrap">
+<div class="client-home-top"><button class="nav-back-btn dark" onclick="showHomePage()"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button></div>
 <div class="client-home-card">
       <img class="home-logo" src="https://cccimg.com/view.php/94a6891ae4c817663f2c90c8b1b032b2.png" alt="石昊电竞俱乐部Logo"/>
       <h1>石昊电竞</h1>
@@ -335,6 +394,7 @@ html,body{
   </div>
   <div id="clientChatWrap" class="client-chat-page">
     <div class="client-chat-header">
+      <button class="nav-back-btn" onclick="goClientHome()"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
       <img id="serviceAvatarTop" class="avatar" src="data:image/webp;base64,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" alt=""/>
       <div class="client-header-info">
         <div class="name" id="serviceNameTop">在线客服</div>
@@ -352,8 +412,8 @@ html,body{
     <div class="client-chat-footer">
       <input type="file" id="userImgUpload" class="file-input" accept="image/*"/>
       <input type="file" id="userVidUpload" class="file-input" accept="video/*"/>
-      <button class="action-btn" onclick="document.getElementById('userImgUpload').click()">🖼</button>
-      <button class="action-btn" onclick="document.getElementById('userVidUpload').click()">🎬</button>
+      <button class="action-btn" onclick="document.getElementById('userImgUpload').click()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#007AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></button>
+      <button class="action-btn" onclick="document.getElementById('userVidUpload').click()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#007AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M22 9l-6 3 6 3V9z"/></svg></button>
       <input id="userInput" class="input-box" placeholder="输入消息..." onkeydown="if(event.key==='Enter')sendUserText()"/>
       <button class="btn" onclick="sendUserText()">发送</button>
     </div>
@@ -373,12 +433,14 @@ html,body{
   </div>
   <div class="chat-main">
     <div class="chat-header">
+      <button class="nav-back-btn" onclick="showHomePage()"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
       <button class="toggle-bar" onclick="toggleSidebar()">☰</button>
       <div class="header-info">
         <div class="name" id="currentChatName">选择一个用户会话</div>
       </div>
       <div class="header-actions">
         <button class="btn btn-small btn-gray" onclick="clearCurrentChat()">清空对话</button>
+        <button class="btn btn-small btn-gray" onclick="openNotifySetting()" title="通知设置">🔔</button>
       </div>
     </div>
     <div id="chatBodyAdmin" class="chat-body">
@@ -387,8 +449,8 @@ html,body{
     <div class="chat-footer">
       <input type="file" id="adminImgUpload" class="file-input" accept="image/*"/>
       <input type="file" id="adminVidUpload" class="file-input" accept="video/*"/>
-      <button class="action-btn" onclick="document.getElementById('adminImgUpload').click()">🖼</button>
-      <button class="action-btn" onclick="document.getElementById('adminVidUpload').click()">🎬</button>
+      <button class="action-btn" onclick="document.getElementById('adminImgUpload').click()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#007AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg></button>
+      <button class="action-btn" onclick="document.getElementById('adminVidUpload').click()"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="#007AFF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="6" width="14" height="12" rx="2"/><path d="M22 9l-6 3 6 3V9z"/></svg></button>
       <input id="serviceInput" class="input-box" placeholder="输入回复消息..." onkeydown="if(event.key==='Enter')sendServiceMsg()"/>
       <button class="btn-send" onclick="sendServiceMsg()">发送</button>
     </div>
@@ -753,10 +815,149 @@ function maybeNotify(msgObj){
   const isOwn = myUserId && msgObj.userId === myUserId;
   const isCurrentAdmin = inAdmin && currentSelectUserId === msgObj.userId;
   const isCurrentClient = inClientChat && isOwn;
-  if(isCurrentAdmin || isCurrentClient) return; // 正在看这个会话，不打扰
-  if(msgObj.role === "user" || (msgObj.role === "service" && isOwn)){
-    systemNotify(msgObj.role === "user" ? "💬 新客户消息" : "💬 客服回复", textOf(msgObj));
+  // 客服端在线时也补推（去重：同一消息只推一次）
+  if(msgObj.role === "user" && inAdmin){
+    pushMsgToChannels(msgObj.id, textOf(msgObj) + (msgObj.name ? "（" + msgObj.name + "）" : ""));
   }
+  if(isCurrentAdmin || isCurrentClient) return; // 正在看这个会话，不弹桌面通知/声音/标题
+  if(msgObj.role === "user" || (msgObj.role === "service" && isOwn)){
+    const t = msgObj.role === "user" ? "💬 新客户消息" : "💬 客服回复";
+    systemNotify(t, textOf(msgObj));
+    flashTitle(t);
+  }
+}
+// 标题闪烁：页面在后台时标题栏提示有新消息
+function flashTitle(t){
+  if(document.title.indexOf("🔔") !== 0) document.title = "🔔 " + (t || "新消息");
+}
+function clearTitleFlash(){
+  if(document.title.indexOf("🔔") === 0) document.title = "石昊电竞";
+}
+// 双通道去重推送：客户直推 + 客服端补推，同一消息只推一次
+function pushMsgToChannels(msgId, nt){
+  try{
+    let pushed = [];
+    try{ pushed = JSON.parse(localStorage.getItem("shihao_pushed_msgs") || "[]"); }catch(e){}
+    if(msgId && pushed.indexOf(msgId) >= 0) return; // 已推过
+    pushToWxpusher(nt); // 微信通知走 WxPusher（最快、不用实名）
+    if(msgId){
+      pushed.push(msgId);
+      if(pushed.length > 200) pushed = pushed.slice(-200);
+      try{ localStorage.setItem("shihao_pushed_msgs", JSON.stringify(pushed)); }catch(e){}
+    }
+  }catch(e){}
+}
+// WxPusher 微信推送：不用实名，扫码关注公众号即可（免费，2000条/天）
+const wxDebounceObj = {};
+function pushToWxpusher(text){
+  const appToken = (localStorage.getItem("shihao_wxpusher_token") || WXPUSHER_DEFAULT_TOKEN || "").trim();
+  const uid = (localStorage.getItem("shihao_wxpusher_uid") || WXPUSHER_DEFAULT_UID || "").trim();
+  if(!appToken || !uid) return;
+  if(!wxDebounceObj.msgs) wxDebounceObj.msgs = [];
+  wxDebounceObj.msgs.push(text);
+  clearTimeout(wxDebounceObj.timer);
+  wxDebounceObj.timer = setTimeout(()=>{
+    const msgs = wxDebounceObj.msgs.slice();
+    wxDebounceObj.msgs = [];
+    try{
+      fetch("https://wxpusher.zjiecode.com/api/send/message", {method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          appToken: appToken,
+          content: "💬 石昊电竞 新客户消息：\n" + msgs.join("\n"),
+          summary: "石昊电竞 新客户消息提醒",
+          contentType: 1,
+          uids: [uid]
+        })
+      })
+      .then(r => r.json()).then(d => { if(d && d.code !== 1000) console.log("wxpusher:", d.msg); })
+      .catch(e => console.log("wxpusher err:", e.message));
+    }catch(e){}
+  }, 500); // 0.5秒防抖：几乎实时送达，仍能合并瞬间连发消息
+}
+// 微信推送（PushPlus）：客服关掉页面也能在微信收到新消息提醒（免费，需填 Token）
+const pushDebounceObj = {};
+function pushToWechat(text){
+  const token = (localStorage.getItem("shihao_push_token") || "").trim();
+  if(!token) return;
+  if(!pushDebounceObj.msgs) pushDebounceObj.msgs = [];
+  pushDebounceObj.msgs.push(text);
+  clearTimeout(pushDebounceObj.timer);
+  pushDebounceObj.timer = setTimeout(()=>{
+    const msgs = pushDebounceObj.msgs.slice();
+    pushDebounceObj.msgs = [];
+    try{
+      fetch("https://www.pushplus.plus/send?token=" + encodeURIComponent(token) + "&title=" + encodeURIComponent("💬 石昊电竞新客户消息") + "&content=" + encodeURIComponent(msgs.join("\n")) + "&template=html");
+    }catch(e){}
+  }, 4000);
+}
+// 钉钉群机器人推送：新客户消息发到钉钉群（免费、秒级）
+const DING_DEFAULT_WEBHOOK = "https://oapi.dingtalk.com/robot/send?access_token=b383f3e38470993dc78be9a4d512b8f6a81cbcdd5c685fcdd8b66ab2b2b9a474";
+const DING_DEFAULT_SECRET = "SEC744c546aae39c9df0c516561b15d653526bd26bcfa71a9a5cd8d65b25270d753";
+const WXPUSHER_DEFAULT_TOKEN = "AT_jXcJFiJ9QuAqp2Ix9uiIFinPkjeuakWA";
+const WXPUSHER_DEFAULT_UID = "UID_8yvTRpTJEtfAXH7S3EcgkAO9tkOE";
+const dingDebounceObj = {};
+// 钉钉加签：HMAC-SHA256(timestamp + "\n" + secret)
+async function dingSign(secret, timestamp){
+  try{
+    const enc = new TextEncoder();
+    const key = await crypto.subtle.importKey("raw", enc.encode(secret), {name:"HMAC", hash:"SHA-256"}, false, ["sign"]);
+    const mac = await crypto.subtle.sign("HMAC", key, enc.encode(timestamp + "\n" + secret));
+    let bin = "";
+    new Uint8Array(mac).forEach(b => bin += String.fromCharCode(b));
+    return btoa(bin);
+  }catch(e){ return ""; }
+}
+async function pushToDingTalk(text){
+  let wh = (localStorage.getItem("shihao_ding_webhook") || DING_DEFAULT_WEBHOOK || "").trim();
+  const secret = (localStorage.getItem("shihao_ding_secret") || DING_DEFAULT_SECRET || "").trim();
+  if(!wh) return;
+  if(secret){
+    const ts = Date.now();
+    const sign = await dingSign(secret, ts);
+    wh += (wh.indexOf("?") >= 0 ? "&" : "?") + "timestamp=" + ts + "&sign=" + encodeURIComponent(sign);
+  }
+  if(!dingDebounceObj.msgs) dingDebounceObj.msgs = [];
+  dingDebounceObj.msgs.push(text);
+  clearTimeout(dingDebounceObj.timer);
+  dingDebounceObj.timer = setTimeout(()=>{
+    const msgs = dingDebounceObj.msgs.slice();
+    dingDebounceObj.msgs = [];
+    try{
+      fetch(wh, {method:"POST", headers:{"Content-Type":"application/json"},
+        body: JSON.stringify({
+          msgtype: "markdown",
+          markdown: {
+            title: "石昊电竞新消息",
+            text: "### 💬 石昊电竞新客户消息\n" + msgs.map(m => "- " + m).join("\n")
+          },
+          at: {isAtAll: false}
+        })});
+    }catch(e){}
+  }, 4000);
+}
+// 一键测试：向钉钉/微信发送测试推送，验证当前页面环境能否推送
+function testNotifyPush(){
+  try{
+    pushMsgToChannels("test_" + Date.now(), "测试推送：客服系统→钉钉 连通性验证（本条来自页面）");
+    toast("测试消息已发送，请查看钉钉群");
+  }catch(e){ toast("发送失败：" + e.message); }
+}
+// 通知设置弹窗：微信推送 Token + 钉钉机器人 Webhook
+function openNotifySetting(){
+  document.getElementById("wxTokenInput").value = localStorage.getItem("shihao_wxpusher_token") || WXPUSHER_DEFAULT_TOKEN || "";
+  document.getElementById("wxUidInput").value = localStorage.getItem("shihao_wxpusher_uid") || WXPUSHER_DEFAULT_UID || "";
+  document.getElementById("notifyModal").style.display = "flex";
+}
+function closeNotifySetting(){
+  document.getElementById("notifyModal").style.display = "none";
+}
+function saveNotifySetting(){
+  const wt = document.getElementById("wxTokenInput").value.trim();
+  const wu = document.getElementById("wxUidInput").value.trim();
+  localStorage.setItem("shihao_wxpusher_token", wt);
+  localStorage.setItem("shihao_wxpusher_uid", wu);
+  closeNotifySetting();
+  toast(wt && wu ? "WxPusher 微信通知已保存" : "微信通知配置已保存（留空则不推送）");
 }
 let notifyGranted = false;
 function requestNotify(){
@@ -805,10 +1006,11 @@ const musicAudio = new Audio(MUSIC_URL);
 musicAudio.loop = true;
 
 let initVisualHeight = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+const dvhSupported = window.CSS && CSS.supports && CSS.supports('height','100dvh');
 function updateKeyboardOffset(){
   if(!window.visualViewport) return;
   const diff = initVisualHeight - window.visualViewport.height;
-  if(diff > 120){
+  if(diff > 120 && !dvhSupported){
     document.documentElement.style.setProperty('--keyboard-offset', diff + 'px');
   }else{
     document.documentElement.style.setProperty('--keyboard-offset','0px');
@@ -1019,7 +1221,9 @@ function hideVidStatus(){const el=document.getElementById("vidStatus");if(el)el.
 
 // 邮件通知：防抖合并 + 失败重试，避免高频触发造成延迟堆积
 const mailDebounce = {};
+let emailNotifyEnabled = false; // 邮箱通知开关：true 开启 / false 暂停（改 true 即可恢复）
 function sendMailNotify(userName,msgContent){
+  if(!emailNotifyEnabled) return; // 邮箱通知已暂停
   const key = userName || "访客";
   if(!mailDebounce[key]) mailDebounce[key] = {msgs:[], timer:null};
   mailDebounce[key].msgs.push(msgContent);
@@ -1106,6 +1310,38 @@ if(bc){
   }
 }
 
+// ===== 导航返回：返回按钮 + Android 物理返回键 =====
+let navStack = ["homePage"];
+function showHomePage(fromBack){
+  (async()=>{
+    await hideAllPage();
+    document.getElementById("homePage").style.display = "flex";
+    navStack = ["homePage"];
+    if(!fromBack){ try{ history.pushState({p:"homePage"}, ""); }catch(e){} }
+  })();
+}
+function showClientHome(fromBack){
+  document.getElementById("clientHomeWrap").style.display = "flex";
+  document.getElementById("clientChatWrap").style.display = "none";
+  navStack = ["homePage","clientHome"];
+  if(!fromBack){ try{ history.pushState({p:"clientHome"}, ""); }catch(e){} }
+}
+function goClientHome(){ showClientHome(false); }
+function goBackNav(){
+  const nm = document.getElementById("notifyModal");
+  if(nm && nm.style.display === "flex"){ closeNotifySetting(); return; }
+  const pm = document.getElementById("pwdMask");
+  if(pm && pm.style.display === "flex"){ closePopup(); return; }
+  if(navStack.length > 1){
+    navStack.pop();
+    const prev = navStack[navStack.length-1];
+    if(prev === "homePage"){ showHomePage(true); }
+    else if(prev === "clientHome"){ showClientHome(true); }
+    else { showHomePage(true); }
+  }
+}
+window.addEventListener("popstate", function(){ goBackNav(); });
+
 function hideAllPage(){
   const ids = ["homePage","userClientPage","adminPage"];
   const visible = ids.find(id=>document.getElementById(id).style.display === "flex");
@@ -1125,8 +1361,22 @@ function showPasswordPopup(){
   const mask = document.getElementById("pwdMask");
   mask.classList.remove("closing");
   mask.style.display = "flex";
-  document.getElementById("adminPwd").value = "";
+  localStorage.removeItem("shihao_remember_pwd"); // 清理旧版"直接进入"标记
+  const rp = document.getElementById("rememberPwd");
+  const saved = localStorage.getItem("shihao_saved_pwd");
+  if(rp) rp.checked = !!saved;
+  document.getElementById("adminPwd").value = saved || "";
   setTimeout(()=>document.getElementById("adminPwd").focus(),100);
+}
+function showIOSAlert(title, msg, okText){
+  document.getElementById("iosAlertTitle").textContent = title || "提示";
+  document.getElementById("iosAlertMsg").textContent = msg || "";
+  const ok = document.querySelector("#iosAlertMask .ios-alert-ok");
+  if(ok) ok.textContent = okText || "确定";
+  document.getElementById("iosAlertMask").classList.add("show");
+}
+function closeIOSAlert(){
+  document.getElementById("iosAlertMask").classList.remove("show");
 }
 function closePopup(instant){
   const mask = document.getElementById("pwdMask");
@@ -1145,18 +1395,36 @@ function closePopup(instant){
 async function verifyPassword(){
   const inputVal = document.getElementById("adminPwd").value.trim();
   if(inputVal === ADMIN_PASSWORD){
+    const rp = document.getElementById("rememberPwd");
+    if(rp && rp.checked){ localStorage.setItem("shihao_saved_pwd", ADMIN_PASSWORD); }
+    else { localStorage.removeItem("shihao_saved_pwd"); }
     closePopup(true);
     await hideAllPage();
     document.getElementById("adminPage").style.display = "flex";
+    navStack = ["homePage","adminPage"];
+    try{ history.pushState({p:"adminPage"}, ""); }catch(e){}
     mqttSubscribe(MQTT_TOPIC_ANNOUNCE);
     mqttSubscribe(MQTT_TOPIC_REQ);
     initMqtt();
     requestNotify();
     requestHistoryFromClients();
     await initAdminPanel();
-  }else{alert("密码错误，请重新输入");document.getElementById("adminPwd").value="";document.getElementById("adminPwd").focus();}
+  }else{
+    showIOSAlert("密码错误", "请输入正确的管理员密码");
+    document.getElementById("adminPwd").value="";
+    document.getElementById("adminPwd").focus();
+  }
 }
 document.getElementById("adminPwd").addEventListener("keydown",e=>{if(e.key==="Enter") verifyPassword()})
+function onRememberToggle(el){
+  if(!el || !el.checked){
+    localStorage.removeItem("shihao_saved_pwd");
+    document.getElementById("adminPwd").value = "";
+  }else{
+    const saved = localStorage.getItem("shihao_saved_pwd");
+    if(saved) document.getElementById("adminPwd").value = saved;
+  }
+}
 async function openUserClient(){
   await hideAllPage();
   document.getElementById("userClientPage").style.display = "flex";
@@ -1165,6 +1433,8 @@ async function openUserClient(){
   initMqtt();
   requestNotify();
   await initUserClient();
+  navStack = ["homePage","clientHome"];
+  try{ history.pushState({p:"clientHome"}, ""); }catch(e){}
 }
 async function initUserClient(){
   await openDB();
@@ -1204,6 +1474,8 @@ async function enterChat(){
   mqttRequestHistory(uid);
   syncMusicUi();
   toast("已进入对话");
+  navStack = ["homePage","clientHome","clientChat"];
+  try{ history.pushState({p:"clientChat"}, ""); }catch(e){}
 }
 async function sendWelcomeIfNeeded(uid){
   // 等待云端历史同步尝试：若已拉到历史则不再重复发欢迎语
@@ -1276,6 +1548,7 @@ function syncMusicUi(){
 }
 document.addEventListener("click", function(){
   requestNotify();
+  clearTitleFlash();
   initMqtt();
   const hp = getComputedStyle(document.getElementById("homePage")).display !== "none";
   const cp = getComputedStyle(document.getElementById("userClientPage")).display !== "none";
@@ -1369,7 +1642,10 @@ function buildClientBubble(msg){
   }
   const timeText = formatTime(msg.time);
   const readText = msg.read ? "<span class='read-tag'>已读</span>" : "<span class='unread-tag'>未读</span>";
-  return `<div class="client-msg-wrap msg-animate">${mediaDom}<div class="client-msg-meta">${readText}<span>${timeText}</span></div></div>`;
+  const metaDom = `<div class="client-msg-meta">${readText}<span>${timeText}</span></div>`;
+  const avatarSrc = msg.role === "user" ? "https://cccimg.com/view.php/94a6891ae4c817663f2c90c8b1b032b2.png" : (document.getElementById("serviceAvatarTop") ? document.getElementById("serviceAvatarTop").src : "https://cccimg.com/view.php/94a6891ae4c817663f2c90c8b1b032b2.png");
+  const avatarDom = `<img class="client-msg-avatar" src="${avatarSrc}" alt="">`;
+  return `<div class="client-msg-inner msg-animate">${avatarDom}<div class="client-msg-wrap">${metaDom}${mediaDom}</div></div>`;
 }
 
 async function sendUserText(){
@@ -1391,7 +1667,10 @@ async function sendUserText(){
   inputDom.value = "";
   broadcastMsg({type:"NEW_MSG",payload:msgData});
   mqttPublish(msgData);
-  await sendMailNotify(localStorage.getItem("5h_visitor_name"),text);
+  // 客户发消息时，由客户浏览器直接把通知推送到客服的钉钉/微信（提前执行，不被邮件通知影响）
+  const un = localStorage.getItem("5h_visitor_name") || "访客";
+  try{ pushMsgToChannels(msgId, text + "（" + un + "）"); }catch(e){}
+  try{ await sendMailNotify(localStorage.getItem("5h_visitor_name"),text); }catch(e){}
   await loadChatMessages(myUserId,true);
 }
 function scrollBottom(){
@@ -1508,7 +1787,10 @@ async function loadAdminChat(userId){
     }
     const timeStr = formatTime(msg.time);
     const readTag = msg.read ? "<span class='read-tag'>已读</span>" : "<span class='unread-tag'>未读</span>";
-    row.innerHTML = `<div class="msg-wrap msg-animate">${htmlBubble}<div class="msg-meta">${readTag}<span>${timeStr}</span></div></div>`;
+    const metaDom = `<div class="msg-meta">${readTag}<span>${timeStr}</span></div>`;
+    const avatarSrc = msg.role === "service" ? (document.getElementById("serviceAvatarTop") ? document.getElementById("serviceAvatarTop").src : "https://cccimg.com/view.php/94a6891ae4c817663f2c90c8b1b032b2.png") : "https://cccimg.com/view.php/94a6891ae4c817663f2c90c8b1b032b2.png";
+    const avatarDom = `<img class="msg-avatar" src="${avatarSrc}" alt="">`;
+    row.innerHTML = `<div class="msg-inner msg-animate">${avatarDom}<div class="msg-wrap">${metaDom}${htmlBubble}</div></div>`;
     box.appendChild(row);
   })
   box.scrollTop = box.scrollHeight;
@@ -1564,6 +1846,8 @@ document.getElementById("userImgUpload").onchange = async function(e){
   await dbPut("messages",msgObj);
   broadcastMsg({type:"NEW_MSG",payload:msgObj});
   mqttPublish(msgObj);
+  const un2 = localStorage.getItem("5h_visitor_name") || "访客";
+  pushMsgToChannels(msgObj.id, "[图片]（" + un2 + "）");
   await loadChatMessages(myUserId,true);
   this.value = "";
 }
@@ -1663,6 +1947,8 @@ document.getElementById("userVidUpload").onchange = async function(e){
   await dbPut("messages",msgObj);
   broadcastMsg({type:"NEW_MSG",payload:msgObj});
   if(mode === "url" || mode === "embed") mqttPublish(msgObj);
+  const un3 = localStorage.getItem("5h_visitor_name") || "访客";
+  pushMsgToChannels(msgObj.id, "[视频]（" + un3 + "）");
   await loadChatMessages(myUserId,true);
   this.value = "";
 }
@@ -1733,5 +2019,27 @@ document.getElementById("adminVidUpload").onchange = async function(e){
 
 </script>
 <div id="vidStatus" style="position:fixed;top:44%;left:50%;transform:translate(-50%,-50%);z-index:99999;background:rgba(0,0,0,.78);color:#fff;padding:14px 22px;border-radius:14px;font-size:14px;display:none;font-family:sans-serif;max-width:80vw;text-align:center;box-shadow:0 4px 18px rgba(0,0,0,.3)"></div>
-<div id="mConn" style="position:fixed;right:10px;bottom:46px;z-index:99999;background:#f59e0b;color:#fff;font-size:11px;padding:3px 8px;border-radius:10px;display:none;font-family:sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.3);pointer-events:none">连接中</div></body>
+<div id="mConn" style="position:fixed;right:10px;bottom:46px;z-index:99999;background:#f59e0b;color:#fff;font-size:11px;padding:3px 8px;border-radius:10px;display:none;font-family:sans-serif;box-shadow:0 1px 4px rgba(0,0,0,.3);pointer-events:none">连接中</div>
+<div id="notifyModal" class="notify-modal">
+  <div class="notify-modal-box">
+    <div class="notify-modal-title">🔔 通知设置</div>
+    <div class="notify-modal-row">
+      <label>WxPusher AppToken（微信推送，不用实名）</label>
+      <input id="wxTokenInput" placeholder="AT_..." autocomplete="off">
+      <div class="notify-modal-hint">wxpusher.zjiecode.com → 微信扫码登录 → 创建应用 → 复制 AppToken（AT开头）</div>
+    </div>
+    <div class="notify-modal-row">
+      <label>WxPusher UID（已配置）</label>
+      <input id="wxUidInput" placeholder="UID_..." autocomplete="off">
+      <div class="notify-modal-hint">关注"WxPusher消息推送平台"公众号后，在页面个人中心复制你的 UID（UID开头）。客户发消息会推送到你的微信。</div>
+    </div>
+    <div class="notify-modal-actions">
+      <button class="save" onclick="saveNotifySetting()">保存</button>
+      <button class="save" style="background:#00b578" onclick="testNotifyPush()">发测试</button>
+      <button class="close" onclick="closeNotifySetting()">关闭</button>
+    </div>
+  </div>
+</div>
+
+</body>
 </html>

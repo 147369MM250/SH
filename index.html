@@ -656,6 +656,9 @@ async function mqttOnMessage(topic, payload){
     if(data.type === "NEW_MSG"){
       const msgObj = data.payload;
       if(!msgObj || !msgObj.id) return;
+      // 去重：同一条消息可能从两个topic收到，已处理过则跳过（避免重复通知）
+      const _exist = await dbGet("messages", msgObj.id);
+      if(_exist) return;
       await dbPut("messages", msgObj);
       // 补建用户（跨设备时 USER_JOIN 可能错过）
       if(msgObj.userId){
@@ -1403,7 +1406,7 @@ function hideVidStatus(){const el=document.getElementById("vidStatus");if(el)el.
 
 // 邮件通知：防抖合并 + 失败重试，避免高频触发造成延迟堆积
 const mailDebounce = {};
-let emailNotifyEnabled = true; // 邮箱通知开关：true 开启 / false 暂停
+let emailNotifyEnabled = false; // 邮箱通知已关闭（用户要求不用邮箱）
 function sendMailNotify(userName,msgContent){
   if(!emailNotifyEnabled) return; // 邮箱通知已暂停
   const key = userName || "访客";
@@ -1858,7 +1861,7 @@ async function sendUserText(){
   // 客户发消息时，由客户浏览器直接把通知推送到客服的钉钉/微信（提前执行，不被邮件通知影响）
   const un = localStorage.getItem("5h_visitor_name") || "访客";
   try{ pushMsgToChannels(msgId, text + "（" + un + "）"); }catch(e){}
-  try{ await sendMailNotify(localStorage.getItem("5h_visitor_name"),text); }catch(e){}
+  // 邮箱通知已移除（用户要求不用邮箱）
   await loadChatMessages(myUserId,true);
 }
 function scrollBottom(){
@@ -2046,7 +2049,7 @@ const videoBuf = {};
 async function mqttPublishChunked(msgObj){
   if(!mqttReady || !mqttClient) return;
   const content = msgObj.content || "";
-  const CHUNK = 80000;
+  const CHUNK = 32000;  // 每片32KB（减小单条消息大小，避免broker限流）
   const total = Math.max(1, Math.ceil(content.length / CHUNK));
   for(let i=0;i<total;i++){
     const chunk = content.slice(i*CHUNK, (i+1)*CHUNK);
@@ -2056,7 +2059,7 @@ async function mqttPublishChunked(msgObj){
       mqttClient.publish(MQTT_TOPIC_ANNOUNCE, p, {qos:1});
       if(msgObj.userId) mqttClient.publish(mqttTopic(msgObj.userId), p, {qos:1});
     }catch(e){}
-    await new Promise(r=>setTimeout(r,70));
+    await new Promise(r=>setTimeout(r,150));  // 每片间隔150ms（降低发送频率，防broker限流重连）
   }
   const end = {type:"VIDEO_CHUNK_END", msgId:msgObj.id, total, payload:{id:msgObj.id,userId:msgObj.userId,role:msgObj.role,type:"video",content:"",time:msgObj.time,read:false,name:msgObj.name||""}, userId:msgObj.userId, from:DEVICE_ID};
   try{

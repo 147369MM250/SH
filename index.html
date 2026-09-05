@@ -522,6 +522,10 @@ const MQTT_BROKERS = [
 const MQTT_TOPIC_ANNOUNCE = "shihao_eSports_v1/announce";
 const MQTT_TOPIC_REQ = "shihao_eSports_v1/req";
 const DEVICE_ID = "dev_" + Math.random().toString(36).slice(2,10);
+// 固定clientId（clean:false保持会话，重连恢复订阅和未确认消息）
+let mqttClientId = localStorage.getItem("shihao_mqtt_cid");
+if(!mqttClientId){ mqttClientId = "shihao_" + Math.random().toString(36).slice(2,12); localStorage.setItem("shihao_mqtt_cid", mqttClientId); }
+let mqttFailCount = 0;  // 连续失败计数，达阈值自动切节点
 let mqttClient = null;
 let mqttReady = false;
 let mqttUnavailable = false;
@@ -668,11 +672,12 @@ function mqttConnectNext(){
   let client;
   try{
     client = mqtt.connect(url, {
-      clientId: "shihao_" + Math.random().toString(36).slice(2,12),
-      clean: true,
+      clientId: mqttClientId,
+      clean: false,          // 保持会话，重连自动恢复订阅和未确认消息
       connectTimeout: 4000,
-      reconnectPeriod: 8000,
-      keepalive: 25
+      reconnectPeriod: 3000, // 3秒自动重连（比8秒更快恢复）
+      keepalive: 15,         // 15秒心跳（防移动网络NAT超时断开）
+      resubscribe: true      // 重连后自动重新订阅所有topic
     });
   }catch(e){
     mqttBrokerIdx++;
@@ -689,6 +694,7 @@ function mqttConnectNext(){
   }, 4500);
   client.on("connect", ()=>{
     everConnected = true;
+    mqttFailCount = 0;  // 连接成功，重置失败计数
     clearTimeout(switchTimer);
     mqttClient = client;
     mqttReady = true;
@@ -708,8 +714,18 @@ function mqttConnectNext(){
     }, 300);
   });
   client.on("message", mqttOnMessage);
-  client.on("error", ()=>{});
-  client.on("close", ()=>{ if(mqttClient === client){ mqttReady = false; setTimeout(()=>{ if(mqttClient===client && !mqttReady) updateConnUi("reconnecting"); }, 2500); } });
+  client.on("error", ()=>{
+    mqttFailCount++;
+    // 连续失败5次自动切换到下一个broker（防止在一个不稳定节点上死磕）
+    if(mqttFailCount >= 5 && mqttClient === client){
+      mqttFailCount = 0;
+      try{ client.end(true); }catch(e){}
+      mqttBrokerIdx = (mqttBrokerIdx + 1) % MQTT_BROKERS.length;
+      console.log("连续失败5次，切换到 broker: " + MQTT_BROKERS[mqttBrokerIdx]);
+      mqttConnectNext();
+    }
+  });
+  client.on("close", ()=>{ if(mqttClient === client){ mqttReady = false; setTimeout(()=>{ if(mqttClient===client && !mqttReady) updateConnUi("重连中"); }, 3000); } });
 }
 async function initMqtt(){
   if(mqttClient || mqttTrying) return;

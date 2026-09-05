@@ -970,8 +970,8 @@ function maybeNotify(msgObj){
   const isOwn = myUserId && msgObj.userId === myUserId;
   const isCurrentAdmin = inAdmin && currentSelectUserId === msgObj.userId;
   const isCurrentClient = inClientChat && isOwn;
-  // 客服端在线时也补推（去重：同一消息只推一次）
-  if(msgObj.role === "user" && inAdmin){
+  // 用户消息：不管在不在后台页面，都推微信通知（去重保证只推一次）
+  if(msgObj.role === "user"){
     pushMsgToChannels(msgObj.id, textOf(msgObj) + (msgObj.name ? "（" + msgObj.name + "）" : ""));
   }
   if(isCurrentAdmin || isCurrentClient) return; // 正在看这个会话，不弹桌面通知/声音/标题
@@ -2100,6 +2100,14 @@ async function mqttPublishChunked(msgObj){
   const CHUNK = 32000;  // 每片32KB（减小单条消息大小，避免broker限流）
   const total = Math.max(1, Math.ceil(content.length / CHUNK));
   for(let i=0;i<total;i++){
+    // 发送过程中如果连接断开，停止发送，消息保留在队列等重连后重发
+    if(!mqttReady || !mqttClient){
+      if(msgObj.id && msgQueue.findIndex(m=>m.id===msgObj.id) < 0){
+        msgQueue.push(Object.assign({}, msgObj, {_chunked:true}));
+      }
+      console.log("视频发送中断（连接断开），已保留在队列等重连");
+      return;
+    }
     const chunk = content.slice(i*CHUNK, (i+1)*CHUNK);
     const part = {type:"VIDEO_CHUNK", msgId:msgObj.id, seq:i, total, chunk, userId:msgObj.userId, role:msgObj.role, name:msgObj.name||"", from:DEVICE_ID};
     const p = JSON.stringify(part);
@@ -2107,7 +2115,7 @@ async function mqttPublishChunked(msgObj){
       mqttClient.publish(MQTT_TOPIC_ANNOUNCE, p, {qos:1});
       if(msgObj.userId) mqttClient.publish(mqttTopic(msgObj.userId), p, {qos:1});
     }catch(e){}
-    await new Promise(r=>setTimeout(r,150));  // 每片间隔150ms（降低发送频率，防broker限流重连）
+    await new Promise(r=>setTimeout(r,150));
   }
   const end = {type:"VIDEO_CHUNK_END", msgId:msgObj.id, total, payload:{id:msgObj.id,userId:msgObj.userId,role:msgObj.role,type:"video",content:"",time:msgObj.time,read:false,name:msgObj.name||""}, userId:msgObj.userId, from:DEVICE_ID};
   try{
@@ -2115,6 +2123,10 @@ async function mqttPublishChunked(msgObj){
     mqttClient.publish(MQTT_TOPIC_ANNOUNCE, ep, {qos:1});
     if(msgObj.userId) mqttClient.publish(mqttTopic(msgObj.userId), ep, {qos:1});
   }catch(e){}
+  // 关键修复：视频发送完成后从队列移除（之前没移除，导致重复发送+阻塞后续消息）
+  const _qi = msgQueue.findIndex(m=>m.id===msgObj.id);
+  if(_qi >= 0) msgQueue.splice(_qi,1);
+  console.log("视频发送完成，已从队列移除，剩余队列"+msgQueue.length+"条");
 }
 async function tryAssembleVideo(msgId, attempt){
   const buf = videoBuf[msgId];

@@ -517,7 +517,8 @@ function ensureEmailjs(){
 // ===== MQTT 跨设备实时互通（浏览器发的消息，微信打开的客服端也能实时收到） =====
 const MQTT_BROKERS = [
   "wss://broker-cn.emqx.io:8084/mqtt",   // EMQX 中国区（国内/微信网络更快）
-  "wss://broker.emqx.io:8084/mqtt"       // EMQX 国际（与中国区节点数据互通）
+  "wss://broker.emqx.io:8084/mqtt",       // EMQX 国际（与中国区节点数据互通）
+  "wss://broker.hivemq.com:8884/mqtt"     // HiveMQ 公共（第三方备选，防EMQX宕机）
 ];
 const MQTT_TOPIC_ANNOUNCE = "shihao_eSports_v1/announce";
 const MQTT_TOPIC_REQ = "shihao_eSports_v1/req";
@@ -525,6 +526,7 @@ const MQTT_TOPIC_RETENTION = "shihao_eSports_v1/retention/";  // 离线消息保
 const DEVICE_ID = "dev_" + Math.random().toString(36).slice(2,10);
 // clientId每次加载随机生成（防止两端相同ID被服务器互踢）
 let mqttFailCount = 0;  // 连续失败计数，达阈值自动切节点
+const msgQueue = [];  // 消息队列：MQTT未连接时暂存，连接成功后自动重发（关键：防止消息丢失）
 let mqttClient = null;
 let mqttReady = false;
 let mqttUnavailable = false;
@@ -729,7 +731,9 @@ function mqttConnectNext(){
     mqttSubTopics.forEach(t=>{ try{ client.subscribe(t,{qos:1}); }catch(e){} });
     updateConnUi("online");
     console.log("MQTT 已连接: " + url);
-    // 连接成功后立即拉取历史（双端打开时快速同步）
+    // ① 连接成功立即flush队列（把未连接时暂存的消息重发）
+    setTimeout(()=>flushMsgQueue(), 200);
+    // ② 连接成功后立即拉取历史（双端打开时快速同步）
     setTimeout(()=>{
       try{
         if(myUserId){
@@ -738,7 +742,21 @@ function mqttConnectNext(){
           client.publish(MQTT_TOPIC_REQ, JSON.stringify({type:"HISTORY_REQUEST", from:DEVICE_ID}), {qos:1});
         }
       }catch(e){}
-    }, 300);
+    }, 500);
+    // ③ 启动定期同步：每15秒拉取一次历史，防止实时消息遗漏
+    if(!window._syncTimer){
+      window._syncTimer = setInterval(()=>{
+        if(mqttReady && mqttClient){
+          try{
+            if(myUserId){
+              mqttClient.publish(MQTT_TOPIC_REQ, JSON.stringify({type:"HISTORY_REQUEST", userId:myUserId, name: localStorage.getItem("5h_visitor_name") || "访客", from:DEVICE_ID}), {qos:1});
+            }else{
+              mqttClient.publish(MQTT_TOPIC_REQ, JSON.stringify({type:"HISTORY_REQUEST", from:DEVICE_ID}), {qos:1});
+            }
+          }catch(e){}
+        }
+      }, 15000);
+    }
   });
   client.on("message", mqttOnMessage);
   client.on("error", ()=>{
@@ -809,7 +827,15 @@ function mqttSubscribe(topic){
   if(mqttClient && mqttReady){ try{ mqttClient.subscribe(topic,{qos:1}); }catch(e){} }
 }
 function mqttPublish(payloadObj){
-  if(!mqttClient || !mqttReady || !payloadObj) return;
+  if(!payloadObj) return;
+  // 关键：MQTT未连接时，消息入队暂存，连接成功后自动重发（不再丢弃）
+  if(!mqttClient || !mqttReady){
+    if(payloadObj.id && msgQueue.findIndex(m=>m.id===payloadObj.id) < 0){
+      msgQueue.push(payloadObj);
+      console.log("MQTT未连接，消息已入队（当前队列"+msgQueue.length+"条）");
+    }
+    return;
+  }
   try{
     const data = JSON.stringify({type:"NEW_MSG", payload:payloadObj, from:DEVICE_ID, ts:Date.now()});
     mqttClient.publish(MQTT_TOPIC_ANNOUNCE, data, {qos:1});
@@ -821,7 +847,22 @@ function mqttPublish(payloadObj){
           JSON.stringify(payloadObj), {qos:1, retain:true});
       }catch(e){}
     }
-  }catch(e){}
+    // 发送成功，从队列移除
+    const qi = msgQueue.findIndex(m=>m.id===payloadObj.id);
+    if(qi >= 0) msgQueue.splice(qi,1);
+  }catch(e){ console.log("消息发送失败，已保留在队列:", e.message); }
+}
+// 连接成功后flush队列：把暂存的消息全部重发
+function flushMsgQueue(){
+  if(!mqttReady || !mqttClient || msgQueue.length===0) return;
+  console.log("flush消息队列："+msgQueue.length+"条待发送");
+  const pending = msgQueue.slice();
+  pending.forEach((m,i)=>{
+    setTimeout(()=>{
+      if(m._chunked){ delete m._chunked; mqttPublishChunked(m); }
+      else{ mqttPublish(m); }
+    }, i*300); // 每300ms发一条，防拥堵
+  });
 }
 function mqttPublishUser(userObj){
   if(!mqttClient || !mqttReady) return;
@@ -2047,7 +2088,14 @@ document.getElementById("userImgUpload").onchange = async function(e){
 // ===== 视频分块传输：大视频切成多段经实时通道发送，接收端自动拼回 =====
 const videoBuf = {};
 async function mqttPublishChunked(msgObj){
-  if(!mqttReady || !mqttClient) return;
+  // 视频消息也入队：未连接时暂存，连接成功后重发
+  if(!mqttReady || !mqttClient){
+    if(msgObj.id && msgQueue.findIndex(m=>m.id===msgObj.id) < 0){
+      msgQueue.push(Object.assign({}, msgObj, {_chunked:true}));
+      console.log("MQTT未连接，视频消息已入队");
+    }
+    return;
+  }
   const content = msgObj.content || "";
   const CHUNK = 32000;  // 每片32KB（减小单条消息大小，避免broker限流）
   const total = Math.max(1, Math.ceil(content.length / CHUNK));

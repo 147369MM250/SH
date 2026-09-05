@@ -515,11 +515,20 @@ function ensureEmailjs(){
   return emailjsLoading;
 }
 // ===== MQTT 跨设备实时互通（浏览器发的消息，微信打开的客服端也能实时收到） =====
-const MQTT_BROKERS = [
-  "wss://broker-cn.emqx.io:8084/mqtt",   // EMQX 中国区（国内/微信网络更快）
-  "wss://broker.emqx.io:8084/mqtt",       // EMQX 国际（与中国区节点数据互通）
-  "wss://broker.hivemq.com:8884/mqtt"     // HiveMQ 公共（第三方备选，防EMQX宕机）
+// 微信环境检测（微信内置浏览器对WebSocket限制多，需要专项优化）
+const IS_WECHAT = navigator.userAgent.toLowerCase().indexOf('micromessenger') !== -1;
+const MQTT_BROKERS = IS_WECHAT ? [
+  "wss://broker-cn.emqx.io:8084/mqtt",   // 微信优先：EMQX中国区
+  "wss://broker.emqx.io:8084/mqtt",       // EMQX国际
+  "wss://broker.hivemq.com:8884/mqtt"     // HiveMQ备选
+] : [
+  "wss://broker-cn.emqx.io:8084/mqtt",
+  "wss://broker.emqx.io:8084/mqtt",
+  "wss://broker.hivemq.com:8884/mqtt"
 ];
+// 微信里用更短心跳+更频繁重连（微信切后台会冻结WebSocket，切回需快速恢复）
+const MQTT_KEEPALIVE = IS_WECHAT ? 10 : 15;
+const MQTT_RECONNECT = IS_WECHAT ? 2000 : 3000;
 const MQTT_TOPIC_ANNOUNCE = "shihao_eSports_v1/announce";
 const MQTT_TOPIC_REQ = "shihao_eSports_v1/req";
 const MQTT_TOPIC_RETENTION = "shihao_eSports_v1/retention/";  // 离线消息保留前缀
@@ -528,6 +537,24 @@ const DEVICE_ID = "dev_" + Math.random().toString(36).slice(2,10);
 let mqttFailCount = 0;  // 连续失败计数，达阈值自动切节点
 const msgQueue = [];  // 消息队列：MQTT未连接时暂存，连接成功后自动重发（关键：防止消息丢失）
 let mqttClient = null;
+// 连接状态指示器（修复：之前只调用没定义，导致JS报错中断MQTT连接！）
+function updateConnUi(state){
+  try{
+    const el = document.getElementById("mConn");
+    if(!el) return;
+    const map = {
+      "online":       {text:"● 实时在线", color:"#10b981", show:true},
+      "connecting":   {text:"○ 连接中...", color:"#f59e0b", show:true},
+      "reconnecting": {text:"↻ 重连中...", color:"#f59e0b", show:true},
+      "重连中":        {text:"↻ 重连中...", color:"#f59e0b", show:true},
+      "offline":      {text: msgQueue.length>0 ? "✕ 离线("+msgQueue.length+"条待发)" : "✕ 离线", color:"#ef4444", show:true}
+    };
+    const cfg = map[state] || {text:state, color:"#999", show:true};
+    el.textContent = cfg.text;
+    el.style.background = cfg.color;
+    el.style.display = cfg.show ? "block" : "none";
+  }catch(e){}
+}
 let mqttReady = false;
 let mqttUnavailable = false;
 const mqttSubTopics = new Set();
@@ -702,11 +729,11 @@ function mqttConnectNext(){
   try{
     client = mqtt.connect(url, {
       clientId: "shihao_" + Math.random().toString(36).slice(2,12),
-      clean: true,           // 新会话（避免持久会话导致消息混乱）
+      clean: true,
       connectTimeout: 4000,
-      reconnectPeriod: 3000, // 3秒自动重连
-      keepalive: 15,         // 15秒心跳（防移动网络NAT超时断开）
-      resubscribe: true      // 重连后自动重新订阅所有topic
+      reconnectPeriod: MQTT_RECONNECT,  // 微信2秒/普通3秒自动重连
+      keepalive: MQTT_KEEPALIVE,        // 微信10秒/普通15秒心跳
+      resubscribe: true
     });
   }catch(e){
     mqttBrokerIdx++;
@@ -774,7 +801,7 @@ function mqttConnectNext(){
 }
 async function initMqtt(){
   if(mqttClient || mqttTrying) return;
-  try{ localStorage.removeItem("shihao_mqtt_cid"); }catch(e){} // 清除旧版本可能残留的固定ID
+  try{ localStorage.removeItem("shihao_mqtt_cid"); }catch(e){}
   mqttTrying = true;
   updateConnUi("connecting");
   if(!db){ try{ await openDB(); }catch(e){} }
@@ -783,6 +810,28 @@ async function initMqtt(){
   mqttBrokerIdx = 0;
   mqttConnectNext();
 }
+// 页面从后台切回时（微信切回来/浏览器切标签）：立即重连+flush队列+拉取历史
+document.addEventListener("visibilitychange", ()=>{
+  if(!document.hidden){
+    console.log("页面重新可见，检查MQTT连接状态");
+    if(!mqttReady || !mqttClient){
+      // 连接已断，重新初始化
+      try{ if(mqttClient){ mqttClient.end(true); } }catch(e){}
+      mqttClient = null; mqttReady = false; mqttTrying = false;
+      initMqtt();
+    }else{
+      // 连接还在，立即flush队列+拉取历史
+      flushMsgQueue();
+      try{
+        if(myUserId){
+          mqttClient.publish(MQTT_TOPIC_REQ, JSON.stringify({type:"HISTORY_REQUEST", userId:myUserId, name: localStorage.getItem("5h_visitor_name") || "访客", from:DEVICE_ID}), {qos:1});
+        }else{
+          mqttClient.publish(MQTT_TOPIC_REQ, JSON.stringify({type:"HISTORY_REQUEST", from:DEVICE_ID}), {qos:1});
+        }
+      }catch(e){}
+    }
+  }
+});
 
 // 页面重新可见时智能重连+快速同步（防抖3s，不强制断连，历史拉取600ms）
 let _visDebounce = null;

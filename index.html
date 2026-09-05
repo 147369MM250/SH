@@ -521,10 +521,9 @@ const MQTT_BROKERS = [
 ];
 const MQTT_TOPIC_ANNOUNCE = "shihao_eSports_v1/announce";
 const MQTT_TOPIC_REQ = "shihao_eSports_v1/req";
+const MQTT_TOPIC_RETENTION = "shihao_eSports_v1/retention/";  // 离线消息保留前缀
 const DEVICE_ID = "dev_" + Math.random().toString(36).slice(2,10);
-// 固定clientId（clean:false保持会话，重连恢复订阅和未确认消息）
-let mqttClientId = localStorage.getItem("shihao_mqtt_cid");
-if(!mqttClientId){ mqttClientId = "shihao_" + Math.random().toString(36).slice(2,12); localStorage.setItem("shihao_mqtt_cid", mqttClientId); }
+// clientId每次加载随机生成（防止两端相同ID被服务器互踢）
 let mqttFailCount = 0;  // 连续失败计数，达阈值自动切节点
 let mqttClient = null;
 let mqttReady = false;
@@ -555,6 +554,31 @@ let mqttTrying = false;
 let mqttBrokerIdx = 0;
 async function mqttOnMessage(topic, payload){
   try{
+    // 离线保留消息：客服上线后自动收到，处理后清除保留
+    if(topic.indexOf(MQTT_TOPIC_RETENTION) === 0){
+      try{
+        const retained = JSON.parse(payload.toString());
+        if(retained && retained.id && retained.role === "user"){
+          const exist = await dbGet("messages", retained.id);
+          if(!exist){
+            await dbPut("messages", retained);
+            // 补建用户
+            if(retained.userId){
+              const eu = await dbGet("users", retained.userId);
+              if(!eu) await dbPut("users", {id:retained.userId, name: retained.name || "访客", createTime: Date.now()});
+            }
+            if(getComputedStyle(document.getElementById("adminPage")).display !== "none"){
+              await renderUserList();
+              if(currentSelectUserId === retained.userId) await loadAdminChat(retained.userId);
+            }
+            maybeNotify(retained);
+          }
+          // 清除保留消息（发布空内容retain:true）
+          if(mqttClient && mqttReady) try{ mqttClient.publish(topic, "", {retain:true}); }catch(e){}
+        }
+      }catch(e){}
+      return;
+    }
     const data = JSON.parse(payload.toString());
     if(!data || !data.type) return;
     if(data.from === DEVICE_ID) return; // 自己发的消息，本端已处理
@@ -672,10 +696,10 @@ function mqttConnectNext(){
   let client;
   try{
     client = mqtt.connect(url, {
-      clientId: mqttClientId,
-      clean: false,          // 保持会话，重连自动恢复订阅和未确认消息
+      clientId: "shihao_" + Math.random().toString(36).slice(2,12),
+      clean: true,           // 新会话（避免持久会话导致消息混乱）
       connectTimeout: 4000,
-      reconnectPeriod: 3000, // 3秒自动重连（比8秒更快恢复）
+      reconnectPeriod: 3000, // 3秒自动重连
       keepalive: 15,         // 15秒心跳（防移动网络NAT超时断开）
       resubscribe: true      // 重连后自动重新订阅所有topic
     });
@@ -729,6 +753,7 @@ function mqttConnectNext(){
 }
 async function initMqtt(){
   if(mqttClient || mqttTrying) return;
+  try{ localStorage.removeItem("shihao_mqtt_cid"); }catch(e){} // 清除旧版本可能残留的固定ID
   mqttTrying = true;
   updateConnUi("connecting");
   if(!db){ try{ await openDB(); }catch(e){} }
@@ -786,6 +811,13 @@ function mqttPublish(payloadObj){
     const data = JSON.stringify({type:"NEW_MSG", payload:payloadObj, from:DEVICE_ID, ts:Date.now()});
     mqttClient.publish(MQTT_TOPIC_ANNOUNCE, data, {qos:1});
     if(payloadObj.userId) mqttClient.publish(mqttTopic(payloadObj.userId), data, {qos:1});
+    // 用户消息同时发布到保留topic（retain:true），客服离线后上线能自动拉取
+    if(payloadObj.role === "user" && payloadObj.userId && payloadObj.id){
+      try{
+        mqttClient.publish(MQTT_TOPIC_RETENTION + payloadObj.userId + "/" + payloadObj.id,
+          JSON.stringify(payloadObj), {qos:1, retain:true});
+      }catch(e){}
+    }
   }catch(e){}
 }
 function mqttPublishUser(userObj){
@@ -1371,7 +1403,7 @@ function hideVidStatus(){const el=document.getElementById("vidStatus");if(el)el.
 
 // 邮件通知：防抖合并 + 失败重试，避免高频触发造成延迟堆积
 const mailDebounce = {};
-let emailNotifyEnabled = false; // 邮箱通知开关：true 开启 / false 暂停（改 true 即可恢复）
+let emailNotifyEnabled = true; // 邮箱通知开关：true 开启 / false 暂停
 function sendMailNotify(userName,msgContent){
   if(!emailNotifyEnabled) return; // 邮箱通知已暂停
   const key = userName || "访客";
@@ -1555,6 +1587,7 @@ async function verifyPassword(){
     try{ history.pushState({p:"adminPage"}, ""); }catch(e){}
     mqttSubscribe(MQTT_TOPIC_ANNOUNCE);
     mqttSubscribe(MQTT_TOPIC_REQ);
+    mqttSubscribe(MQTT_TOPIC_RETENTION + "#");  // 订阅所有离线保留消息
     initMqtt();
     requestNotify();
     requestHistoryFromClients();

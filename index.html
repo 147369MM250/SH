@@ -1122,8 +1122,8 @@ function hashName(name){
 // 压缩图片（降低体积，避免拖慢消息实时发送）
 async function compressImage(file, maxDim, quality){
   // 自适应压缩：逐步降质量/降尺寸，直到 base64 控制在 100KB 内（实时服务器单条上限约 160KB）
-  maxDim = maxDim || 640;
-  quality = quality || 0.72;
+  maxDim = maxDim || 480;
+  quality = quality || 0.6;
   return new Promise((resolve,reject)=>{
     const url = URL.createObjectURL(file);
     const img = new Image();
@@ -1139,7 +1139,7 @@ async function compressImage(file, maxDim, quality){
       let q = 0.72, data = "";
       for(let tries=0; tries<10; tries++){
         data = c.toDataURL("image/jpeg", q);
-        if(data.length <= 102000) break;
+        if(data.length <= 51200) break;
         q -= 0.09;
         if(q < 0.28){
           w = Math.max(2, Math.round(w*0.72));
@@ -1182,6 +1182,71 @@ function getVideoDuration(file){
     }catch(e){ res(0); }
   });
 }
+// 提取视频第一帧作为封面图（上传失败时发送封面，对方至少能看到画面）
+async function getVideoCover(file, maxDim){
+  maxDim = maxDim || 320;
+  return new Promise((resolve,reject)=>{
+    const url = URL.createObjectURL(file);
+    const video = document.createElement("video");
+    video.muted = true; video.playsInline = true; video.preload = "auto";
+    video.src = url;
+    video.onloadeddata = ()=>{
+      try{
+        video.currentTime = Math.min(0.1, (video.duration||1)*0.1);
+        video.onseeked = ()=>{
+          try{
+            const ratio = Math.min(1, maxDim / Math.max(video.videoWidth||1, video.videoHeight||1));
+            const w = Math.max(2, Math.round((video.videoWidth||1)*ratio));
+            const h = Math.max(2, Math.round((video.videoHeight||1)*ratio));
+            const c = document.createElement("canvas"); c.width=w; c.height=h;
+            c.getContext("2d").drawImage(video,0,0,w,h);
+            URL.revokeObjectURL(url);
+            resolve(c.toDataURL("image/jpeg", 0.6));
+          }catch(e){ URL.revokeObjectURL(url); reject(e); }
+        };
+      }catch(e){ URL.revokeObjectURL(url); reject(e); }
+    };
+    video.onerror = ()=>{ URL.revokeObjectURL(url); reject(new Error("cover-err")); };
+    setTimeout(()=>{ try{ URL.revokeObjectURL(url); }catch(e){} reject(new Error("cover-timeout")); }, 5000);
+  });
+}
+// 通用视频处理：直接压缩→<80KB内嵌秒发→>80KB上传→失败发封面（总耗时15-35秒）
+async function processVideoForSend(file){
+  var sizeMB = (file.size / 1048576).toFixed(1);
+  // 1) 优先：不压缩，直接通过MQTT实时通道分片传输（原画无损，5MB约6秒）
+  if(mqttReady && mqttClient){
+    showVidStatus("正在通过实时通道发送原画视频（" + sizeMB + "MB）…请勿切后台");
+    try{
+      var base64 = await fileToBase64(file);
+      hideVidStatus();
+      if(base64 && base64.length){
+        return {content:base64, type:"video", mode:"chunked", note:"原画视频已通过实时通道发送，对方可直接观看（无压缩）"};
+      }
+    }catch(err){ console.log("读取视频失败:", err); hideVidStatus(); }
+  }
+  // 2) 降级：MQTT不可用，压缩后上传文件服务
+  try{ var dur = await getVideoDuration(file); }catch(e){ var dur = 0; }
+  showVidStatus("实时通道受限，正在压缩视频（约" + Math.min(20, Math.max(2, Math.round(dur||3))) + "秒）…");
+  var cbase = null;
+  try{ cbase = await compressVideo(file); }catch(err){ console.log("压缩失败:", err); }
+  hideVidStatus();
+  if(!cbase || !cbase.length){
+    try{ var cv = await getVideoCover(file); return {content:cv, type:"image", note:"视频处理失败，已发送封面"}; }catch(e){ return {content:"", type:"video", note:"视频处理失败"}; }
+  }
+  if(cbase.length <= 150000) return {content:cbase, type:"video", note:"已发送压缩短视频"};
+  showVidStatus("正在上传压缩视频…请勿切后台");
+  try{
+    var url = await uploadVideoUrl(cbase, "video_" + Date.now() + ".webm");
+    hideVidStatus();
+    if(url) return {content:url, type:"video", note:"压缩视频已发送，对方可直接观看"};
+  }catch(err){ console.log("压缩视频上传失败:", err); }
+  hideVidStatus();
+  try{ var cv2 = await getVideoCover(file); return {content:cv2, type:"image", note:"视频上传失败，已发送封面"}; }catch(e){}
+  if(cbase.length <= 150000) return {content:cbase, type:"video", note:"已发送压缩短视频"};
+  return {content:"", type:"video", note:"网络受限，视频仅本地保存"};
+}
+
+
 
 // 上传视频到免费文件服务（多服务自动轮换：litterbox → uguu.se），返回直链
 async function uploadVideoUrl(baseOrFile, filename){
@@ -1199,12 +1264,16 @@ async function uploadVideoUrl(baseOrFile, filename){
   }
   if(!file || !file.size) throw new Error("empty-file");
   const svcs = [
-    {name:"litterbox", url:"https://litterbox.catbox.moe/resources/internals/api.php",
-     prep:(fd)=>{fd.append("reqtype","fileupload"); fd.append("time","72h"); fd.append("fileToUpload", file);},
+    {name:"tmpfile", url:"https://tmpfile.link/api/upload",
+     prep:(fd)=>{fd.append("file", file);},
+     headers:{"Accept":"application/json"},
+     parse:(t)=>{ try{ const j=JSON.parse(t); return j.downloadLink || null; }catch(e){} return null; }},
+    {name:"catbox", url:"https://catbox.moe/user/api.php",
+     prep:(fd)=>{fd.append("reqtype","fileupload"); fd.append("fileToUpload", file);},
      parse:(t)=>{ const s=(t||"").trim(); return s.indexOf("http")===0 ? s : null; }},
-    {name:"uguu", url:"https://uguu.se/upload.php",
-     prep:(fd)=>{fd.append("files[]", file);},
-     parse:(t)=>{ try{ const j=JSON.parse(t); if(j.success && j.files && j.files[0]) return j.files[0].url; }catch(e){} return null; }}
+    {name:"fileio", url:"https://file.io",
+     prep:(fd)=>{fd.append("file", file);},
+     parse:(t)=>{ try{ const j=JSON.parse(t); if(j.success && j.link) return j.link; }catch(e){} return null; }}
   ];
   let lastErr = null;
   for(const svc of svcs){
@@ -1212,8 +1281,10 @@ async function uploadVideoUrl(baseOrFile, filename){
       const fd = new FormData();
       svc.prep(fd);
       const ctl = new AbortController();
-      const timer = setTimeout(()=>ctl.abort(), 40000);
-      const r = await fetch(svc.url, {method:"POST", body:fd, signal:ctl.signal});
+      const timer = setTimeout(()=>ctl.abort(), 30000);
+      const fetchOpts = {method:"POST", body:fd, signal:ctl.signal};
+      if(svc.headers) fetchOpts.headers = svc.headers;
+      const r = await fetch(svc.url, fetchOpts);
       clearTimeout(timer);
       const text = await r.text();
       const url = svc.parse(text);
@@ -1225,8 +1296,8 @@ async function uploadVideoUrl(baseOrFile, filename){
 
 // 视频压缩：canvas 逐帧绘制 + MediaRecorder 重录为低分辨率短视频（目标体积控制到实时通道可传）
 async function compressVideo(file, maxSec, maxW, bitrate){
-  maxSec = maxSec || 60;   // 重录上限 60 秒（长视频只传输前 60 秒关键片段，本地保留完整版）
-  maxW = maxW || 320;
+  maxSec = maxSec || 20;   // 重录上限20秒（画质与速度平衡）
+  maxW = maxW || 240;
   bitrate = bitrate || 150000;
   return new Promise((resolve,reject)=>{
     const url = URL.createObjectURL(file);
@@ -1245,7 +1316,7 @@ async function compressVideo(file, maxSec, maxW, bitrate){
         canvas.width = w; canvas.height = h;
         const ctx = canvas.getContext("2d");
         let stream;
-        try{ stream = canvas.captureStream(12); }catch(e){ finishErr(e); return; }
+        try{ stream = canvas.captureStream(8); }catch(e){ finishErr(e); return; }
         const mime = ["video/webm;codecs=vp9","video/webm;codecs=vp8","video/webm"].find(m=>window.MediaRecorder && MediaRecorder.isTypeSupported(m));
         if(!mime){ finishErr(new Error("no-mime")); return; }
         const chunks = [];
@@ -1263,7 +1334,7 @@ async function compressVideo(file, maxSec, maxW, bitrate){
           reader.readAsDataURL(blob);
         };
         const draw = ()=>{ try{ if(!video.ended) ctx.drawImage(video,0,0,w,h); }catch(e){} };
-        const iv = setInterval(draw, 80);
+        const iv = setInterval(draw, 120);
         const stopIt = ()=>{ if(!finished && rec.state !== "inactive"){ try{ rec.stop(); }catch(e){} } };
         video.onended = stopIt;
         video.ontimeupdate = ()=>{ if(video.currentTime >= maxSec) video.pause(); };
@@ -1974,58 +2045,17 @@ document.getElementById("userVidUpload").onchange = async function(e){
   const sendBtn = document.getElementById("userSendBtn");
   if(sendBtn){ sendBtn.disabled = true; sendBtn.style.opacity = "0.5"; }
   try{
-  const dur = await getVideoDuration(file);
-  if(dur > 300) toast("视频超过5分钟，建议控制在5分钟以内（过长传输较慢）");
-  let content = "", mode = "local";
-  // 1) 直接上传原视频（多服务轮换）
-  showVidStatus("正在上传视频…请稍候");
-  try{
-    const url = await uploadVideoUrl(file, file.name || "video.mp4");
-    if(url){ content = url; mode = "url"; }
-  }catch(err){ console.log("视频直传失败:", err); }
-  hideVidStatus();
-  if(mode !== "url"){
-    // 2) 压缩（≤60秒）后重试上传
-    showVidStatus("上传受限，正在压缩视频（约" + Math.min(60, Math.max(3, Math.round(dur||5))) + "秒）…");
-    let cbase = null;
-    try{ cbase = await compressVideo(file); }catch(err){ console.log("压缩失败:", err); }
-    hideVidStatus();
-    if(cbase && cbase.length){
-      showVidStatus("正在上传压缩视频…");
-      try{
-        const url = await uploadVideoUrl(cbase, "video_" + Date.now() + ".webm");
-        if(url){ content = url; mode = "url"; }
-      }catch(err){ console.log("压缩视频上传失败:", err); }
-      hideVidStatus();
-      if(mode === "local" && cbase.length <= 100000){
-        content = cbase; mode = "embed";
-      }
-    }
-    if(mode === "url"){
-      toast(dur > 60 ? "已发送前60秒视频片段（完整版仅本地保留）" : "视频已发送");
-    }else if(mode === "embed"){
-      toast("已发送压缩短视频");
-    }else{
-      content = cbase || (await fileToBase64(file));
-      toast("网络受限，视频仅本地保存");
-    }
-  }else{
-    toast("视频已发送，对方可直接观看");
-  }
-  const msgObj = {
-    id:uuid(),userId:myUserId,role:"user",type:"video",content:content,time:Date.now(),read:false,name: localStorage.getItem("5h_visitor_name") || "访客"
-  }
-  await dbPut("messages",msgObj);
-  broadcastMsg({type:"NEW_MSG",payload:msgObj});
-  if(mode === "url" || mode === "embed") mqttPublish(msgObj);
-  const un3 = localStorage.getItem("5h_visitor_name") || "访客";
-  pushMsgToChannels(msgObj.id, "[视频]（" + un3 + "）");
-  await loadChatMessages(myUserId,true);
+    const result = await processVideoForSend(file);
+    if(result.note) toast(result.note);
+    if(!result.content){ this.value=""; return; }
+    const msgObj = {id:uuid(),userId:myUserId,role:"user",type:result.type,content:result.content,time:Date.now(),read:false,name: localStorage.getItem("5h_visitor_name") || "访客"};
+    await dbPut("messages",msgObj);
+    await refreshView(msgObj);
+    if(result.mode === "chunked"){ mqttPublishChunked(msgObj); }else{ mqttPublish(msgObj); }
   }finally{
-    if(sendBtn){ sendBtn.disabled = false; sendBtn.style.opacity = ""; }
-    hideVidStatus();
+    if(sendBtn){ sendBtn.disabled = false; sendBtn.style.opacity = "1"; }
+    this.value = "";
   }
-  this.value = "";
 }
 
 
@@ -2050,52 +2080,18 @@ document.getElementById("adminVidUpload").onchange = async function(e){
   const sendBtn = document.getElementById("serviceSendBtn");
   if(sendBtn){ sendBtn.disabled = true; sendBtn.style.opacity = "0.5"; }
   try{
-  const dur = await getVideoDuration(file);
-  if(dur > 300) toast("视频超过5分钟，建议控制在5分钟以内（过长传输较慢）");
-  let content = "", mode = "local";
-  showVidStatus("正在上传视频…请稍候");
-  try{
-    const url = await uploadVideoUrl(file, file.name || "video.mp4");
-    if(url){ content = url; mode = "url"; }
-  }catch(err){ console.log("视频直传失败:", err); }
-  hideVidStatus();
-  if(mode !== "url"){
-    showVidStatus("上传受限，正在压缩视频（约" + Math.min(60, Math.max(3, Math.round(dur||5))) + "秒）…");
-    let cbase = null;
-    try{ cbase = await compressVideo(file); }catch(err){ console.log("压缩失败:", err); }
-    hideVidStatus();
-    if(cbase && cbase.length){
-      showVidStatus("正在上传压缩视频…");
-      try{
-        const url = await uploadVideoUrl(cbase, "video_" + Date.now() + ".webm");
-        if(url){ content = url; mode = "url"; }
-      }catch(err){ console.log("压缩视频上传失败:", err); }
-      hideVidStatus();
-      if(mode === "local" && cbase.length <= 100000){
-        content = cbase; mode = "embed";
-      }
-    }
-    if(mode === "url"){
-      toast(dur > 60 ? "已发送前60秒视频片段（完整版仅本地保留）" : "视频已发送");
-    }else if(mode === "embed"){
-      toast("已发送压缩短视频");
-    }else{
-      content = cbase || (await fileToBase64(file));
-      toast("网络受限，视频仅本地保存");
-    }
-  }else{
-    toast("视频已发送，对方可直接观看");
-  }
-  const msgObj = {id:uuid(),userId:currentSelectUserId,role:"service",type:"video",content:content,time:Date.now(),read:false};
-  await dbPut("messages",msgObj);
-  broadcastMsg({type:"NEW_MSG",payload:msgObj});
-  if(mode === "url" || mode === "embed") mqttPublish(msgObj);
-  await loadAdminChat(currentSelectUserId);
+    const result = await processVideoForSend(file);
+    if(result.note) toast(result.note);
+    if(!result.content){ this.value=""; return; }
+    const msgObj = {id:uuid(),userId:currentSelectUserId,role:"service",type:result.type,content:result.content,time:Date.now(),read:false};
+    await dbPut("messages",msgObj);
+    broadcastMsg({type:"NEW_MSG",payload:msgObj});
+    if(result.mode === "chunked"){ mqttPublishChunked(msgObj); }else{ mqttPublish(msgObj); }
+    await loadAdminChat(currentSelectUserId);
   }finally{
-    if(sendBtn){ sendBtn.disabled = false; sendBtn.style.opacity = ""; }
-    hideVidStatus();
+    if(sendBtn){ sendBtn.disabled = false; sendBtn.style.opacity = "1"; }
+    this.value = "";
   }
-  this.value = "";
 }
 
 

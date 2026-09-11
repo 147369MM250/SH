@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>联系客服</title>
+<title>石昊电竞</title>
 <style>
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -110,6 +110,257 @@
   @keyframes aurora1 { 0%,100%{transform:translate(0,0) scale(1)} 25%{transform:translate(120px,60px) scale(1.25)} 50%{transform:translate(60px,140px) scale(0.9)} 75%{transform:translate(-40px,80px) scale(1.15)} }
   @keyframes aurora2 { 0%,100%{transform:translate(0,0) scale(1)} 25%{transform:translate(-100px,-80px) scale(1.2)} 50%{transform:translate(-50px,-120px) scale(0.85)} 75%{transform:translate(60px,-60px) scale(1.1)} }
   @keyframes aurora3 { 0%,100%{transform:translate(-50%,-50%) scale(1); opacity:0.6} 50%{transform:translate(-30%,-60%) scale(1.3); opacity:1} }
+
+  /* 流动渐变背景 */
+  .bg-gradient {
+    background: linear-gradient(-45deg, #ee7752, #e73c7e, #23a6d5, #23d5ab, #7c3aed, #f59e0b);
+    background-size: 400% 400%;
+    animation: gradientFlow 15s ease infinite;
+  }
+  @keyframes gradientFlow {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+  }
+
+  /* 波浪背景 */
+  .bg-waves {
+    background: linear-gradient(180deg, #0c1445 0%, #1a237e 50%, #283593 100%);
+    overflow: hidden;
+  }
+  .bg-waves .wave-layer {
+    position: fixed;
+    bottom: 0; left: 0;
+    width: 200%; height: 200px;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.5;
+  }
+  .bg-waves .wave-1 { animation: waveMove 8s linear infinite; opacity: 0.35; }
+  .bg-waves .wave-2 { animation: waveMove 12s linear infinite reverse; opacity: 0.25; bottom: -20px; }
+  .bg-waves .wave-3 { animation: waveMove 16s linear infinite; opacity: 0.15; bottom: -40px; }
+  @keyframes waveMove {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* 视频背景 */
+  #bg-video {
+    position: fixed;
+    top: 50%; left: 50%;
+    min-width: 100%; min-height: 100%;
+    width: auto; height: auto;
+    transform: translate(-50%, -50%);
+    object-fit: cover;
+    z-index: 0;
+    pointer-events: none;
+    display: none;
+  }
+
+  /* 头像 */
+  .header-avatar {
+    width: 88px; height: 88px;
+    border-radius: 22px;
+    overflow: hidden;
+    margin: 0 auto 20px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15), 0 0 20px rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.6);
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    display: none;
+    transition: transform 0.4s var(--ease-spring), box-shadow 0.4s ease;
+  }
+  .header-avatar:hover { transform: scale(1.05); }
+  .header-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  body.bg-dark .header-avatar {
+    border-color: rgba(255,255,255,0.3);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.4), 0 0 25px rgba(255,255,255,0.15);
+  }
+
+  /* 图片背景 Ken Burns 动画 */
+  .bg-image-kenburns {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+    pointer-events: none;
+    animation: kenburns 20s ease-in-out infinite alternate;
+  }
+  @keyframes kenburns {
+    0% { transform: scale(1) translate(0, 0); }
+    100% { transform: scale(1.12) translate(-1.5%, -1%); }
+  }
+
+  /* 音乐播放器 */
+  .music-bar {
+    position: fixed;
+    bottom: 20px; left: 50%;
+    transform: translateX(-50%);
+    display: flex; align-items: center; gap: 12px;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(30px) saturate(180%);
+    -webkit-backdrop-filter: blur(30px) saturate(180%);
+    border: 1px solid rgba(255,255,255,0.8);
+    border-radius: 50px;
+    padding: 8px 16px 8px 8px;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 0 20px rgba(102,126,234,0.15);
+    z-index: 100;
+    max-width: calc(100vw - 40px);
+    transition: transform 0.4s var(--ease-spring), opacity 0.3s ease;
+  }
+  .music-bar.hidden-bar { transform: translateX(-50%) translateY(100px); opacity: 0; pointer-events: none; }
+  .music-avatar {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.15);
+  }
+  .music-avatar img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .music-avatar.playing { animation: avatarSpin 8s linear infinite; }
+  @keyframes avatarSpin { from { transform: rotate(0); } to { transform: rotate(360deg); } }
+  .music-info { flex: 1; min-width: 0; }
+  .music-name {
+    font-size: 14px; font-weight: 600; color: var(--text-primary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 160px;
+  }
+  .music-artist {
+    font-size: 11px; color: var(--text-tertiary);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    max-width: 160px;
+  }
+  .music-controls { display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+  .music-btn {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0,0,0,0.05);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    color: var(--text-primary);
+    overflow: hidden;
+    line-height: 0;
+    padding: 0;
+  }
+  .music-btn:hover { background: rgba(102,126,234,0.15); transform: scale(1.08); }
+  .music-btn svg { width: 16px; height: 16px; fill: currentColor; display: block; }
+  .music-btn.play-btn {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+    box-shadow: 0 4px 14px rgba(102,126,234,0.4);
+  }
+  .music-btn.play-btn:hover { box-shadow: 0 6px 20px rgba(102,126,234,0.5); }
+
+  /* 播放列表弹窗 */
+  .playlist-overlay {
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.4);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    display: none;
+    align-items: flex-end;
+    justify-content: center;
+  }
+  .playlist-overlay.active { display: flex; }
+  .playlist-panel {
+    background: rgba(255,255,255,0.95);
+    backdrop-filter: blur(30px);
+    border-radius: 24px 24px 0 0;
+    width: 100%; max-width: 500px;
+    max-height: 70vh;
+    display: flex; flex-direction: column;
+    animation: slideUp 0.4s var(--ease-spring);
+  }
+  @keyframes slideUp { from { transform: translateY(100%); } to { transform: translateY(0); } }
+  .playlist-header {
+    padding: 20px 24px 12px;
+    display: flex; align-items: center; justify-content: space-between;
+    border-bottom: 1px solid rgba(0,0,0,0.06);
+  }
+  .playlist-header h3 { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+  .playlist-close {
+    width: 32px; height: 32px; border-radius: 50%;
+    border: none; background: rgba(0,0,0,0.06);
+    display: flex; align-items: center; justify-content: center;
+    cursor: pointer; color: var(--text-secondary);
+  }
+  .playlist-close svg { width: 16px; height: 16px; fill: currentColor; }
+  .playlist-list { flex: 1; overflow-y: auto; padding: 8px 0; }
+  .playlist-item {
+    display: flex; align-items: center; gap: 12px;
+    padding: 12px 24px;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+  .playlist-item:hover { background: rgba(102,126,234,0.08); }
+  .playlist-item.active { background: rgba(102,126,234,0.12); }
+  .playlist-item .idx {
+    width: 24px; text-align: center;
+    font-size: 14px; color: var(--text-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+  .playlist-item.active .idx { color: #667eea; font-weight: 700; }
+  .playlist-item .pinfo { flex: 1; min-width: 0; }
+  .playlist-item .pname {
+    font-size: 14px; color: var(--text-primary); font-weight: 500;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .playlist-item.active .pname { color: #667eea; }
+  .playlist-item .partist { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
+
+  /* 文字颜色发光控制变量 */
+  .header h1 {
+    --title-glow-size: 12px;
+    --title-glow-alpha: 0.4;
+  }
+  .header p {
+    --sub-glow-size: 8px;
+    --sub-glow-alpha: 0.3;
+  }
+
+  /* 颜色选择器和滑块样式 */
+  .color-row {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 8px;
+  }
+  .color-row label {
+    flex: 0 0 70px; font-size: 13px; color: var(--text-secondary);
+  }
+  .color-row input[type="color"] {
+    width: 44px; height: 36px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 10px;
+    background: none;
+    cursor: pointer;
+    padding: 2px;
+  }
+  .color-row input[type="range"] {
+    flex: 1;
+    -webkit-appearance: none;
+    height: 6px;
+    border-radius: 3px;
+    background: #e0e0e5;
+    outline: none;
+  }
+  .color-row input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    background: var(--qq-blue);
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+  }
+  .color-row .range-val {
+    flex: 0 0 36px;
+    font-size: 12px;
+    color: var(--text-tertiary);
+    text-align: right;
+  }
 
   .container {
     position: relative; z-index: 1;
@@ -353,7 +604,7 @@
 
   /* ===== 设置按钮 ===== */
   .settings-btn {
-    position: fixed; bottom: 28px; right: 28px;
+    position: fixed; bottom: 90px; right: 28px;
     width: 52px; height: 52px; border-radius: 50%;
     background: rgba(255,255,255,0.7);
     backdrop-filter: blur(20px) saturate(180%); -webkit-backdrop-filter: blur(20px) saturate(180%);
@@ -747,7 +998,7 @@
     .icon-wrap svg { width: 36px; height: 36px; }
     .modal { padding: 32px 24px 24px; }
     .qr-box { width: 180px; height: 180px; }
-    .settings-btn { bottom: 20px; right: 20px; width: 46px; height: 46px; }
+    .settings-btn { bottom: 84px; right: 20px; width: 46px; height: 46px; }
     .bg-type-grid { grid-template-columns: repeat(2, 1fr); }
   }
 
@@ -764,6 +1015,7 @@
 
 <canvas id="bg-canvas"></canvas>
 <div class="aurora-3"></div>
+<video id="bg-video" autoplay loop muted playsinline></video>
 
 <div class="container">
   <!-- 公告 -->
@@ -776,6 +1028,9 @@
 
   <!-- 标题区 -->
   <header class="header">
+    <div class="header-avatar" id="header-avatar">
+      <img id="header-avatar-img" src="" alt="头像">
+    </div>
     <div class="badge">
       <span class="dot"></span>
       <span>客服在线</span>
@@ -883,17 +1138,45 @@
           <svg viewBox="0 0 24 24"><circle cx="8" cy="8" r="4" opacity="0.6"/><circle cx="16" cy="16" r="5" opacity="0.4"/></svg>
           渐变光斑
         </button>
+        <button class="bg-type-btn" data-bg="gradient" onclick="setBgType('gradient')">
+          <svg viewBox="0 0 24 24"><defs><linearGradient id="gg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#ee7752"/><stop offset="50%" stop-color="#e73c7e"/><stop offset="100%" stop-color="#23a6d5"/></linearGradient></defs><rect x="2" y="2" width="20" height="20" rx="4" fill="url(#gg)"/></svg>
+          流动渐变
+        </button>
         <button class="bg-type-btn" data-bg="stars" onclick="setBgType('stars')">
           <svg viewBox="0 0 24 24"><circle cx="5" cy="5" r="1"/><circle cx="12" cy="3" r="0.8"/><circle cx="19" cy="7" r="1.2"/><circle cx="8" cy="12" r="0.8"/><circle cx="16" cy="14" r="1"/><circle cx="4" cy="18" r="0.9"/><circle cx="12" cy="19" r="1.1"/><circle cx="20" cy="20" r="0.8"/></svg>
           星空粒子
+        </button>
+        <button class="bg-type-btn" data-bg="rain" onclick="setBgType('rain')">
+          <svg viewBox="0 0 24 24"><path d="M12 2v4M8 4v3M16 4v3M6 10v2M10 8v3M14 8v3M18 10v2M4 14v2M8 13v3M12 12v3M16 13v3M20 14v2M6 19v1M10 18v2M14 18v2M18 19v1" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none" opacity="0.7"/></svg>
+          雨滴
+        </button>
+        <button class="bg-type-btn" data-bg="cyber" onclick="setBgType('cyber')">
+          <svg viewBox="0 0 24 24"><path d="M2 20 L12 4 L22 20" stroke="currentColor" stroke-width="1.5" fill="none" opacity="0.6"/><path d="M2 20 L22 20" stroke="currentColor" stroke-width="1.5"/><path d="M5 20 L8.5 14 M9.5 20 L12 15.5 M14.5 20 L12 15.5 M15.5 20 L19 14" stroke="currentColor" stroke-width="1" opacity="0.4"/></svg>
+          霓虹网格
+        </button>
+        <button class="bg-type-btn" data-bg="waves" onclick="setBgType('waves')">
+          <svg viewBox="0 0 24 24"><path d="M2 12 Q6 6 10 12 T18 12 T26 12" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.7"/><path d="M2 16 Q6 10 10 16 T18 16 T26 16" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.5"/><path d="M2 20 Q6 14 10 20 T18 20 T26 20" fill="none" stroke="currentColor" stroke-width="1.5" opacity="0.3"/></svg>
+          波浪
         </button>
         <button class="bg-type-btn" data-bg="aurora" onclick="setBgType('aurora')">
           <svg viewBox="0 0 24 24"><path d="M2 18 Q6 8 12 12 T22 10" fill="none" stroke="url(#g1)" stroke-width="3" opacity="0.7"/><defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#7c3aed"/><stop offset="100%" stop-color="#06b6d4"/></linearGradient></defs></svg>
           极光
         </button>
+        <button class="bg-type-btn" data-bg="glow" onclick="setBgType('glow')">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="8" r="2" fill="#00ff88" opacity="0.8"/><circle cx="12" cy="5" r="1.5" fill="#00ffff" opacity="0.7"/><circle cx="18" cy="10" r="2.5" fill="#ff00ff" opacity="0.6"/><circle cx="9" cy="15" r="1.8" fill="#ffff00" opacity="0.7"/><circle cx="16" cy="18" r="2" fill="#00ff88" opacity="0.6"/><circle cx="4" cy="18" r="1.2" fill="#00ffff" opacity="0.5"/></svg>
+          荧光颗粒
+        </button>
+        <button class="bg-type-btn" data-bg="meteor" onclick="setBgType('meteor')">
+          <svg viewBox="0 0 24 24"><circle cx="5" cy="5" r="1" fill="#fff"/><path d="M5 5 L15 15" stroke="#fff" stroke-width="1.5" opacity="0.6"/><path d="M5 5 L12 12" stroke="#88ccff" stroke-width="2" opacity="0.8"/><circle cx="18" cy="8" r="0.8" fill="#fff"/><path d="M18 8 L23 13" stroke="#fff" stroke-width="1" opacity="0.5"/></svg>
+          流星
+        </button>
         <button class="bg-type-btn" data-bg="image" onclick="setBgType('image')">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
           自定义图片
+        </button>
+        <button class="bg-type-btn" data-bg="video" onclick="setBgType('video')">
+          <svg viewBox="0 0 24 24"><rect x="2" y="4" width="14" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M16 8l6-3v14l-6-3" fill="currentColor" opacity="0.6"/></svg>
+          视频背景
         </button>
       </div>
       <div class="form-group" id="bg-image-group" style="display:none;">
@@ -916,6 +1199,21 @@
       <div class="form-group" id="bg-url-group" style="display:none;">
         <label>或粘贴图片 URL</label>
         <input type="text" id="bg-image-url" placeholder="https://example.com/bg.jpg">
+      </div>
+      <div class="form-group" id="bg-video-group" style="display:none;">
+        <label>背景视频</label>
+        <div class="upload-area">
+          <button class="upload-btn" onclick="document.getElementById('bg-video-file').click()">
+            <svg viewBox="0 0 24 24"><path d="M19.35 10.04C18.67 6.59 15.64 4 12 4 9.11 4 6.6 5.64 5.35 8.04 2.34 8.36 0 10.91 0 14c0 3.31 2.69 6 6 6h13c2.76 0 5-2.24 5-5 0-2.64-2.05-4.78-4.65-4.96zM14 13v4h-4v-4H7l5-5 5 5h-3z"/></svg>
+            从相册选择视频
+          </button>
+          <input type="file" id="bg-video-file" accept="video/*" style="display:none;" onchange="handleBgVideoUpload(this)">
+        </div>
+        <p class="field-hint">建议使用 10MB 以内的短视频，也可粘贴下方视频链接。</p>
+      </div>
+      <div class="form-group" id="bg-video-url-group" style="display:none;">
+        <label>或粘贴视频 URL</label>
+        <input type="text" id="bg-video-url" placeholder="https://example.com/bg.mp4">
       </div>
     </div>
 
@@ -1021,13 +1319,61 @@
         <label>主标题</label>
         <input type="text" id="page-title" placeholder="联系我们的客服">
       </div>
+      <div class="color-row">
+        <label>标题颜色</label>
+        <input type="color" id="title-color" value="#ffffff">
+        <label style="flex:0 0 50px;">发光</label>
+        <input type="range" id="title-glow" min="0" max="100" value="60">
+        <span class="range-val" id="title-glow-val">60</span>
+      </div>
       <div class="form-group">
         <label>副标题</label>
         <input type="text" id="page-subtitle" placeholder="选择您方便的方式...">
       </div>
+      <div class="color-row">
+        <label>副标题颜色</label>
+        <input type="color" id="subtitle-color" value="#ffffff">
+        <label style="flex:0 0 50px;">发光</label>
+        <input type="range" id="subtitle-glow" min="0" max="100" value="40">
+        <span class="range-val" id="subtitle-glow-val">40</span>
+      </div>
       <div class="form-group">
         <label>底部说明</label>
         <input type="text" id="page-footer" placeholder="工作时间：周一至周日 9:00 - 22:00">
+      </div>
+      <div class="form-group">
+        <label>头像（圆角正方形）</label>
+        <div class="upload-area">
+          <button class="upload-btn" onclick="document.getElementById('avatar-file').click()">
+            <svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+            上传头像
+          </button>
+          <div class="upload-preview" id="avatar-preview" style="display:none;">
+            <img id="avatar-preview-img" alt="预览" style="border-radius:12px;">
+            <button class="clear-img" onclick="clearAvatar()">
+              <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+            </button>
+          </div>
+          <input type="file" id="avatar-file" accept="image/*" style="display:none;" onchange="handleAvatarUpload(this)">
+        </div>
+        <p class="field-hint">头像会显示在标题上方和音乐播放器中，建议使用正方形图片。</p>
+      </div>
+    </div>
+
+    <!-- 音乐设置 -->
+    <div class="settings-section">
+      <div class="settings-section-title">
+        <span class="color-dot" style="background: #667eea;"></span>
+        背景音乐
+      </div>
+      <div class="switch-row">
+        <label>启用音乐播放器</label>
+        <div class="switch" id="music-switch" onclick="toggleMusicSwitch()"></div>
+      </div>
+      <div class="form-group">
+        <label>歌曲列表（每行一首，格式：歌曲名|歌手|音频链接）</label>
+        <textarea id="music-songs" rows="6" placeholder="碎碎念|队长|https://music.163.com/song/media/outer/url?id=2097443876.mp3" style="font-size:12px; font-family: monospace;"></textarea>
+        <p class="field-hint">已内置8首歌曲，可自行修改或添加。网易云音乐可使用 outer/url 外链格式。</p>
       </div>
     </div>
   </div>
@@ -1040,21 +1386,86 @@
 <!-- Toast -->
 <div class="toast" id="toast">已复制到剪贴板</div>
 
+<!-- 音乐播放器 -->
+<audio id="bg-audio" preload="metadata"></audio>
+<div class="music-bar" id="music-bar">
+  <div class="music-avatar" id="music-avatar" onclick="togglePlaylist()">
+    <img id="music-avatar-img" src="" alt="">
+  </div>
+  <div class="music-info" onclick="togglePlaylist()">
+    <div class="music-name" id="music-name">未播放</div>
+    <div class="music-artist" id="music-artist">点击选择歌曲</div>
+  </div>
+  <div class="music-controls">
+    <button class="music-btn" onclick="prevSong()" title="上一首">
+      <svg viewBox="0 0 24 24"><path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/></svg>
+    </button>
+    <button class="music-btn play-btn" id="play-btn" onclick="togglePlay()" title="播放/暂停">
+      <svg id="icon-play" viewBox="0 0 24 24" style="display:block;"><path d="M8 5v14l11-7z"/></svg>
+      <svg id="icon-pause" viewBox="0 0 24 24" style="display:none;"><path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/></svg>
+    </button>
+    <button class="music-btn" onclick="nextSong()" title="下一首">
+      <svg viewBox="0 0 24 24"><path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- 播放列表 -->
+<div class="playlist-overlay" id="playlist-overlay" onclick="if(event.target===this)togglePlaylist()">
+  <div class="playlist-panel">
+    <div class="playlist-header">
+      <h3>播放列表</h3>
+      <button class="playlist-close" onclick="togglePlaylist()">
+        <svg viewBox="0 0 24 24"><path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg>
+      </button>
+    </div>
+    <div class="playlist-list" id="playlist-list"></div>
+  </div>
+</div>
+
 <script>
   const ADMIN_PWD = '18131138682';
 
   const DEFAULT_CONFIG = {
     wechat: { id: '', qr: '', link: '' },
     qq: { id: '', qr: '', link: '' },
-    page: { title: '联系我们的客服', subtitle: '选择您方便的方式，我们将尽快为您解答疑问', footer: '工作时间：周一至周日 9:00 - 22:00' },
+    page: {
+      title: '石昊电竞',
+      subtitle: '选择您方便的方式，我们将尽快为您解答疑问',
+      footer: '工作时间：周一至周日 9:00 - 22:00',
+      titleColor: '',
+      titleGlow: 60,
+      subtitleColor: '',
+      subtitleGlow: 40,
+      avatar: ''
+    },
     announcement: { enabled: false, content: '' },
-    background: { type: 'orbs', image: '' }
+    background: { type: 'orbs', image: '', video: '' },
+    music: {
+      enabled: true,
+      currentIndex: 0,
+      songs: [
+        { name: '碎碎念', artist: '队长', url: 'https://music.163.com/song/media/outer/url?id=2097443876.mp3' },
+        { name: '安眠药', artist: '藤竹京/DY/冰心', url: 'https://music.163.com/song/media/outer/url?id=3321486526.mp3' },
+        { name: 'Studio调调.', artist: 'JUAN', url: 'https://music.163.com/song/media/outer/url?id=3350470502.mp3' },
+        { name: '梦的翅膀受了伤 (DJ阿智版)', artist: 'DJ阿布', url: 'https://music.163.com/song/media/outer/url?id=3399346804.mp3' },
+        { name: 'Đắm Chìm (沦陷)', artist: 'Vũ Trụ Insight', url: 'https://music.163.com/song/media/outer/url?id=2695890892.mp3' },
+        { name: '离开我的依赖（DJ铁柱）', artist: 'TieZ', url: 'https://music.163.com/song/media/outer/url?id=2731089330.mp3' },
+        { name: '天亮以前说再见 (DJ版)', artist: 'DJ小小智', url: 'https://music.163.com/song/media/outer/url?id=3334689339.mp3' },
+        { name: '零距离的思念 (DJAh版)', artist: 'DJAh', url: 'https://music.163.com/song/media/outer/url?id=2719027767.mp3' }
+      ]
+    }
   };
 
   let config = loadConfig();
   let currentType = 'wechat';
   let pwdVerified = false;
   let starField = null;
+  let rainField = null;
+  let cyberField = null;
+  let waveField = null;
+  let glowField = null;
+  let meteorField = null;
 
   function loadConfig() {
     try {
@@ -1114,21 +1525,24 @@
     }
 
     function initStars() {
-      const count = Math.floor((canvas.width * canvas.height) / 12000);
+      const count = Math.floor((canvas.width * canvas.height) / 4500);
       stars = [];
-      const colors = ['#ffffff', '#a0d8ff', '#d0a0ff', '#ffe0a0', '#a0ffd0'];
+      const colors = ['#ffffff', '#a0d8ff', '#d0a0ff', '#ffe0a0', '#a0ffd0', '#ff99cc', '#99ccff', '#ffcc99'];
       for (let i = 0; i < count; i++) {
+        const isBig = Math.random() < 0.12;
         stars.push({
           x: Math.random() * canvas.width,
           y: Math.random() * canvas.height,
-          r: Math.random() * 1.5 + 0.3,
-          baseAlpha: Math.random() * 0.6 + 0.2,
-          alpha: Math.random() * 0.6 + 0.2,
-          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          r: isBig ? (Math.random() * 1.5 + 1.8) : (Math.random() * 1.2 + 0.5),
+          baseAlpha: Math.random() * 0.5 + 0.5,
+          alpha: Math.random() * 0.5 + 0.5,
+          twinkleSpeed: Math.random() * 0.035 + 0.01,
           twinklePhase: Math.random() * Math.PI * 2,
-          vx: (Math.random() - 0.5) * 0.15,
-          vy: (Math.random() - 0.5) * 0.15,
-          color: colors[Math.floor(Math.random() * colors.length)]
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: (Math.random() - 0.5) * 0.25,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          isBig: isBig,
+          crossLen: isBig ? (Math.random() * 8 + 6) : 0
         });
       }
     }
@@ -1137,27 +1551,373 @@
       ctx.clearRect(0, 0, canvas.width, canvas.height);
       for (let s of stars) {
         s.twinklePhase += s.twinkleSpeed;
-        s.alpha = s.baseAlpha * (0.5 + 0.5 * Math.sin(s.twinklePhase));
+        s.alpha = s.baseAlpha * (0.4 + 0.6 * Math.sin(s.twinklePhase));
         s.x += s.vx;
         s.y += s.vy;
-        if (s.x < 0) s.x = canvas.width;
-        if (s.x > canvas.width) s.x = 0;
-        if (s.y < 0) s.y = canvas.height;
-        if (s.y > canvas.height) s.y = 0;
+        if (s.x < -5) s.x = canvas.width + 5;
+        if (s.x > canvas.width + 5) s.x = -5;
+        if (s.y < -5) s.y = canvas.height + 5;
+        if (s.y > canvas.height + 5) s.y = -5;
+
         const dx = s.x - mouseX, dy = s.y - mouseY;
         const dist = Math.sqrt(dx*dx + dy*dy);
         let glow = 0;
-        if (dist < 120) { glow = (120 - dist) / 120; }
+        if (dist < 180) { glow = (180 - dist) / 180; }
+
+        const curR = s.r + glow * 2;
+        const curAlpha = Math.min(1, s.alpha + glow * 0.5);
+
+        // 外发光光晕（所有星星都有）
+        const glowR = curR * 5 + glow * 6;
+        const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, glowR);
+        grad.addColorStop(0, s.color);
+        grad.addColorStop(0.25, s.color);
+        grad.addColorStop(1, 'transparent');
+        ctx.globalAlpha = curAlpha * 0.3;
+        ctx.fillStyle = grad;
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r + glow * 1.5, 0, Math.PI * 2);
-        ctx.fillStyle = s.color;
-        ctx.globalAlpha = s.alpha + glow * 0.4;
+        ctx.arc(s.x, s.y, glowR, 0, Math.PI * 2);
         ctx.fill();
-        if (s.r > 1 || glow > 0.3) {
+
+        // 十字光芒（大星星）
+        if (s.crossLen > 0) {
+          ctx.globalAlpha = curAlpha * 0.6;
+          ctx.strokeStyle = s.color;
+          ctx.lineWidth = 0.8;
+          const cl = s.crossLen + glow * 6;
           ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r * 3 + glow * 4, 0, Math.PI * 2);
-          ctx.fillStyle = s.color;
-          ctx.globalAlpha = (s.alpha + glow * 0.3) * 0.15;
+          ctx.moveTo(s.x - cl, s.y);
+          ctx.lineTo(s.x + cl, s.y);
+          ctx.moveTo(s.x, s.y - cl);
+          ctx.lineTo(s.x, s.y + cl);
+          ctx.stroke();
+        }
+
+        // 星星核心
+        ctx.globalAlpha = curAlpha;
+        ctx.fillStyle = s.color;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, curR, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 白色核心
+        ctx.globalAlpha = curAlpha * 0.9;
+        ctx.fillStyle = '#ffffff';
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, curR * 0.45, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.globalAlpha = 1;
+      animId = requestAnimationFrame(draw);
+    }
+
+    function onMouseMove(e) { mouseX = e.clientX; mouseY = e.clientY; }
+    function onMouseLeave() { mouseX = -9999; mouseY = -9999; }
+
+    resize();
+    draw();
+    window.addEventListener('resize', resize);
+    window.addEventListener('mousemove', onMouseMove);
+    window.addEventListener('mouseleave', onMouseLeave);
+
+    return {
+      destroy: function() {
+        cancelAnimationFrame(animId);
+        window.removeEventListener('resize', resize);
+        window.removeEventListener('mousemove', onMouseMove);
+        window.removeEventListener('mouseleave', onMouseLeave);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+  }
+
+  // 雨滴背景
+  function createRainField() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let drops = [];
+    let animId = null;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initDrops();
+    }
+
+    function initDrops() {
+      const count = Math.floor((canvas.width * canvas.height) / 8000);
+      drops = [];
+      for (let i = 0; i < count; i++) {
+        drops.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          len: Math.random() * 20 + 10,
+          speed: Math.random() * 8 + 6,
+          opacity: Math.random() * 0.4 + 0.1,
+          width: Math.random() * 1.2 + 0.5
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let d of drops) {
+        ctx.beginPath();
+        ctx.moveTo(d.x, d.y);
+        ctx.lineTo(d.x - d.len * 0.2, d.y + d.len);
+        ctx.strokeStyle = 'rgba(174, 194, 224, ' + d.opacity + ')';
+        ctx.lineWidth = d.width;
+        ctx.lineCap = 'round';
+        ctx.stroke();
+        d.y += d.speed;
+        d.x -= d.speed * 0.15;
+        if (d.y > canvas.height) {
+          d.y = -d.len;
+          d.x = Math.random() * canvas.width;
+        }
+        if (d.x < -10) d.x = canvas.width + 10;
+      }
+      animId = requestAnimationFrame(draw);
+    }
+
+    resize();
+    draw();
+    window.addEventListener('resize', resize);
+
+    return {
+      destroy: function() {
+        cancelAnimationFrame(animId);
+        window.removeEventListener('resize', resize);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+  }
+
+  // 霓虹网格背景
+  function createCyberGrid() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let animId = null;
+    let offset = 0;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const horizon = canvas.height * 0.45;
+      const vpX = canvas.width / 2;
+
+      // 地平线光晕
+      const grad = ctx.createLinearGradient(0, horizon - 60, 0, horizon + 20);
+      grad.addColorStop(0, 'rgba(255, 0, 128, 0)');
+      grad.addColorStop(0.5, 'rgba(255, 0, 128, 0.25)');
+      grad.addColorStop(1, 'rgba(0, 255, 255, 0.15)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(0, horizon - 60, canvas.width, 80);
+
+      // 地平线
+      ctx.beginPath();
+      ctx.moveTo(0, horizon);
+      ctx.lineTo(canvas.width, horizon);
+      ctx.strokeStyle = 'rgba(255, 0, 128, 0.6)';
+      ctx.lineWidth = 1.5;
+      ctx.shadowColor = '#ff0080';
+      ctx.shadowBlur = 10;
+      ctx.stroke();
+      ctx.shadowBlur = 0;
+
+      // 透视网格线
+      offset = (offset + 0.8) % 60;
+      ctx.strokeStyle = 'rgba(0, 255, 255, 0.35)';
+      ctx.lineWidth = 1;
+
+      // 横线
+      for (let i = 0; i < 12; i++) {
+        const t = (i * 60 + offset) / 600;
+        const y = horizon + t * (canvas.height - horizon);
+        if (y > canvas.height) continue;
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(canvas.width, y);
+        ctx.globalAlpha = 0.2 + t * 0.5;
+        ctx.stroke();
+      }
+
+      // 竖线（透视）
+      for (let i = -10; i <= 10; i++) {
+        const xBottom = vpX + i * 80;
+        ctx.beginPath();
+        ctx.moveTo(vpX, horizon);
+        ctx.lineTo(xBottom, canvas.height);
+        ctx.globalAlpha = 0.25;
+        ctx.stroke();
+      }
+      ctx.globalAlpha = 1;
+
+      // 顶部星星
+      for (let i = 0; i < 30; i++) {
+        const sx = (i * 137.5) % canvas.width;
+        const sy = (i * 73.3) % (horizon - 30);
+        const twinkle = 0.3 + 0.3 * Math.sin(Date.now() / 500 + i);
+        ctx.beginPath();
+        ctx.arc(sx, sy, 0.8, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,' + twinkle + ')';
+        ctx.fill();
+      }
+
+      animId = requestAnimationFrame(draw);
+    }
+
+    resize();
+    draw();
+    window.addEventListener('resize', resize);
+
+    return {
+      destroy: function() {
+        cancelAnimationFrame(animId);
+        window.removeEventListener('resize', resize);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+  }
+
+  // Canvas 波浪背景
+  function createWaveField() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let animId = null;
+    let time = 0;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+
+    function drawWave(yBase, amplitude, frequency, speed, color, alpha) {
+      ctx.beginPath();
+      ctx.moveTo(0, canvas.height);
+      for (let x = 0; x <= canvas.width; x += 4) {
+        const y = yBase +
+          Math.sin(x * frequency + time * speed) * amplitude +
+          Math.sin(x * frequency * 0.5 + time * speed * 1.3) * amplitude * 0.4;
+        ctx.lineTo(x, y);
+      }
+      ctx.lineTo(canvas.width, canvas.height);
+      ctx.closePath();
+      const grad = ctx.createLinearGradient(0, yBase - amplitude, 0, canvas.height);
+      grad.addColorStop(0, color.replace('ALPHA', alpha));
+      grad.addColorStop(1, color.replace('ALPHA', (alpha * 0.3).toFixed(3)));
+      ctx.fillStyle = grad;
+      ctx.fill();
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const h = canvas.height;
+      // 三层波浪
+      drawWave(h * 0.55, 30, 0.008, 0.02, 'rgba(99,102,241,ALPHA)', 0.35);
+      drawWave(h * 0.65, 40, 0.006, 0.025, 'rgba(59,130,246,ALPHA)', 0.3);
+      drawWave(h * 0.78, 35, 0.01, 0.018, 'rgba(139,92,246,ALPHA)', 0.4);
+      time += 1;
+      animId = requestAnimationFrame(draw);
+    }
+
+    resize();
+    draw();
+    window.addEventListener('resize', resize);
+
+    return {
+      destroy: function() {
+        cancelAnimationFrame(animId);
+        window.removeEventListener('resize', resize);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+  }
+
+  // 荧光颗粒背景
+  function createGlowParticles() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+    let animId = null;
+    let mouseX = -9999, mouseY = -9999;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initParticles();
+    }
+
+    function initParticles() {
+      const count = Math.floor((canvas.width * canvas.height) / 9000);
+      particles = [];
+      const colors = ['#00ff88', '#00ffff', '#ff00ff', '#ffff00', '#ff6600', '#88ff00'];
+      for (let i = 0; i < count; i++) {
+        particles.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 3 + 1,
+          baseR: Math.random() * 3 + 1,
+          color: colors[Math.floor(Math.random() * colors.length)],
+          alpha: Math.random() * 0.6 + 0.2,
+          baseAlpha: Math.random() * 0.6 + 0.2,
+          pulseSpeed: Math.random() * 0.03 + 0.01,
+          pulsePhase: Math.random() * Math.PI * 2,
+          vx: (Math.random() - 0.5) * 0.4,
+          vy: (Math.random() - 0.5) * 0.4
+        });
+      }
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let p of particles) {
+        p.pulsePhase += p.pulseSpeed;
+        const pulse = 0.5 + 0.5 * Math.sin(p.pulsePhase);
+        p.r = p.baseR * (0.7 + pulse * 0.6);
+        p.alpha = p.baseAlpha * (0.5 + pulse * 0.5);
+
+        p.x += p.vx;
+        p.y += p.vy;
+        if (p.x < -10) p.x = canvas.width + 10;
+        if (p.x > canvas.width + 10) p.x = -10;
+        if (p.y < -10) p.y = canvas.height + 10;
+        if (p.y > canvas.height + 10) p.y = -10;
+
+        const dx = p.x - mouseX, dy = p.y - mouseY;
+        const dist = Math.sqrt(dx*dx + dy*dy);
+        let boost = 0;
+        if (dist < 150) boost = (150 - dist) / 150;
+
+        // 外发光
+        const glowR = p.r * 4 + boost * 8;
+        const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, glowR);
+        grad.addColorStop(0, p.color);
+        grad.addColorStop(0.3, p.color);
+        grad.addColorStop(1, 'transparent');
+        ctx.globalAlpha = (p.alpha + boost * 0.3) * 0.25;
+        ctx.fillStyle = grad;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, glowR, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 核心
+        ctx.globalAlpha = Math.min(1, p.alpha + boost * 0.5);
+        ctx.fillStyle = p.color;
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, p.r + boost * 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 白色核心
+        if (p.r > 2 || boost > 0.3) {
+          ctx.globalAlpha = 0.8;
+          ctx.fillStyle = '#ffffff';
+          ctx.beginPath();
+          ctx.arc(p.x, p.y, p.r * 0.4, 0, Math.PI * 2);
           ctx.fill();
         }
       }
@@ -1185,7 +1945,408 @@
     };
   }
 
-  // ===== 背景切换 =====
+  // 流星背景
+  function createMeteorField() {
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+    let meteors = [];
+    let stars = [];
+    let animId = null;
+
+    function resize() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      initStars();
+    }
+
+    function initStars() {
+      const count = Math.floor((canvas.width * canvas.height) / 6000);
+      stars = [];
+      for (let i = 0; i < count; i++) {
+        stars.push({
+          x: Math.random() * canvas.width,
+          y: Math.random() * canvas.height,
+          r: Math.random() * 1.2 + 0.3,
+          alpha: Math.random() * 0.7 + 0.2,
+          twinkleSpeed: Math.random() * 0.02 + 0.005,
+          twinklePhase: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function spawnMeteor() {
+      const startX = Math.random() * canvas.width * 0.8;
+      const startY = Math.random() * canvas.height * 0.3 - 50;
+      const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.3;
+      const speed = Math.random() * 8 + 10;
+      meteors.push({
+        x: startX,
+        y: startY,
+        vx: Math.cos(angle) * speed,
+        vy: Math.sin(angle) * speed,
+        length: Math.random() * 120 + 80,
+        r: Math.random() * 1.5 + 1,
+        alpha: 1,
+        color: Math.random() > 0.5 ? '#88ccff' : '#ffffff'
+      });
+    }
+
+    function draw() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // 星星
+      for (let s of stars) {
+        s.twinklePhase += s.twinkleSpeed;
+        const a = s.alpha * (0.5 + 0.5 * Math.sin(s.twinklePhase));
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fillStyle = '#ffffff';
+        ctx.globalAlpha = a;
+        ctx.fill();
+      }
+
+      // 随机生成流星
+      if (Math.random() < 0.015 && meteors.length < 8) {
+        spawnMeteor();
+      }
+
+      // 流星
+      for (let i = meteors.length - 1; i >= 0; i--) {
+        const m = meteors[i];
+        m.x += m.vx;
+        m.y += m.vy;
+
+        // 尾迹
+        const tailX = m.x - m.vx * (m.length / Math.sqrt(m.vx*m.vx + m.vy*m.vy));
+        const tailY = m.y - m.vy * (m.length / Math.sqrt(m.vx*m.vx + m.vy*m.vy));
+
+        const grad = ctx.createLinearGradient(m.x, m.y, tailX, tailY);
+        grad.addColorStop(0, m.color);
+        grad.addColorStop(0.3, m.color);
+        grad.addColorStop(1, 'transparent');
+
+        ctx.globalAlpha = m.alpha;
+        ctx.strokeStyle = grad;
+        ctx.lineWidth = m.r;
+        ctx.lineCap = 'round';
+        ctx.beginPath();
+        ctx.moveTo(m.x, m.y);
+        ctx.lineTo(tailX, tailY);
+        ctx.stroke();
+
+        // 头部发光
+        const headGrad = ctx.createRadialGradient(m.x, m.y, 0, m.x, m.y, m.r * 4);
+        headGrad.addColorStop(0, '#ffffff');
+        headGrad.addColorStop(0.3, m.color);
+        headGrad.addColorStop(1, 'transparent');
+        ctx.globalAlpha = m.alpha * 0.8;
+        ctx.fillStyle = headGrad;
+        ctx.beginPath();
+        ctx.arc(m.x, m.y, m.r * 4, 0, Math.PI * 2);
+        ctx.fill();
+
+        // 移除超出屏幕的流星
+        if (m.x > canvas.width + 100 || m.y > canvas.height + 100 || m.alpha <= 0) {
+          meteors.splice(i, 1);
+        }
+      }
+      ctx.globalAlpha = 1;
+      animId = requestAnimationFrame(draw);
+    }
+
+    resize();
+    // 初始生成几颗流星
+    for (let i = 0; i < 3; i++) {
+      setTimeout(spawnMeteor, i * 800);
+    }
+    draw();
+    window.addEventListener('resize', resize);
+
+    return {
+      destroy: function() {
+        cancelAnimationFrame(animId);
+        window.removeEventListener('resize', resize);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      }
+    };
+  }
+
+  // 应用文字颜色和发光
+  function applyTextStyle() {
+    const h1 = document.querySelector('.header h1');
+    const p = document.querySelector('.header p');
+    const isDark = document.body.classList.contains('bg-dark');
+
+    // 标题
+    if (config.page.titleColor) {
+      h1.style.background = 'none';
+      h1.style.webkitBackgroundClip = 'initial';
+      h1.style.backgroundClip = 'initial';
+      h1.style.webkitTextFillColor = 'initial';
+      h1.style.color = config.page.titleColor;
+      const glow = config.page.titleGlow || 0;
+      if (glow > 0) {
+        const size = 4 + glow * 0.15;
+        const alpha = 0.15 + glow * 0.005;
+        h1.style.textShadow = '0 0 ' + size + 'px ' + config.page.titleColor +
+          ', 0 0 ' + (size * 2) + 'px rgba(255,255,255,' + alpha + ')';
+        h1.style.filter = 'none';
+      } else {
+        h1.style.textShadow = 'none';
+        h1.style.filter = 'none';
+      }
+    } else {
+      // 恢复默认
+      h1.style.color = '';
+      h1.style.textShadow = '';
+      if (isDark) {
+        h1.style.background = 'linear-gradient(135deg, #ffffff 0%, #c8c8e8 100%)';
+        h1.style.webkitBackgroundClip = 'text';
+        h1.style.backgroundClip = 'text';
+        h1.style.webkitTextFillColor = 'transparent';
+        h1.style.filter = 'drop-shadow(0 0 12px rgba(255,255,255,0.4)) drop-shadow(0 0 30px rgba(255,255,255,0.15))';
+      } else {
+        h1.style.background = 'linear-gradient(135deg, #1d1d1f 0%, #434345 100%)';
+        h1.style.webkitBackgroundClip = 'text';
+        h1.style.backgroundClip = 'text';
+        h1.style.webkitTextFillColor = 'transparent';
+        h1.style.filter = 'none';
+      }
+    }
+
+    // 副标题
+    if (config.page.subtitleColor) {
+      p.style.color = config.page.subtitleColor;
+      const glow = config.page.subtitleGlow || 0;
+      if (glow > 0) {
+        const size = 3 + glow * 0.1;
+        p.style.textShadow = '0 0 ' + size + 'px ' + config.page.subtitleColor;
+      } else {
+        p.style.textShadow = 'none';
+      }
+    } else {
+      p.style.color = isDark ? 'rgba(255,255,255,0.75)' : '';
+      p.style.textShadow = isDark ? '0 0 10px rgba(255,255,255,0.3)' : 'none';
+    }
+  }
+
+  // 视频上传
+  function handleBgVideoUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('video/')) { showToast('请选择视频文件'); return; }
+    if (file.size > 15 * 1024 * 1024) {
+      showToast('视频过大（超过15MB），请使用视频链接方式');
+      input.value = '';
+      return;
+    }
+    showToast('正在处理视频...');
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      config.background.video = e.target.result;
+      applyBackground();
+      showToast('背景视频已设置，记得保存');
+    };
+    reader.onerror = function() { showToast('视频读取失败'); };
+    reader.readAsDataURL(file);
+    input.value = '';
+  }
+
+  // ===== 头像 =====
+  function handleAvatarUpload(input) {
+    const file = input.files[0];
+    if (!file) return;
+    if (!file.type.startsWith('image/')) { showToast('请选择图片文件'); return; }
+    showToast('正在处理头像...');
+    compressImage(file, 400, 0.9, function(dataUrl) {
+      config.page.avatar = dataUrl;
+      updateAvatar();
+      updateAvatarPreview();
+      if (saveConfig()) {
+        showToast('头像已保存');
+      } else {
+        showToast('头像保存失败，图片可能过大');
+      }
+    }, function() {
+      showToast('头像处理失败，请换一张图片');
+    });
+    input.value = '';
+  }
+
+  function clearAvatar() {
+    config.page.avatar = '';
+    updateAvatar();
+    updateAvatarPreview();
+    saveConfig();
+    showToast('已清除头像');
+  }
+
+  function updateAvatar() {
+    const avatarEl = document.getElementById('header-avatar');
+    const avatarImg = document.getElementById('header-avatar-img');
+    const musicAvatar = document.getElementById('music-avatar-img');
+    if (config.page.avatar) {
+      avatarEl.style.display = 'block';
+      avatarImg.src = config.page.avatar;
+      musicAvatar.src = config.page.avatar;
+    } else {
+      avatarEl.style.display = 'none';
+      musicAvatar.src = '';
+    }
+  }
+
+  function updateAvatarPreview() {
+    const preview = document.getElementById('avatar-preview');
+    const img = document.getElementById('avatar-preview-img');
+    if (config.page.avatar && config.page.avatar.startsWith('data:')) {
+      preview.style.display = 'flex';
+      img.src = config.page.avatar;
+    } else {
+      preview.style.display = 'none';
+    }
+  }
+
+  // ===== 音乐播放器 =====
+  let audio = null;
+  let isPlaying = false;
+
+  function initMusic() {
+    audio = document.getElementById('bg-audio');
+    audio.addEventListener('ended', nextSong);
+    audio.addEventListener('error', function() {
+      showToast('歌曲加载失败，自动下一首');
+      nextSong();
+    });
+    renderPlaylist();
+    updateMusicBar();
+    if (!config.music.enabled) {
+      document.getElementById('music-bar').classList.add('hidden-bar');
+    }
+    // 进入页面后触摸/点击任意位置自动播放
+    let autoPlayed = false;
+    function tryAutoPlay(e) {
+      if (autoPlayed) return;
+      if (!config.music.enabled) return;
+      // 点击音乐控件或播放列表时不触发自动播放，避免和暂停冲突
+      if (e.target.closest('#music-bar') || e.target.closest('#playlist-overlay')) return;
+      if (isPlaying) { autoPlayed = true; return; }
+      const song = config.music.songs[config.music.currentIndex];
+      if (!song) return;
+      audio.src = song.url;
+      audio.play().then(function() {
+        isPlaying = true;
+        autoPlayed = true;
+        updateMusicBar();
+        renderPlaylist();
+      }).catch(function() {});
+    }
+    document.addEventListener('click', tryAutoPlay, { once: false });
+    document.addEventListener('touchstart', tryAutoPlay, { once: false, passive: true });
+  }
+
+  function updateMusicBar() {
+    const song = config.music.songs[config.music.currentIndex];
+    if (song) {
+      document.getElementById('music-name').textContent = song.name;
+      document.getElementById('music-artist').textContent = song.artist || '未知歌手';
+    }
+    const iconPlay = document.getElementById('icon-play');
+    const iconPause = document.getElementById('icon-pause');
+    const musicAvatar = document.getElementById('music-avatar');
+    if (isPlaying) {
+      iconPlay.style.display = 'none';
+      iconPause.style.display = 'block';
+      musicAvatar.classList.add('playing');
+    } else {
+      iconPlay.style.display = 'block';
+      iconPause.style.display = 'none';
+      musicAvatar.classList.remove('playing');
+    }
+  }
+
+  function togglePlay() {
+    if (!config.music.enabled) return;
+    const song = config.music.songs[config.music.currentIndex];
+    if (!song) { showToast('播放列表为空'); return; }
+    if (isPlaying) {
+      audio.pause();
+      isPlaying = false;
+    } else {
+      if (audio.src !== song.url) audio.src = song.url;
+      audio.play().then(function() {
+        isPlaying = true;
+      }).catch(function() {
+        showToast('播放失败，请检查网络或歌曲链接');
+      });
+    }
+    updateMusicBar();
+    renderPlaylist();
+  }
+
+  function prevSong() {
+    if (!config.music.enabled) return;
+    config.music.currentIndex = (config.music.currentIndex - 1 + config.music.songs.length) % config.music.songs.length;
+    playCurrent();
+  }
+
+  function nextSong() {
+    if (!config.music.enabled) return;
+    config.music.currentIndex = (config.music.currentIndex + 1) % config.music.songs.length;
+    playCurrent();
+  }
+
+  function playCurrent() {
+    const song = config.music.songs[config.music.currentIndex];
+    if (!song) return;
+    audio.src = song.url;
+    audio.play().then(function() {
+      isPlaying = true;
+    }).catch(function() {
+      isPlaying = false;
+      showToast('播放失败，跳过此歌曲');
+    });
+    updateMusicBar();
+    renderPlaylist();
+  }
+
+  function playSong(index) {
+    config.music.currentIndex = index;
+    playCurrent();
+    togglePlaylist();
+  }
+
+  function renderPlaylist() {
+    const list = document.getElementById('playlist-list');
+    list.innerHTML = '';
+    config.music.songs.forEach(function(song, i) {
+      const item = document.createElement('div');
+      item.className = 'playlist-item' + (i === config.music.currentIndex ? ' active' : '');
+      item.onclick = function() { playSong(i); };
+      item.innerHTML = '<div class="idx">' + (i + 1) + '</div>' +
+        '<div class="pinfo"><div class="pname">' + song.name + '</div>' +
+        '<div class="partist">' + (song.artist || '') + '</div></div>';
+      list.appendChild(item);
+    });
+  }
+
+  function togglePlaylist() {
+    const overlay = document.getElementById('playlist-overlay');
+    overlay.classList.toggle('active');
+  }
+
+  function toggleMusicSwitch() {
+    config.music.enabled = !config.music.enabled;
+    const sw = document.getElementById('music-switch');
+    sw.classList.toggle('on', config.music.enabled);
+    const bar = document.getElementById('music-bar');
+    if (config.music.enabled) {
+      bar.classList.remove('hidden-bar');
+    } else {
+      bar.classList.add('hidden-bar');
+      if (isPlaying) { audio.pause(); isPlaying = false; updateMusicBar(); }
+    }
+  }
+
   function applyBackground() {
     const body = document.body;
     body.className = '';
@@ -1195,37 +2356,91 @@
     body.style.backgroundPosition = '';
     body.style.backgroundAttachment = '';
 
+    // 停止所有 canvas 动画
     if (starField) { starField.destroy(); starField = null; }
+    if (rainField) { rainField.destroy(); rainField = null; }
+    if (cyberField) { cyberField.destroy(); cyberField = null; }
+    if (waveField) { waveField.destroy(); waveField = null; }
+    if (glowField) { glowField.destroy(); glowField = null; }
+    if (meteorField) { meteorField.destroy(); meteorField = null; }
+
+    // 隐藏视频
+    const video = document.getElementById('bg-video');
+    video.style.display = 'none';
+    video.pause();
+
+    // 隐藏 Ken Burns 图片层
+    let kenburns = document.getElementById('bg-kenburns');
+    if (kenburns) kenburns.style.display = 'none';
 
     const type = config.background.type;
+    const darkTypes = ['stars', 'aurora', 'image', 'video', 'rain', 'cyber', 'waves', 'gradient', 'glow', 'meteor'];
+
+    if (darkTypes.indexOf(type) !== -1) {
+      body.classList.add('bg-dark');
+    }
+
     if (type === 'orbs') {
       body.classList.add('bg-orbs');
       body.style.background = 'linear-gradient(160deg, var(--bg-from) 0%, var(--bg-to) 100%)';
+    } else if (type === 'gradient') {
+      body.classList.add('bg-gradient');
     } else if (type === 'stars') {
-      body.classList.add('bg-dark');
       body.style.background = 'linear-gradient(160deg, #050510 0%, #0a0a2a 40%, #0d1530 70%, #050510 100%)';
       starField = createStarField();
+    } else if (type === 'rain') {
+      body.style.background = 'linear-gradient(180deg, #0f172a 0%, #1e293b 50%, #0f172a 100%)';
+      rainField = createRainField();
+    } else if (type === 'cyber') {
+      body.style.background = 'linear-gradient(180deg, #0a0a1a 0%, #1a0a2e 100%)';
+      cyberField = createCyberGrid();
+    } else if (type === 'waves') {
+      body.style.background = 'linear-gradient(180deg, #0c1445 0%, #1a237e 50%, #283593 100%)';
+      waveField = createWaveField();
     } else if (type === 'aurora') {
-      body.classList.add('bg-aurora', 'bg-dark');
+      body.classList.add('bg-aurora');
+    } else if (type === 'glow') {
+      body.style.background = 'linear-gradient(160deg, #0a0a1a 0%, #1a0a2a 50%, #0a1a2a 100%)';
+      glowField = createGlowParticles();
+    } else if (type === 'meteor') {
+      body.style.background = 'linear-gradient(180deg, #020208 0%, #0a0a1a 50%, #0d1025 100%)';
+      meteorField = createMeteorField();
     } else if (type === 'image') {
-      body.classList.add('bg-dark');
       body.style.background = '#0a0a1a';
       if (config.background.image) {
-        body.style.backgroundImage = 'url(' + config.background.image + ')';
-        body.style.backgroundSize = 'cover';
-        body.style.backgroundPosition = 'center';
-        body.style.backgroundAttachment = 'fixed';
+        if (!kenburns) {
+          kenburns = document.createElement('div');
+          kenburns.id = 'bg-kenburns';
+          kenburns.className = 'bg-image-kenburns';
+          document.body.insertBefore(kenburns, document.body.firstChild);
+        }
+        kenburns.style.backgroundImage = 'url(' + config.background.image + ')';
+        kenburns.style.display = 'block';
+      }
+    } else if (type === 'video') {
+      body.style.background = '#0a0a1a';
+      if (config.background.video) {
+        video.src = config.background.video;
+        video.style.display = 'block';
+        video.play().catch(function(){});
       }
     }
     updateBgTypeButtons();
+    applyTextStyle();
   }
 
   function setBgType(type) {
     config.background.type = type;
     applyBackground();
+    saveConfig();
+    const names = { orbs:'渐变光斑', gradient:'流动渐变', stars:'星空粒子', rain:'雨滴', cyber:'霓虹网格', waves:'波浪', aurora:'极光', glow:'荧光颗粒', meteor:'流星', image:'自定义图片', video:'视频背景' };
+    showToast('已切换到' + (names[type] || type));
     const showImage = type === 'image';
+    const showVideo = type === 'video';
     document.getElementById('bg-image-group').style.display = showImage ? 'block' : 'none';
     document.getElementById('bg-url-group').style.display = showImage ? 'block' : 'none';
+    document.getElementById('bg-video-group').style.display = showVideo ? 'block' : 'none';
+    document.getElementById('bg-video-url-group').style.display = showVideo ? 'block' : 'none';
   }
 
   function updateBgTypeButtons() {
@@ -1321,19 +2536,42 @@
     document.getElementById('page-title').value = config.page.title || '';
     document.getElementById('page-subtitle').value = config.page.subtitle || '';
     document.getElementById('page-footer').value = config.page.footer || '';
+    document.getElementById('title-color').value = config.page.titleColor || '#ffffff';
+    document.getElementById('title-glow').value = config.page.titleGlow || 0;
+    document.getElementById('title-glow-val').textContent = config.page.titleGlow || 0;
+    document.getElementById('subtitle-color').value = config.page.subtitleColor || '#ffffff';
+    document.getElementById('subtitle-glow').value = config.page.subtitleGlow || 0;
+    document.getElementById('subtitle-glow-val').textContent = config.page.subtitleGlow || 0;
     document.getElementById('ann-content').value = config.announcement.content || '';
 
     const annSwitch = document.getElementById('ann-switch');
     if (config.announcement.enabled) annSwitch.classList.add('on'); else annSwitch.classList.remove('on');
 
+    // 音乐开关
+    const musicSwitch = document.getElementById('music-switch');
+    if (config.music.enabled) musicSwitch.classList.add('on'); else musicSwitch.classList.remove('on');
+    // 歌曲列表文本
+    const songsText = config.music.songs.map(function(s) {
+      return s.name + '|' + (s.artist || '') + '|' + s.url;
+    }).join('\n');
+    document.getElementById('music-songs').value = songsText;
+
     updatePreview('wechat');
     updatePreview('qq');
     updateBgPreview();
+    updateAvatar();
+    updateAvatarPreview();
+    updateMusicBar();
+    renderPlaylist();
 
     const showImage = config.background.type === 'image';
+    const showVideo = config.background.type === 'video';
     document.getElementById('bg-image-group').style.display = showImage ? 'block' : 'none';
     document.getElementById('bg-url-group').style.display = showImage ? 'block' : 'none';
+    document.getElementById('bg-video-group').style.display = showVideo ? 'block' : 'none';
+    document.getElementById('bg-video-url-group').style.display = showVideo ? 'block' : 'none';
     document.getElementById('bg-image-url').value = config.background.image && !config.background.image.startsWith('data:') ? config.background.image : '';
+    document.getElementById('bg-video-url').value = config.background.video && !config.background.video.startsWith('data:') ? config.background.video : '';
 
     applyBackground();
   }
@@ -1447,9 +2685,36 @@
     config.page.title = document.getElementById('page-title').value.trim();
     config.page.subtitle = document.getElementById('page-subtitle').value.trim();
     config.page.footer = document.getElementById('page-footer').value.trim();
+    config.page.titleColor = document.getElementById('title-color').value;
+    config.page.titleGlow = parseInt(document.getElementById('title-glow').value) || 0;
+    config.page.subtitleColor = document.getElementById('subtitle-color').value;
+    config.page.subtitleGlow = parseInt(document.getElementById('subtitle-glow').value) || 0;
     config.announcement.content = document.getElementById('ann-content').value.trim();
     const bgUrl = document.getElementById('bg-image-url').value.trim();
     if (bgUrl) config.background.image = bgUrl;
+    const bgVideoUrl = document.getElementById('bg-video-url').value.trim();
+    if (bgVideoUrl) config.background.video = bgVideoUrl;
+
+    // 解析歌曲列表
+    const songsText = document.getElementById('music-songs').value.trim();
+    if (songsText) {
+      const lines = songsText.split('\n').filter(function(l) { return l.trim(); });
+      const songs = [];
+      lines.forEach(function(line) {
+        const parts = line.split('|');
+        if (parts.length >= 3 && parts[2].trim()) {
+          songs.push({
+            name: parts[0].trim(),
+            artist: (parts[1] || '').trim(),
+            url: parts[2].trim()
+          });
+        }
+      });
+      if (songs.length > 0) {
+        config.music.songs = songs;
+        if (config.music.currentIndex >= songs.length) config.music.currentIndex = 0;
+      }
+    }
 
     if (!saveConfig()) return;
     renderPage();
@@ -1584,6 +2849,27 @@
     }
   });
 
+  // 文字样式实时预览
+  document.getElementById('title-color').addEventListener('input', function() {
+    config.page.titleColor = this.value;
+    applyTextStyle();
+  });
+  document.getElementById('title-glow').addEventListener('input', function() {
+    config.page.titleGlow = parseInt(this.value) || 0;
+    document.getElementById('title-glow-val').textContent = this.value;
+    applyTextStyle();
+  });
+  document.getElementById('subtitle-color').addEventListener('input', function() {
+    config.page.subtitleColor = this.value;
+    applyTextStyle();
+  });
+  document.getElementById('subtitle-glow').addEventListener('input', function() {
+    config.page.subtitleGlow = parseInt(this.value) || 0;
+    document.getElementById('subtitle-glow-val').textContent = this.value;
+    applyTextStyle();
+  });
+
+  initMusic();
   renderPage();
 </script>
 </body>

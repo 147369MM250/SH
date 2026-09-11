@@ -936,6 +936,149 @@
   }
   .settings-footer .btn { padding: 12px; }
 
+  .cloud-section {
+    padding: 16px 28px 20px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    flex-shrink: 0;
+    background: linear-gradient(135deg, rgba(102,126,234,0.04), rgba(18,183,245,0.04));
+  }
+  .cloud-input-row {
+    display: flex; gap: 8px; margin-bottom: 10px;
+  }
+  .cloud-input-row input {
+    padding: 10px 12px;
+    border: 1px solid rgba(0,0,0,0.1);
+    border-radius: 10px;
+    font-size: 13px;
+    background: rgba(255,255,255,0.8);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .cloud-input-row input:focus {
+    border-color: var(--qq-blue);
+  }
+  .cloud-btn {
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    background: var(--qq-blue);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+  .cloud-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+  .cloud-btn.cloud-btn-danger { background: #ef4444; }
+  .cloud-status {
+    background: rgba(255,255,255,0.6);
+    border-radius: 10px;
+    padding: 10px 12px;
+    margin-bottom: 10px;
+  }
+  .cloud-status-item {
+    display: flex; align-items: center; gap: 6px;
+    font-size: 12px; color: var(--text-secondary);
+    margin-bottom: 4px;
+  }
+  .cloud-status-item:last-child { margin-bottom: 0; }
+  .cloud-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 6px rgba(34,197,94,0.5);
+    animation: pulse-dot 2s infinite;
+  }
+  @keyframes pulse-dot {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.5; }
+  }
+  .cloud-sync-btn {
+    width: 100%;
+    margin-top: 8px;
+    padding: 8px;
+    border: 1px solid rgba(18,183,245,0.3);
+    border-radius: 8px;
+    background: rgba(18,183,245,0.08);
+    color: var(--qq-blue);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .cloud-sync-btn:hover { background: rgba(18,183,245,0.15); }
+  .cloud-help {
+    text-align: center;
+  }
+
+  .sync-section {
+    padding: 16px 28px 40px;
+    border-top: 1px solid rgba(0,0,0,0.06);
+    flex-shrink: 0;
+  }
+  .sync-title {
+    font-size: 14px; font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 4px;
+  }
+  .sync-desc {
+    font-size: 12px; color: var(--text-secondary);
+    margin-bottom: 12px; line-height: 1.5;
+  }
+  .sync-btns {
+    display: flex; gap: 8px;
+  }
+  .sync-btn {
+    flex: 1;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    padding: 10px 6px;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 12px;
+    background: rgba(255,255,255,0.6);
+    color: var(--text-primary);
+    font-size: 12px; font-weight: 500;
+    cursor: pointer;
+    transition: all 0.25s ease;
+  }
+  .sync-btn:hover {
+    background: rgba(102,126,234,0.1);
+    border-color: rgba(102,126,234,0.3);
+    transform: translateY(-1px);
+  }
+  .sync-btn svg { width: 18px; height: 18px; fill: currentColor; }
+
+  .generate-btn {
+    width: 100%;
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 14px;
+    border: none;
+    border-radius: 14px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: #fff;
+    font-size: 15px; font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 4px 16px rgba(102,126,234,0.4), 0 0 20px rgba(102,126,234,0.2);
+    transition: all 0.25s ease;
+  }
+  .generate-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(102,126,234,0.5), 0 0 25px rgba(102,126,234,0.3);
+  }
+  .generate-btn:active { transform: translateY(0); }
+  .generate-btn svg { width: 20px; height: 20px; fill: currentColor; }
+
+  .sync-divider {
+    height: 1px;
+    background: rgba(0,0,0,0.06);
+    margin: 16px 0 12px;
+  }
+  .sync-subtitle {
+    font-size: 12px; font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+  }
+
   /* 开关 */
   .switch-row {
     display: flex; align-items: center; justify-content: space-between;
@@ -1127,6 +1270,33 @@
     </button>
   </div>
   <div class="settings-body">
+    <!-- 云端同步 -->
+    <div class="cloud-section" style="padding-top:0; border-top:none; margin-bottom:8px;">
+      <div class="sync-title">云端实时同步（GitHub）</div>
+      <div class="sync-desc">启用后，保存设置自动上传到GitHub Gist，任何设备打开都是最新内容。需GitHub账号创建一个有gist权限的Token。</div>
+      <div class="cloud-input-row">
+        <input type="password" id="cloud-api-key" placeholder="粘贴 GitHub Personal Access Token" style="flex:1;">
+        <button class="cloud-btn" id="cloud-toggle-btn" onclick="toggleCloudSync()">启用</button>
+      </div>
+      <div class="cloud-status" id="cloud-status" style="display:none;">
+        <div class="cloud-status-item">
+          <span class="cloud-dot"></span>
+          <span id="cloud-status-text">已连接</span>
+        </div>
+        <div class="cloud-status-item" id="cloud-bin-row" style="display:none;">
+          <span>Gist ID：</span>
+          <span id="cloud-bin-id" style="font-family:monospace;font-size:11px;"></span>
+        </div>
+        <div class="cloud-status-item" id="cloud-sync-row" style="display:none;">
+          <span>最后同步：</span>
+          <span id="cloud-last-sync"></span>
+        </div>
+        <button class="cloud-sync-btn" onclick="syncToCloudNow()">立即同步</button>
+      </div>
+      <div class="cloud-help">
+        <a href="https://github.com/settings/tokens/new?scopes=gist&description=客服页同步" target="_blank" style="color:var(--qq-blue);font-size:12px;text-decoration:none;">没有Token？点此创建（勾选gist权限，生成后复制）→</a>
+      </div>
+    </div>
     <!-- 背景设置 -->
     <div class="settings-section">
       <div class="settings-section-title">
@@ -1459,6 +1629,12 @@
 
   let config = loadConfig();
   let currentType = 'wechat';
+  // 云端同步状态（存在本地，不同步到云端）
+  let cloudEnabled = false;
+  let cloudApiKey = '';
+  let cloudBinId = '';
+  let cloudLastSync = '';
+  const CLOUD_STORAGE_KEY = 'customer-service-cloud';
   let pwdVerified = false;
   let starField = null;
   let rainField = null;
@@ -2667,6 +2843,7 @@
 
   function openSettings() {
     document.getElementById('settings-panel').classList.add('active');
+    updateCloudUI();
   }
 
   function closeSettings() {
@@ -2719,7 +2896,40 @@
     if (!saveConfig()) return;
     renderPage();
     closeSettings();
-    showToast('设置已保存');
+
+    // 如果启用了云端同步，自动上传
+    if (cloudEnabled) {
+      syncToCloud();
+      showToast('设置已保存并同步到云端');
+      return;
+    }
+
+    // 保存后自动生成分享链接，方便多平台同步
+    try {
+      const json = JSON.stringify(config);
+      const b64 = btoa(unescape(encodeURIComponent(json)));
+      const shareUrl = window.location.origin + window.location.pathname + '#cfg=' + b64;
+      if (shareUrl.length < 8000) {
+        history.replaceState(null, '', shareUrl);
+        setTimeout(function() {
+          if (confirm('设置已保存！\n\n当前链接已包含你的所有配置，复制后发给别人，对方打开就是你设置好的内容。\n\n是否现在复制链接？')) {
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+              navigator.clipboard.writeText(shareUrl).then(function() {
+                showToast('分享链接已复制');
+              }).catch(function() {
+                prompt('复制以下链接发给别人：', shareUrl);
+              });
+            } else {
+              prompt('复制以下链接发给别人：', shareUrl);
+            }
+          }
+        }, 500);
+      } else {
+        showToast('设置已保存（配置含大图，链接过长，请用"生成定制网页"）');
+      }
+    } catch (e) {
+      showToast('设置已保存');
+    }
   }
 
   function resetSettings() {
@@ -2728,6 +2938,341 @@
       saveConfig();
       renderPage();
       showToast('已重置为默认设置');
+    }
+  }
+
+  // 导出配置：编码为base64复制到剪贴板
+  function exportConfig() {
+    try {
+      const json = JSON.stringify(config);
+      const b64 = btoa(unescape(encodeURIComponent(json)));
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(b64).then(function() {
+          showToast('配置已复制，去其他设备粘贴导入');
+        }).catch(function() {
+          fallbackCopy(b64);
+        });
+      } else {
+        fallbackCopy(b64);
+      }
+    } catch (e) {
+      showToast('导出失败：' + e.message);
+    }
+  }
+
+  function fallbackCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.position = 'fixed';
+    ta.style.opacity = '0';
+    document.body.appendChild(ta);
+    ta.select();
+    try {
+      document.execCommand('copy');
+      showToast('配置已复制，去其他设备粘贴导入');
+    } catch (e) {
+      prompt('复制以下配置文本，在其他设备导入：', text);
+    }
+    document.body.removeChild(ta);
+  }
+
+  // 导入配置：粘贴base64文本
+  function importConfig() {
+    const b64 = prompt('粘贴从其他设备导出的配置文本：');
+    if (!b64 || !b64.trim()) return;
+    try {
+      const json = decodeURIComponent(escape(atob(b64.trim())));
+      const imported = JSON.parse(json);
+      // 基本校验
+      if (!imported.wechat || !imported.qq || !imported.background) {
+        throw new Error('配置格式不正确');
+      }
+      if (confirm('导入后将覆盖当前所有设置，确定继续？')) {
+        config = imported;
+        saveConfig();
+        renderPage();
+        showToast('配置导入成功');
+      }
+    } catch (e) {
+      alert('导入失败：配置文本无效\n' + e.message);
+    }
+  }
+
+  // 生成分享链接：配置编码到URL hash
+  function shareConfig() {
+    try {
+      const json = JSON.stringify(config);
+      const b64 = btoa(unescape(encodeURIComponent(json)));
+      const url = window.location.origin + window.location.pathname + '#cfg=' + b64;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(url).then(function() {
+          showToast('分享链接已复制，打开即自动同步');
+        }).catch(function() {
+          prompt('复制以下链接分享：', url);
+        });
+      } else {
+        prompt('复制以下链接分享：', url);
+      }
+    } catch (e) {
+      showToast('生成链接失败：' + e.message);
+    }
+  }
+
+  // 页面加载时检查URL hash中的配置
+  function loadConfigFromUrl() {
+    try {
+      const hash = window.location.hash;
+      const match = hash.match(/#cfg=(.+)/);
+      if (match && match[1]) {
+        const b64 = match[1];
+        const json = decodeURIComponent(escape(atob(b64)));
+        const imported = JSON.parse(json);
+        if (imported.wechat && imported.qq && imported.background) {
+          config = imported;
+          saveConfig();
+          // 清除hash避免刷新重复导入
+          history.replaceState(null, '', window.location.pathname);
+          return true;
+        }
+      }
+    } catch (e) {
+      console.warn('从URL加载配置失败', e);
+    }
+    return false;
+  }
+
+  // 生成定制网页：将当前配置固化到HTML中，下载新文件
+  function generateCustomPage() {
+    try {
+      showToast('正在生成定制网页...');
+
+      // 获取当前页面完整HTML
+      let html = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+
+      // 1. 替换 DEFAULT_CONFIG 为当前配置
+      const configJson = JSON.stringify(config, null, 2);
+      const configRegex = /const DEFAULT_CONFIG = \{[\s\S]*?\};\s*\n/;
+      if (!configRegex.test(html)) {
+        throw new Error('未找到配置项');
+      }
+      html = html.replace(configRegex, 'const DEFAULT_CONFIG = ' + configJson + ';\n');
+
+      // 2. 替换 loadConfig 函数，让定制版直接使用 DEFAULT_CONFIG，不读 localStorage
+      const loadConfigRegex = /function loadConfig\(\) \{[\s\S]*?\n  \}/;
+      html = html.replace(loadConfigRegex,
+        'function loadConfig() {\n' +
+        '    // 定制版：使用内置配置，不读取本地存储\n' +
+        '    return JSON.parse(JSON.stringify(DEFAULT_CONFIG));\n' +
+        '  }'
+      );
+
+      // 3. 移除 URL 自动导入逻辑（定制版不需要）
+      const urlImportRegex = /\/\/ 检查分享链接中的配置[\s\S]*?\n  initMusic\(\);/;
+      html = html.replace(urlImportRegex, '  initMusic();');
+
+      // 4. 修改页面标题，标记为定制版
+      html = html.replace(/<title>[^<]*<\/title>/, '<title>石昊电竞</title>');
+
+      // 生成文件并下载
+      const blob = new Blob([html], { type: 'text/html;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = '石昊电竞-客服页.html';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+
+      showToast('定制网页已生成，请到下载目录查看');
+    } catch (e) {
+      alert('生成失败：' + e.message);
+    }
+  }
+
+  // ========== 云端同步（GitHub Gist）==========
+  const GIST_FILENAME = 'customer-service-config.json';
+
+  function loadCloudState() {
+    try {
+      const raw = localStorage.getItem(CLOUD_STORAGE_KEY);
+      if (raw) {
+        const s = JSON.parse(raw);
+        cloudEnabled = s.enabled || false;
+        cloudApiKey = s.apiKey || '';
+        cloudBinId = s.gistId || '';
+        cloudLastSync = s.lastSync || '';
+      }
+    } catch (e) {}
+  }
+
+  function saveCloudState() {
+    try {
+      localStorage.setItem(CLOUD_STORAGE_KEY, JSON.stringify({
+        enabled: cloudEnabled,
+        apiKey: cloudApiKey,
+        gistId: cloudBinId,
+        lastSync: cloudLastSync
+      }));
+    } catch (e) {}
+  }
+
+  function updateCloudUI() {
+    const btn = document.getElementById('cloud-toggle-btn');
+    const status = document.getElementById('cloud-status');
+    const apiInput = document.getElementById('cloud-api-key');
+    if (cloudEnabled) {
+      btn.textContent = '断开';
+      btn.classList.add('cloud-btn-danger');
+      apiInput.value = cloudApiKey;
+      apiInput.disabled = true;
+      status.style.display = 'block';
+      document.getElementById('cloud-status-text').textContent = '已连接 GitHub · 实时同步中';
+      if (cloudBinId) {
+        document.getElementById('cloud-bin-row').style.display = 'flex';
+        document.getElementById('cloud-bin-id').textContent = cloudBinId;
+      }
+      if (cloudLastSync) {
+        document.getElementById('cloud-sync-row').style.display = 'flex';
+        document.getElementById('cloud-last-sync').textContent = cloudLastSync;
+      }
+    } else {
+      btn.textContent = '启用';
+      btn.classList.remove('cloud-btn-danger');
+      apiInput.disabled = false;
+      status.style.display = 'none';
+    }
+  }
+
+  async function toggleCloudSync() {
+    if (cloudEnabled) {
+      if (confirm('确定断开云端同步吗？断开后其他设备将无法获取最新配置。')) {
+        cloudEnabled = false;
+        saveCloudState();
+        updateCloudUI();
+        showToast('已断开云端同步');
+      }
+      return;
+    }
+    const key = document.getElementById('cloud-api-key').value.trim();
+    if (!key) {
+      showToast('请先输入 GitHub Token');
+      return;
+    }
+    cloudApiKey = key;
+    showToast('正在连接 GitHub...');
+    try {
+      // 创建秘密Gist存储配置
+      const result = await createGist(config);
+      cloudBinId = result.id;
+      cloudEnabled = true;
+      cloudLastSync = new Date().toLocaleString('zh-CN');
+      saveCloudState();
+      updateCloudUI();
+      showToast('云端同步已启用，配置已上传到 GitHub');
+    } catch (e) {
+      alert('连接失败：' + e.message + '\n\n请检查 Token 是否正确，且已勾选 gist 权限。');
+      cloudApiKey = '';
+    }
+  }
+
+  async function createGist(data) {
+    const content = JSON.stringify(data, null, 2);
+    const body = {
+      description: '石昊电竞客服页配置 - 自动同步',
+      public: false,
+      files: {}
+    };
+    body.files[GIST_FILENAME] = { content: content };
+    const resp = await fetch('https://api.github.com/gists', {
+      method: 'POST',
+      headers: {
+        'Authorization': 'token ' + cloudApiKey,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    if (!resp.ok) {
+      const err = await resp.text();
+      throw new Error('HTTP ' + resp.status + ': ' + err);
+    }
+    return resp.json();
+  }
+
+  async function updateGist(gistId, data) {
+    const content = JSON.stringify(data, null, 2);
+    const body = { files: {} };
+    body.files[GIST_FILENAME] = { content: content };
+    const resp = await fetch('https://api.github.com/gists/' + gistId, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': 'token ' + cloudApiKey,
+        'Accept': 'application/vnd.github.v3+json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    if (!resp.ok) {
+      const err = await resp.text();
+      throw new Error('HTTP ' + resp.status + ': ' + err);
+    }
+    return resp.json();
+  }
+
+  async function fetchGist(gistId) {
+    const resp = await fetch('https://api.github.com/gists/' + gistId, {
+      method: 'GET',
+      headers: {
+        'Authorization': 'token ' + cloudApiKey,
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+    if (!resp.ok) {
+      const err = await resp.text();
+      throw new Error('HTTP ' + resp.status + ': ' + err);
+    }
+    const gist = await resp.json();
+    const file = gist.files[GIST_FILENAME];
+    if (!file) throw new Error('Gist中未找到配置文件');
+    return JSON.parse(file.content);
+  }
+
+  async function syncToCloud() {
+    if (!cloudEnabled || !cloudApiKey || !cloudBinId) return;
+    try {
+      await updateGist(cloudBinId, config);
+      cloudLastSync = new Date().toLocaleString('zh-CN');
+      saveCloudState();
+      if (document.getElementById('cloud-last-sync')) {
+        document.getElementById('cloud-last-sync').textContent = cloudLastSync;
+      }
+    } catch (e) {
+      console.warn('云端同步失败', e);
+    }
+  }
+
+  function syncToCloudNow() {
+    showToast('正在同步到 GitHub...');
+    syncToCloud().then(function() {
+      showToast('同步完成');
+    }).catch(function(e) {
+      showToast('同步失败：' + e.message);
+    });
+  }
+
+  async function loadFromCloud() {
+    if (!cloudEnabled || !cloudApiKey || !cloudBinId) return;
+    try {
+      const remote = await fetchGist(cloudBinId);
+      if (remote && remote.wechat && remote.qq) {
+        config = remote;
+        saveConfig();
+        renderPage();
+        showToast('已从 GitHub 同步最新配置');
+      }
+    } catch (e) {
+      console.warn('从云端加载失败', e);
     }
   }
 
@@ -2868,6 +3413,18 @@
     document.getElementById('subtitle-glow-val').textContent = this.value;
     applyTextStyle();
   });
+
+  // 检查分享链接中的配置，自动导入
+  const importedFromUrl = loadConfigFromUrl();
+  if (importedFromUrl) {
+    showToast('已从分享链接同步配置');
+  }
+
+  // 加载云端同步状态，如果已启用则从云端拉取最新配置
+  loadCloudState();
+  if (cloudEnabled) {
+    loadFromCloud();
+  }
 
   initMusic();
   renderPage();

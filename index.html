@@ -1104,20 +1104,31 @@
 
   /* Toast */
   .toast {
-    position: fixed; bottom: 100px; left: 50%;
+    position: fixed; bottom: 110px; left: 50%;
     transform: translateX(-50%) translateY(20px);
-    background: rgba(0,0,0,0.8);
-    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-    color: #fff; padding: 12px 24px; border-radius: 100px;
+    background: rgba(255,255,255,0.72);
+    backdrop-filter: blur(30px) saturate(180%); -webkit-backdrop-filter: blur(30px) saturate(180%);
+    color: #1c1c1e; padding: 12px 22px 12px 18px; border-radius: 100px;
     font-size: 14px; font-weight: 500; z-index: 300;
     opacity: 0; visibility: hidden;
     transition: opacity 0.3s ease, visibility 0.3s;
     pointer-events: none;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.12), 0 2px 8px rgba(0,0,0,0.08);
+    border: 1px solid rgba(255,255,255,0.8);
+    display: flex; align-items: center; gap: 8px;
+    max-width: 85vw;
+  }
+  .toast .toast-icon {
+    width: 20px; height: 20px; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .toast .toast-icon svg { width: 18px; height: 18px; }
+  .toast .toast-msg {
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
   }
   .toast.show {
     opacity: 1; visibility: visible;
-    animation: toastIn 0.45s var(--ease-spring);
+    animation: toastIn 0.5s var(--ease-spring);
   }
   .toast.hide { animation: toastOut 0.3s ease forwards; }
   @keyframes toastIn {
@@ -1341,6 +1352,86 @@
         <button class="bg-type-btn" data-bg="meteor" onclick="setBgType('meteor')">
           <svg viewBox="0 0 24 24"><circle cx="5" cy="5" r="1" fill="#fff"/><path d="M5 5 L15 15" stroke="#fff" stroke-width="1.5" opacity="0.6"/><path d="M5 5 L12 12" stroke="#88ccff" stroke-width="2" opacity="0.8"/><circle cx="18" cy="8" r="0.8" fill="#fff"/><path d="M18 8 L23 13" stroke="#fff" stroke-width="1" opacity="0.5"/></svg>
           流星
+        </button>
+        <button class="bg-type-btn" data-bg="bubbles" onclick="setBgType('bubbles')">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="16" r="3" fill="none" stroke="#88ccff" stroke-width="1" opacity="0.8"/><circle cx="12" cy="10" r="4" fill="none" stroke="#ff88cc" stroke-width="1" opacity="0.7"/><circle cx="18" cy="16" r="2.5" fill="none" stroke="#88ffcc" stroke-width="1" opacity="0.8"/><circle cx="9" cy="5" r="1.5" fill="none" stroke="#ffcc88" stroke-width="1" opacity="0.6"/></svg>
+          彩色气泡
+        </button>
+        <button class="bg-type-btn" data-bg="petals" onclick="setBgType('petals')">
+          <svg viewBox="0 0 24 24"><path d="M12 3 C14 5 15 7 13 9 C11 11 9 10 8 8 C7 6 9 4 12 3Z" fill="#ffb6c1" opacity="0.8"/><path d="M5 10 C7 12 8 14 6 16 C4 18 2 17 1 15 C0 13 2 11 5 10Z" fill="#ffc0cb" opacity="0.7"/><path d="M18 12 C20 14 21 16 19 18 C17 20 15 19 14 17 C13 15 15 13 18 12Z" fill="#ffb6c1" opacity="0.6"/></svg>
+          花瓣飘落
+        </button>
+        <button class="bg-type-btn" data-bg="snow" onclick="setBgType('snow')">
+          <svg viewBox="0 0 24 24"><path d="M12 2v20M4 6l16 12M20 6L4 18" stroke="#fff" stroke-width="1" opacity="0.8"/><circle cx="12" cy="12" r="1.5" fill="#fff"/></svg>
+          雪花
+        </button>
+        <button class="bg-type-btn" data-bg="firefly" onclick="setBgType('firefly')">
+          <svg viewBox="0 0 24 24"><circle cx="6" cy="8" r="2" fill="#ffff00" opacity="0.9"/><circle cx="6" cy="8" r="4" fill="#ffff00" opacity="0.2"/><circle cx="16" cy="12" r="1.5" fill="#adff2f" opacity="0.9"/><circle cx="16" cy="12" r="3" fill="#adff2f" opacity="0.2"/><circle cx="10" cy="18" r="1.8" fill="#ffff00" opacity="0.8"/><circle cx="10" cy="18" r="3.5" fill="#ffff00" opacity="0.15"/></svg>
+          萤火虫
+        </button>
+        <button class="bg-type-btn" data-bg="smoke" onclick="setBgType('smoke')">
+          <svg viewBox="0 0 24 24"><circle cx="8" cy="12" r="5" fill="#8b5cf6" opacity="0.3"/><circle cx="14" cy="10" r="6" fill="#ec4899" opacity="0.25"/><circle cx="12" cy="16" r="5" fill="#06b6d4" opacity="0.3"/><circle cx="18" cy="14" r="4" fill="#f59e0b" opacity="0.2"/></svg>
+          彩色烟雾
+        </button>
+        <button class="bg-type-btn" data-bg="matrix" onclick="setBgType('matrix')">
+          <svg viewBox="0 0 24 24"><text x="3" y="8" font-size="6" fill="#00ff00" opacity="0.9">01</text><text x="10" y="12" font-size="6" fill="#00ff00" opacity="0.7">10</text><text x="16" y="16" font-size="6" fill="#00ff00" opacity="0.8">01</text><text x="6" y="20" font-size="6" fill="#00ff00" opacity="0.6">11</text><text x="14" y="6" font-size="5" fill="#00ff00" opacity="0.5">0</text></svg>
+          数字雨
+        </button>
+        <button class="bg-type-btn" data-bg="hearts" onclick="setBgType('hearts')">
+          <svg viewBox="0 0 24 24"><path d="M12 21 C12 21 4 14 4 8.5 C4 6 6 4 8.5 4 C10.5 4 12 6 12 6 C12 6 13.5 4 15.5 4 C18 4 20 6 20 8.5 C20 14 12 21 12 21Z" fill="#ff6b9d" opacity="0.8"/></svg>
+          爱心飘落
+        </button>
+        <button class="bg-type-btn" data-bg="pulse" onclick="setBgType('pulse')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="#a855f7" opacity="0.8"/><circle cx="12" cy="12" r="6" fill="none" stroke="#a855f7" stroke-width="1" opacity="0.5"/><circle cx="12" cy="12" r="9" fill="none" stroke="#ec4899" stroke-width="1" opacity="0.3"/></svg>
+          光晕脉冲
+        </button>
+        <button class="bg-type-btn" data-bg="lines" onclick="setBgType('lines')">
+          <svg viewBox="0 0 24 24"><path d="M0 8 Q6 4 12 8 T24 8" fill="none" stroke="#06b6d4" stroke-width="1.5" opacity="0.7"/><path d="M0 12 Q6 8 12 12 T24 12" fill="none" stroke="#8b5cf6" stroke-width="1.5" opacity="0.6"/><path d="M0 16 Q6 12 12 16 T24 16" fill="none" stroke="#ec4899" stroke-width="1.5" opacity="0.5"/></svg>
+          彩色线条
+        </button>
+        <button class="bg-type-btn" data-bg="spiral" onclick="setBgType('spiral')">
+          <svg viewBox="0 0 24 24"><path d="M12 12 m0 -8 a8 8 0 1 1 -6 2 a6 6 0 1 1 4 -1 a4 4 0 1 1 -3 1 a2 2 0 1 1 2 -1" fill="none" stroke="#c084fc" stroke-width="1.2" opacity="0.8"/><circle cx="12" cy="12" r="1.5" fill="#fff" opacity="0.9"/></svg>
+          螺旋星系
+        </button>
+        <button class="bg-type-btn" data-bg="confetti" onclick="setBgType('confetti')">
+          <svg viewBox="0 0 24 24"><rect x="4" y="4" width="3" height="5" rx="1" fill="#ff6b6b" transform="rotate(20 5.5 6.5)"/><rect x="10" y="2" width="3" height="5" rx="1" fill="#ffd93d" transform="rotate(-15 11.5 4.5)"/><rect x="16" y="5" width="3" height="5" rx="1" fill="#6bcb77" transform="rotate(30 17.5 7.5)"/><rect x="6" y="14" width="3" height="5" rx="1" fill="#4d96ff" transform="rotate(-25 7.5 16.5)"/><rect x="14" y="16" width="3" height="5" rx="1" fill="#ff6b9d" transform="rotate(15 15.5 18.5)"/></svg>
+          彩色纸屑
+        </button>
+        <button class="bg-type-btn" data-bg="galaxy" onclick="setBgType('galaxy')">
+          <svg viewBox="0 0 24 24"><ellipse cx="12" cy="12" rx="10" ry="4" fill="none" stroke="#c084fc" stroke-width="1" opacity="0.7" transform="rotate(-20 12 12)"/><ellipse cx="12" cy="12" rx="7" ry="2.5" fill="none" stroke="#f0abfc" stroke-width="1" opacity="0.6" transform="rotate(-20 12 12)"/><circle cx="12" cy="12" r="2" fill="#fff" opacity="0.9"/><circle cx="5" cy="7" r="0.8" fill="#fff"/><circle cx="19" cy="16" r="0.6" fill="#fff"/></svg>
+          银河星云
+        </button>
+        <button class="bg-type-btn" data-bg="vortex" onclick="setBgType('vortex')">
+          <svg viewBox="0 0 24 24"><path d="M12 12 m0 -8 a8 8 0 1 1 -5.6 2.3 a6 6 0 1 1 4.2 -1.5 a4 4 0 1 1 -2.8 1 a2 2 0 1 1 1.4 -0.5" fill="none" stroke="#22d3ee" stroke-width="1.2" opacity="0.8"/><circle cx="12" cy="12" r="1.5" fill="#fff"/></svg>
+          粒子漩涡
+        </button>
+        <button class="bg-type-btn" data-bg="golden" onclick="setBgType('golden')">
+          <svg viewBox="0 0 24 24"><circle cx="8" cy="16" r="2" fill="#ffd700" opacity="0.9"/><circle cx="8" cy="16" r="4" fill="#ffd700" opacity="0.2"/><circle cx="14" cy="10" r="1.5" fill="#ffa500" opacity="0.9"/><circle cx="14" cy="10" r="3" fill="#ffa500" opacity="0.2"/><circle cx="18" cy="18" r="1.8" fill="#ffd700" opacity="0.8"/><circle cx="10" cy="5" r="1.2" fill="#ffa500" opacity="0.7"/></svg>
+          金色粒子
+        </button>
+        <button class="bg-type-btn" data-bg="ocean" onclick="setBgType('ocean')">
+          <svg viewBox="0 0 24 24"><path d="M4 20 Q8 12 12 20 T20 20" fill="none" stroke="#00bfff" stroke-width="1.5" opacity="0.6"/><path d="M2 22 Q6 16 10 22 T18 22 T26 22" fill="none" stroke="#1e90ff" stroke-width="1.5" opacity="0.5"/><circle cx="8" cy="8" r="1" fill="#87ceeb" opacity="0.7"/><circle cx="15" cy="5" r="0.8" fill="#87ceeb" opacity="0.6"/><path d="M12 2 L10 8 L14 8 Z" fill="#ffffe0" opacity="0.3"/></svg>
+          深海光线
+        </button>
+        <button class="bg-type-btn" data-bg="warp" onclick="setBgType('warp')">
+          <svg viewBox="0 0 24 24"><line x1="12" y1="12" x2="4" y2="4" stroke="#fff" stroke-width="1" opacity="0.7"/><line x1="12" y1="12" x2="20" y2="3" stroke="#fff" stroke-width="1" opacity="0.5"/><line x1="12" y1="12" x2="22" y2="14" stroke="#fff" stroke-width="1.2" opacity="0.8"/><line x1="12" y1="12" x2="3" y2="18" stroke="#fff" stroke-width="0.8" opacity="0.6"/><line x1="12" y1="12" x2="16" y2="22" stroke="#fff" stroke-width="1" opacity="0.7"/><circle cx="12" cy="12" r="1" fill="#fff"/></svg>
+          星空漫游
+        </button>
+        <button class="bg-type-btn" data-bg="feather" onclick="setBgType('feather')">
+          <svg viewBox="0 0 24 24"><path d="M18 2 C12 4 8 10 8 16 L6 20 L10 18 C14 18 20 14 22 8 C20 6 19 4 18 2Z" fill="none" stroke="#fff" stroke-width="1" opacity="0.8"/><path d="M8 16 L16 8" stroke="#fff" stroke-width="0.8" opacity="0.6"/><path d="M10 14 L14 10" stroke="#fff" stroke-width="0.6" opacity="0.5"/></svg>
+          羽毛飘落
+        </button>
+        <button class="bg-type-btn" data-bg="neonring" onclick="setBgType('neonring')">
+          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3" fill="none" stroke="#ff00ff" stroke-width="1.5" opacity="0.9"/><circle cx="12" cy="12" r="6" fill="none" stroke="#00ffff" stroke-width="1.2" opacity="0.7"/><circle cx="12" cy="12" r="9" fill="none" stroke="#ffff00" stroke-width="1" opacity="0.5"/></svg>
+          霓虹圆环
+        </button>
+        <button class="bg-type-btn" data-bg="fire" onclick="setBgType('fire')">
+          <svg viewBox="0 0 24 24"><path d="M12 2 C14 6 16 8 16 12 C16 16 14 20 12 22 C10 20 8 16 8 12 C8 9 10 7 12 2Z" fill="#ff4500" opacity="0.7"/><path d="M12 8 C13 10 14 12 14 14 C14 17 13 19 12 20 C11 19 10 17 10 14 C10 12 11 10 12 8Z" fill="#ffa500" opacity="0.8"/><path d="M12 13 C12.5 14 13 15 13 16 C13 17.5 12.5 18.5 12 19 C11.5 18.5 11 17.5 11 16 C11 15 11.5 14 12 13Z" fill="#ffff00" opacity="0.9"/></svg>
+          火焰粒子
+        </button>
+        <button class="bg-type-btn" data-bg="startrail" onclick="setBgType('startrail')">
+          <svg viewBox="0 0 24 24"><path d="M12 12 m-8 0 a8 8 0 1 0 16 0 a8 8 0 1 0 -16 0" fill="none" stroke="#fff" stroke-width="0.5" opacity="0.3" stroke-dasharray="2 4"/><path d="M12 12 m-5 0 a5 5 0 1 0 10 0 a5 5 0 1 0 -10 0" fill="none" stroke="#fff" stroke-width="0.5" opacity="0.4" stroke-dasharray="3 3"/><circle cx="12" cy="4" r="1" fill="#fff"/><circle cx="20" cy="12" r="0.8" fill="#fff"/><circle cx="4" cy="12" r="0.6" fill="#fff"/></svg>
+          星轨旋转
         </button>
         <button class="bg-type-btn" data-bg="image" onclick="setBgType('image')">
           <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2" fill="none" stroke="currentColor" stroke-width="1.5"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
@@ -1644,6 +1735,33 @@
   let waveField = null;
   let glowField = null;
   let meteorField = null;
+  let bubbleField = null;
+  let petalField = null;
+  let snowField = null;
+  let fireflyField = null;
+  let smokeField = null;
+  let matrixField = null;
+  let heartField = null;
+  let pulseField = null;
+  let lineField = null;
+  let spiralField = null;
+  let confettiField = null;
+  let fluidField = null;
+  let networkField = null;
+  let kaleidoField = null;
+  let rippleField = null;
+  let shardField = null;
+  let gradWaveField = null;
+  let neonFlowField = null;
+  let galaxyField = null;
+  let fireField = null;
+  let starTrailField = null;
+  let vortexField = null;
+  let goldenField = null;
+  let oceanField = null;
+  let warpField = null;
+  let featherField = null;
+  let neonringField = null;
 
   function loadConfig() {
     try {
@@ -2512,6 +2630,915 @@
     overlay.classList.toggle('active');
   }
 
+  // ========== 彩色气泡 ==========
+  function createBubbleField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, bubbles = [], raf;
+    const colors = ['rgba(135,206,250,', 'rgba(255,182,193,', 'rgba(152,251,152,', 'rgba(255,218,185,', 'rgba(221,160,221,', 'rgba(176,224,230,'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 35; i++) {
+      bubbles.push({ x: Math.random()*W, y: Math.random()*H, r: 8+Math.random()*35, speed: 0.3+Math.random()*1.2, drift: (Math.random()-0.5)*0.5, color: colors[Math.floor(Math.random()*colors.length)], alpha: 0.15+Math.random()*0.25 });
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      bubbles.forEach(b => {
+        b.y -= b.speed; b.x += b.drift;
+        if (b.y < -b.r*2) { b.y = H+b.r; b.x = Math.random()*W; }
+        if (b.x < -b.r) b.x = W+b.r; if (b.x > W+b.r) b.x = -b.r;
+        const g = ctx.createRadialGradient(b.x-b.r*0.3, b.y-b.r*0.3, 0, b.x, b.y, b.r);
+        g.addColorStop(0, b.color + (b.alpha+0.2) + ')');
+        g.addColorStop(0.7, b.color + b.alpha + ')');
+        g.addColorStop(1, b.color + (b.alpha*0.3) + ')');
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
+        ctx.fillStyle = g; ctx.fill();
+        ctx.strokeStyle = b.color + (b.alpha+0.3) + ')'; ctx.lineWidth = 1.5; ctx.stroke();
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 花瓣飘落 ==========
+  function createPetalField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, petals = [], raf;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 30; i++) {
+      petals.push({ x: Math.random()*W, y: Math.random()*H, size: 8+Math.random()*14, speed: 0.5+Math.random()*1.5, sway: Math.random()*Math.PI*2, swaySpeed: 0.01+Math.random()*0.03, rot: Math.random()*Math.PI*2, rotSpeed: (Math.random()-0.5)*0.03, color: Math.random()>0.5 ? '#ffb6c1' : '#ffc0cb' });
+    }
+    function drawPetal(x, y, size, rot, color) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+      ctx.beginPath();
+      ctx.moveTo(0, -size);
+      ctx.bezierCurveTo(size*0.8, -size*0.5, size*0.8, size*0.3, 0, size);
+      ctx.bezierCurveTo(-size*0.8, size*0.3, -size*0.8, -size*0.5, 0, -size);
+      ctx.fillStyle = color; ctx.globalAlpha = 0.75; ctx.fill();
+      ctx.restore();
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      petals.forEach(p => {
+        p.sway += p.swaySpeed; p.y += p.speed; p.rot += p.rotSpeed;
+        const x = p.x + Math.sin(p.sway) * 30;
+        if (p.y > H+p.size) { p.y = -p.size; p.x = Math.random()*W; }
+        drawPetal(x, p.y, p.size, p.rot, p.color);
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 雪花 ==========
+  function createSnowField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, flakes = [], raf;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 80; i++) {
+      flakes.push({ x: Math.random()*W, y: Math.random()*H, r: 1+Math.random()*3.5, speed: 0.3+Math.random()*1.2, drift: (Math.random()-0.5)*0.4, phase: Math.random()*Math.PI*2 });
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      flakes.forEach(f => {
+        f.phase += 0.01; f.y += f.speed; f.x += f.drift + Math.sin(f.phase)*0.3;
+        if (f.y > H+f.r) { f.y = -f.r; f.x = Math.random()*W; }
+        if (f.x < -f.r) f.x = W+f.r; if (f.x > W+f.r) f.x = -f.r;
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(255,255,255,' + (0.4+f.r*0.15) + ')';
+        ctx.shadowColor = '#fff'; ctx.shadowBlur = f.r*3; ctx.fill(); ctx.shadowBlur = 0;
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 萤火虫 ==========
+  function createFireflyField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, flies = [], raf;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 25; i++) {
+      flies.push({ x: Math.random()*W, y: Math.random()*H, vx: (Math.random()-0.5)*0.8, vy: (Math.random()-0.5)*0.8, r: 1.5+Math.random()*2, phase: Math.random()*Math.PI*2, glow: 0.5+Math.random()*0.5 });
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      flies.forEach(f => {
+        f.phase += 0.02 + Math.random()*0.01;
+        f.x += f.vx + Math.sin(f.phase)*0.2; f.y += f.vy + Math.cos(f.phase*0.7)*0.2;
+        if (f.x < 0 || f.x > W) f.vx *= -1; if (f.y < 0 || f.y > H) f.vy *= -1;
+        const brightness = (Math.sin(f.phase*2)+1)/2 * f.glow;
+        const g = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r*6);
+        g.addColorStop(0, 'rgba(255,255,100,' + brightness + ')');
+        g.addColorStop(0.3, 'rgba(180,255,80,' + brightness*0.5 + ')');
+        g.addColorStop(1, 'rgba(100,255,50,0)');
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r*6, 0, Math.PI*2);
+        ctx.fillStyle = g; ctx.fill();
+        ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, Math.PI*2);
+        ctx.fillStyle = 'rgba(255,255,200,' + brightness + ')'; ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 彩色烟雾 ==========
+  function createSmokeField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, smokes = [], raf;
+    const colors = ['rgba(139,92,246,', 'rgba(236,72,153,', 'rgba(6,182,212,', 'rgba(245,158,11,', 'rgba(34,197,94,'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 15; i++) {
+      smokes.push({ x: Math.random()*W, y: Math.random()*H, r: 80+Math.random()*150, speed: 0.1+Math.random()*0.3, drift: (Math.random()-0.5)*0.15, color: colors[Math.floor(Math.random()*colors.length)], alpha: 0.08+Math.random()*0.12, phase: Math.random()*Math.PI*2 });
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      smokes.forEach(s => {
+        s.phase += 0.005; s.y -= s.speed; s.x += s.drift + Math.sin(s.phase)*0.3;
+        if (s.y < -s.r) { s.y = H+s.r; s.x = Math.random()*W; }
+        const g = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.r);
+        g.addColorStop(0, s.color + s.alpha + ')');
+        g.addColorStop(0.5, s.color + (s.alpha*0.5) + ')');
+        g.addColorStop(1, s.color + '0)');
+        ctx.beginPath(); ctx.arc(s.x, s.y, s.r, 0, Math.PI*2);
+        ctx.fillStyle = g; ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 矩阵数字雨 ==========
+  function createMatrixField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, cols, drops = [], raf;
+    const chars = '01アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン';
+    const fontSize = 14;
+    function resize() {
+      W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight;
+      cols = Math.floor(W / fontSize);
+      drops = []; for (let i = 0; i < cols; i++) drops.push(Math.random()*H/fontSize);
+    }
+    resize(); window.addEventListener('resize', resize);
+    function draw() {
+      ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,W,H);
+      ctx.font = fontSize + 'px monospace';
+      for (let i = 0; i < cols; i++) {
+        const ch = chars[Math.floor(Math.random()*chars.length)];
+        const x = i*fontSize, y = drops[i]*fontSize;
+        ctx.fillStyle = '#00ff00'; ctx.shadowColor = '#00ff00'; ctx.shadowBlur = 8;
+        ctx.fillText(ch, x, y); ctx.shadowBlur = 0;
+        if (y > H && Math.random() > 0.975) drops[i] = 0;
+        drops[i]++;
+      }
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 爱心飘落 ==========
+  function createHeartField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, hearts = [], raf;
+    const colors = ['#ff6b9d', '#ff8fab', '#ffb3c6', '#ff4d6d', '#ff758f'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 25; i++) {
+      hearts.push({ x: Math.random()*W, y: Math.random()*H, size: 8+Math.random()*16, speed: 0.4+Math.random()*1, sway: Math.random()*Math.PI*2, swaySpeed: 0.01+Math.random()*0.02, color: colors[Math.floor(Math.random()*colors.length)], alpha: 0.5+Math.random()*0.4 });
+    }
+    function drawHeart(x, y, size, color, alpha) {
+      ctx.save(); ctx.translate(x, y); ctx.globalAlpha = alpha;
+      ctx.beginPath();
+      ctx.moveTo(0, size*0.3);
+      ctx.bezierCurveTo(-size*0.5, -size*0.3, -size, size*0.1, 0, size*0.8);
+      ctx.bezierCurveTo(size, size*0.1, size*0.5, -size*0.3, 0, size*0.3);
+      ctx.fillStyle = color; ctx.shadowColor = color; ctx.shadowBlur = size*0.8; ctx.fill();
+      ctx.restore();
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      hearts.forEach(h => {
+        h.sway += h.swaySpeed; h.y += h.speed;
+        const x = h.x + Math.sin(h.sway) * 25;
+        if (h.y > H+h.size) { h.y = -h.size; h.x = Math.random()*W; }
+        drawHeart(x, h.y, h.size, h.color, h.alpha);
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 光晕脉冲 ==========
+  function createPulseField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, pulses = [], raf, time = 0;
+    const colors = ['#a855f7', '#ec4899', '#06b6d4', '#f59e0b', '#10b981'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 8; i++) {
+      pulses.push({ x: Math.random()*W, y: Math.random()*H, maxR: 100+Math.random()*200, speed: 0.005+Math.random()*0.01, phase: Math.random()*Math.PI*2, color: colors[Math.floor(Math.random()*colors.length)] });
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H); time += 1;
+      pulses.forEach(p => {
+        const t = (time * p.speed + p.phase) % (Math.PI*2);
+        const r = (Math.sin(t)+1)/2 * p.maxR;
+        const alpha = (1 - r/p.maxR) * 0.3;
+        if (alpha > 0) {
+          const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, r);
+          g.addColorStop(0, p.color + Math.floor(alpha*255).toString(16).padStart(2,'0'));
+          g.addColorStop(0.6, p.color + Math.floor(alpha*0.5*255).toString(16).padStart(2,'0'));
+          g.addColorStop(1, p.color + '00');
+          ctx.beginPath(); ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+          ctx.fillStyle = g; ctx.fill();
+        }
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 彩色线条 ==========
+  function createLineField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, lines = [], raf, time = 0;
+    const colors = ['#06b6d4', '#8b5cf6', '#ec4899', '#f59e0b', '#10b981', '#ef4444'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 12; i++) {
+      lines.push({ baseY: H*(0.15+Math.random()*0.7), amp: 20+Math.random()*60, freq: 0.005+Math.random()*0.01, speed: 0.01+Math.random()*0.02, phase: Math.random()*Math.PI*2, color: colors[Math.floor(Math.random()*colors.length)], width: 1+Math.random()*2 });
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H); time += 1;
+      lines.forEach(l => {
+        ctx.beginPath();
+        for (let x = 0; x <= W; x += 3) {
+          const y = l.baseY + Math.sin(x*l.freq + time*l.speed + l.phase) * l.amp
+                    + Math.sin(x*l.freq*2.3 + time*l.speed*1.5 + l.phase) * l.amp*0.3;
+          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = l.color; ctx.lineWidth = l.width; ctx.globalAlpha = 0.5;
+        ctx.shadowColor = l.color; ctx.shadowBlur = 10; ctx.stroke(); ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 螺旋星系 ==========
+  function createSpiralField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [], raf, angle = 0;
+    const colors = ['#c084fc', '#f0abfc', '#818cf8', '#67e8f9', '#fda4af'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 400; i++) {
+      const arm = Math.floor(Math.random()*3);
+      const dist = Math.random() * Math.min(W,H) * 0.45;
+      const armAngle = arm * (Math.PI*2/3) + dist * 0.008 + (Math.random()-0.5)*0.3;
+      stars.push({ dist: dist, angle: armAngle, size: 0.5+Math.random()*2, color: colors[Math.floor(Math.random()*colors.length)], twinkle: Math.random()*Math.PI*2 });
+    }
+    function draw() {
+      ctx.fillStyle = 'rgba(5,5,15,0.15)'; ctx.fillRect(0,0,W,H);
+      const cx = W/2, cy = H/2;
+      angle += 0.002;
+      stars.forEach(s => {
+        s.twinkle += 0.02;
+        const a = s.angle + angle;
+        const x = cx + Math.cos(a) * s.dist;
+        const y = cy + Math.sin(a) * s.dist * 0.6;
+        const brightness = (Math.sin(s.twinkle)+1)/2;
+        ctx.beginPath(); ctx.arc(x, y, s.size, 0, Math.PI*2);
+        ctx.fillStyle = s.color; ctx.globalAlpha = 0.4 + brightness*0.6;
+        ctx.shadowColor = s.color; ctx.shadowBlur = s.size*4; ctx.fill();
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      });
+      // 中心核
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 60);
+      g.addColorStop(0, 'rgba(255,255,255,0.8)');
+      g.addColorStop(0.3, 'rgba(192,132,252,0.4)');
+      g.addColorStop(1, 'rgba(192,132,252,0)');
+      ctx.beginPath(); ctx.arc(cx, cy, 60, 0, Math.PI*2); ctx.fillStyle = g; ctx.fill();
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 彩色纸屑 ==========
+  function createConfettiField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, pieces = [], raf;
+    const colors = ['#ff6b6b', '#ffd93d', '#6bcb77', '#4d96ff', '#ff6b9d', '#c084fc', '#fdba74'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 60; i++) {
+      pieces.push({ x: Math.random()*W, y: Math.random()*H, w: 4+Math.random()*6, h: 6+Math.random()*10, speed: 0.5+Math.random()*1.5, rot: Math.random()*Math.PI*2, rotSpeed: (Math.random()-0.5)*0.05, sway: Math.random()*Math.PI*2, swaySpeed: 0.01+Math.random()*0.02, color: colors[Math.floor(Math.random()*colors.length)] });
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      pieces.forEach(p => {
+        p.sway += p.swaySpeed; p.y += p.speed; p.rot += p.rotSpeed;
+        const x = p.x + Math.sin(p.sway) * 20;
+        if (p.y > H+p.h) { p.y = -p.h; p.x = Math.random()*W; }
+        ctx.save(); ctx.translate(x, p.y); ctx.rotate(p.rot);
+        ctx.fillStyle = p.color; ctx.globalAlpha = 0.8;
+        ctx.shadowColor = p.color; ctx.shadowBlur = 5;
+        ctx.fillRect(-p.w/2, -p.h/2, p.w, p.h);
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1; ctx.restore();
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 流体渐变 ==========
+  function createFluidField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, blobs = [], raf, time = 0;
+    const colors = ['rgba(139,92,246,', 'rgba(236,72,153,', 'rgba(6,182,212,', 'rgba(245,158,11,', 'rgba(16,185,129,'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 6; i++) {
+      blobs.push({ x: Math.random()*W, y: Math.random()*H, r: 150+Math.random()*200, vx: (Math.random()-0.5)*0.5, vy: (Math.random()-0.5)*0.5, color: colors[i%colors.length], phase: Math.random()*Math.PI*2 });
+    }
+    function draw() {
+      ctx.fillStyle = 'rgba(10,10,26,0.08)'; ctx.fillRect(0,0,W,H); time += 0.005;
+      blobs.forEach(b => {
+        b.x += b.vx + Math.sin(time+b.phase)*0.3; b.y += b.vy + Math.cos(time*0.7+b.phase)*0.3;
+        if (b.x < -b.r) b.x = W+b.r; if (b.x > W+b.r) b.x = -b.r;
+        if (b.y < -b.r) b.y = H+b.r; if (b.y > H+b.r) b.y = -b.r;
+        const g = ctx.createRadialGradient(b.x, b.y, 0, b.x, b.y, b.r);
+        g.addColorStop(0, b.color + '0.25)');
+        g.addColorStop(0.5, b.color + '0.12)');
+        g.addColorStop(1, b.color + '0)');
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI*2); ctx.fillStyle = g; ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 粒子网络 ==========
+  function createNetworkField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], raf, mouse = {x:-1000,y:-1000};
+    const colors = ['#06b6d4', '#8b5cf6', '#ec4899', '#f59e0b'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    const onMove = e => { const t = e.touches?e.touches[0]:e; mouse.x = t.clientX; mouse.y = t.clientY; };
+    window.addEventListener('mousemove', onMove); window.addEventListener('touchmove', onMove);
+    for (let i = 0; i < 70; i++) {
+      particles.push({ x: Math.random()*W, y: Math.random()*H, vx: (Math.random()-0.5)*0.4, vy: (Math.random()-0.5)*0.4, r: 1+Math.random()*2, color: colors[Math.floor(Math.random()*colors.length)] });
+    }
+    function draw() {
+      ctx.clearRect(0,0,W,H);
+      particles.forEach((p,i) => {
+        p.x += p.vx; p.y += p.vy;
+        if (p.x < 0 || p.x > W) p.vx *= -1; if (p.y < 0 || p.y > H) p.vy *= -1;
+        const dx = p.x-mouse.x, dy = p.y-mouse.y, dist = Math.sqrt(dx*dx+dy*dy);
+        if (dist < 120) { p.x += dx/dist*0.5; p.y += dy/dist*0.5; }
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2);
+        ctx.fillStyle = p.color; ctx.shadowColor = p.color; ctx.shadowBlur = 6; ctx.fill(); ctx.shadowBlur = 0;
+        for (let j = i+1; j < particles.length; j++) {
+          const p2 = particles[j], dx2 = p.x-p2.x, dy2 = p.y-p2.y, d2 = Math.sqrt(dx2*dx2+dy2*dy2);
+          if (d2 < 120) {
+            ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(p2.x,p2.y);
+            ctx.strokeStyle = p.color; ctx.globalAlpha = (1-d2/120)*0.3; ctx.lineWidth = 0.5; ctx.stroke(); ctx.globalAlpha = 1;
+          }
+        }
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); window.removeEventListener('mousemove', onMove); window.removeEventListener('touchmove', onMove); canvas.remove(); } };
+  }
+
+  // ========== 万花筒 ==========
+  function createKaleidoscopeField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, raf, time = 0;
+    const colors = ['#a855f7', '#ec4899', '#06b6d4', '#f59e0b', '#10b981', '#ef4444'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    const cx = () => W/2, cy = () => H/2, R = () => Math.min(W,H)*0.45;
+    function draw() {
+      ctx.fillStyle = 'rgba(10,10,26,0.06)'; ctx.fillRect(0,0,W,H); time += 0.008;
+      const segments = 8;
+      for (let s = 0; s < segments; s++) {
+        const baseAngle = (s/segments)*Math.PI*2 + time;
+        for (let i = 0; i < 5; i++) {
+          const r = R() * (0.2 + i*0.15 + Math.sin(time*2+i)*0.05);
+          const a = baseAngle + i*0.3 + Math.sin(time+i)*0.2;
+          const x = cx() + Math.cos(a)*r, y = cy() + Math.sin(a)*r;
+          const size = 15 + Math.sin(time*3+i)*8;
+          ctx.save(); ctx.translate(x,y); ctx.rotate(a+time*2);
+          ctx.beginPath();
+          ctx.moveTo(0, -size); ctx.lineTo(size*0.866, size*0.5); ctx.lineTo(-size*0.866, size*0.5); ctx.closePath();
+          ctx.fillStyle = colors[(s+i)%colors.length]; ctx.globalAlpha = 0.4;
+          ctx.shadowColor = colors[(s+i)%colors.length]; ctx.shadowBlur = 15; ctx.fill();
+          ctx.shadowBlur = 0; ctx.globalAlpha = 1; ctx.restore();
+        }
+      }
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 水波涟漪 ==========
+  function createRippleField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, ripples = [], raf, time = 0;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    function spawn() { ripples.push({ x: Math.random()*W, y: Math.random()*H, r: 0, maxR: 100+Math.random()*150, alpha: 0.5, color: Math.random()>0.5?'#06b6d4':'#8b5cf6' }); }
+    for (let i = 0; i < 3; i++) { ripples.push({ x: Math.random()*W, y: Math.random()*H, r: Math.random()*100, maxR: 100+Math.random()*150, alpha: 0.3, color: Math.random()>0.5?'#06b6d4':'#8b5cf6' }); }
+    function draw() {
+      ctx.fillStyle = 'rgba(10,22,40,0.05)'; ctx.fillRect(0,0,W,H); time++;
+      if (time % 90 === 0) spawn();
+      ripples = ripples.filter(rp => rp.alpha > 0.01);
+      ripples.forEach(rp => {
+        rp.r += 1.5; rp.alpha = 0.5 * (1 - rp.r/rp.maxR);
+        ctx.beginPath(); ctx.arc(rp.x, rp.y, rp.r, 0, Math.PI*2);
+        ctx.strokeStyle = rp.color; ctx.lineWidth = 2; ctx.globalAlpha = rp.alpha;
+        ctx.shadowColor = rp.color; ctx.shadowBlur = 10; ctx.stroke();
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+        if (rp.r > 30) { ctx.beginPath(); ctx.arc(rp.x, rp.y, rp.r*0.7, 0, Math.PI*2); ctx.strokeStyle = rp.color; ctx.lineWidth = 1; ctx.globalAlpha = rp.alpha*0.5; ctx.stroke(); ctx.globalAlpha = 1; }
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 彩色碎片 ==========
+  function createShardField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, shards = [], raf;
+    const colors = ['#8b5cf6', '#ec4899', '#06b6d4', '#f59e0b', '#10b981', '#ef4444'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 25; i++) {
+      shards.push({ x: Math.random()*W, y: Math.random()*H, size: 15+Math.random()*30, speed: 0.2+Math.random()*0.6, rot: Math.random()*Math.PI*2, rotSpeed: (Math.random()-0.5)*0.01, sway: Math.random()*Math.PI*2, swaySpeed: 0.005+Math.random()*0.01, color: colors[Math.floor(Math.random()*colors.length)], sides: 3+Math.floor(Math.random()*3) });
+    }
+    function draw() {
+      ctx.fillStyle = 'rgba(10,10,26,0.04)'; ctx.fillRect(0,0,W,H);
+      shards.forEach(s => {
+        s.sway += s.swaySpeed; s.y += s.speed; s.rot += s.rotSpeed;
+        const x = s.x + Math.sin(s.sway)*30;
+        if (s.y > H+s.size) { s.y = -s.size; s.x = Math.random()*W; }
+        ctx.save(); ctx.translate(x, s.y); ctx.rotate(s.rot);
+        ctx.beginPath();
+        for (let i = 0; i < s.sides; i++) { const a = (i/s.sides)*Math.PI*2; const px = Math.cos(a)*s.size, py = Math.sin(a)*s.size; if (i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py); }
+        ctx.closePath(); ctx.fillStyle = s.color; ctx.globalAlpha = 0.25;
+        ctx.shadowColor = s.color; ctx.shadowBlur = 20; ctx.fill();
+        ctx.strokeStyle = s.color; ctx.lineWidth = 1; ctx.globalAlpha = 0.6; ctx.stroke();
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1; ctx.restore();
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 渐变波浪 ==========
+  function createGradientWaveField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, raf, time = 0;
+    const layers = [
+      { color1: '#8b5cf6', color2: '#ec4899', baseY: 0.55, amp: 50, freq: 0.008, speed: 0.015, alpha: 0.35 },
+      { color1: '#06b6d4', color2: '#8b5cf6', baseY: 0.65, amp: 60, freq: 0.006, speed: 0.012, alpha: 0.3 },
+      { color1: '#ec4899', color2: '#f59e0b', baseY: 0.75, amp: 45, freq: 0.01, speed: 0.018, alpha: 0.25 },
+      { color1: '#10b981', color2: '#06b6d4', baseY: 0.85, amp: 55, freq: 0.007, speed: 0.01, alpha: 0.2 }
+    ];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    function draw() {
+      ctx.clearRect(0,0,W,H); time++;
+      layers.forEach(l => {
+        const g = ctx.createLinearGradient(0, 0, W, 0);
+        g.addColorStop(0, l.color1); g.addColorStop(1, l.color2);
+        ctx.beginPath(); ctx.moveTo(0, H);
+        for (let x = 0; x <= W; x += 4) {
+          const y = H*l.baseY + Math.sin(x*l.freq + time*l.speed)*l.amp + Math.sin(x*l.freq*2.3 + time*l.speed*1.5)*l.amp*0.3;
+          ctx.lineTo(x, y);
+        }
+        ctx.lineTo(W, H); ctx.closePath();
+        ctx.fillStyle = g; ctx.globalAlpha = l.alpha; ctx.fill(); ctx.globalAlpha = 1;
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 霓虹光流 ==========
+  function createNeonFlowField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, flows = [], raf, time = 0;
+    const colors = ['#06b6d4', '#ec4899', '#a855f7', '#f59e0b', '#10b981'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 8; i++) {
+      flows.push({ y: H*(0.15+i*0.1), amp: 30+Math.random()*50, freq: 0.005+Math.random()*0.008, speed: 0.01+Math.random()*0.02, phase: Math.random()*Math.PI*2, color: colors[i%colors.length], width: 1.5+Math.random()*2 });
+    }
+    function draw() {
+      ctx.fillStyle = 'rgba(5,5,16,0.06)'; ctx.fillRect(0,0,W,H); time++;
+      flows.forEach(f => {
+        ctx.beginPath();
+        for (let x = 0; x <= W; x += 3) {
+          const y = f.y + Math.sin(x*f.freq + time*f.speed + f.phase)*f.amp + Math.sin(x*f.freq*1.7 + time*f.speed*1.3)*f.amp*0.4;
+          if (x === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+        }
+        ctx.strokeStyle = f.color; ctx.lineWidth = f.width; ctx.globalAlpha = 0.6;
+        ctx.shadowColor = f.color; ctx.shadowBlur = 15; ctx.stroke();
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 银河星云 ==========
+  function createGalaxyField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [], raf, angle = 0;
+    const colors = ['#c084fc', '#f0abfc', '#818cf8', '#67e8f9', '#fda4af', '#fff'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 500; i++) {
+      const arm = Math.floor(Math.random()*4);
+      const dist = Math.random() * Math.min(W,H) * 0.42;
+      const armAngle = arm * (Math.PI/2) + dist * 0.01 + (Math.random()-0.5)*0.25;
+      stars.push({ dist: dist, angle: armAngle, size: 0.5+Math.random()*1.8, color: colors[Math.floor(Math.random()*colors.length)], twinkle: Math.random()*Math.PI*2 });
+    }
+    function draw() {
+      ctx.fillStyle = 'rgba(5,5,15,0.12)'; ctx.fillRect(0,0,W,H);
+      const cx = W/2, cy = H/2; angle += 0.0015;
+      stars.forEach(s => {
+        s.twinkle += 0.015;
+        const a = s.angle + angle;
+        const x = cx + Math.cos(a)*s.dist, y = cy + Math.sin(a)*s.dist*0.55;
+        const br = (Math.sin(s.twinkle)+1)/2;
+        ctx.beginPath(); ctx.arc(x, y, s.size, 0, Math.PI*2);
+        ctx.fillStyle = s.color; ctx.globalAlpha = 0.3+br*0.7;
+        ctx.shadowColor = s.color; ctx.shadowBlur = s.size*5; ctx.fill();
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      });
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 80);
+      g.addColorStop(0, 'rgba(255,255,255,0.9)'); g.addColorStop(0.25, 'rgba(192,132,252,0.5)'); g.addColorStop(1, 'rgba(192,132,252,0)');
+      ctx.beginPath(); ctx.arc(cx, cy, 80, 0, Math.PI*2); ctx.fillStyle = g; ctx.fill();
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 粒子漩涡 ==========
+  function createVortexField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], raf, time = 0;
+    const colors = ['#22d3ee', '#a855f7', '#ec4899', '#fff'];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 200; i++) {
+      const angle = Math.random()*Math.PI*2, dist = 10+Math.random()*Math.min(W,H)*0.4;
+      particles.push({ angle: angle, dist: dist, speed: 0.005+Math.random()*0.02, size: 0.5+Math.random()*2, color: colors[Math.floor(Math.random()*colors.length)], spiral: (Math.random()-0.5)*0.001 });
+    }
+    function draw() {
+      ctx.fillStyle = 'rgba(5,5,16,0.08)'; ctx.fillRect(0,0,W,H); time++;
+      const cx = W/2, cy = H/2;
+      particles.forEach(p => {
+        p.angle += p.speed; p.dist += p.spiral;
+        if (p.dist < 5) p.dist = Math.min(W,H)*0.4; if (p.dist > Math.min(W,H)*0.45) p.dist = 10;
+        const x = cx + Math.cos(p.angle)*p.dist, y = cy + Math.sin(p.angle)*p.dist;
+        const alpha = 1 - p.dist/(Math.min(W,H)*0.45);
+        ctx.beginPath(); ctx.arc(x, y, p.size, 0, Math.PI*2);
+        ctx.fillStyle = p.color; ctx.globalAlpha = alpha*0.8;
+        ctx.shadowColor = p.color; ctx.shadowBlur = p.size*4; ctx.fill();
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      });
+      const g = ctx.createRadialGradient(cx, cy, 0, cx, cy, 30);
+      g.addColorStop(0, 'rgba(34,211,238,0.8)'); g.addColorStop(1, 'rgba(34,211,238,0)');
+      ctx.beginPath(); ctx.arc(cx, cy, 30, 0, Math.PI*2); ctx.fillStyle = g; ctx.fill();
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 金色粒子 ==========
+  function createGoldenField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], raf;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 60; i++) {
+      particles.push({ x: Math.random()*W, y: Math.random()*H, r: 1+Math.random()*3, vx: (Math.random()-0.5)*0.3, vy: -0.2-Math.random()*0.5, phase: Math.random()*Math.PI*2, color: Math.random()>0.5?'#ffd700':'#ffa500' });
+    }
+    function draw() {
+      ctx.fillStyle = 'rgba(26,18,8,0.05)'; ctx.fillRect(0,0,W,H);
+      particles.forEach(p => {
+        p.phase += 0.02; p.x += p.vx + Math.sin(p.phase)*0.2; p.y += p.vy;
+        if (p.y < -p.r*2) { p.y = H+p.r; p.x = Math.random()*W; }
+        if (p.x < -p.r) p.x = W+p.r; if (p.x > W+p.r) p.x = -p.r;
+        const br = (Math.sin(p.phase*2)+1)/2;
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r*5);
+        g.addColorStop(0, p.color); g.addColorStop(0.3, p.color+'88'); g.addColorStop(1, p.color+'00');
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r*5, 0, Math.PI*2); ctx.fillStyle = g; ctx.globalAlpha = 0.3+br*0.4; ctx.fill();
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fillStyle = '#fff'; ctx.globalAlpha = 0.6+br*0.4; ctx.fill(); ctx.globalAlpha = 1;
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 深海光线 ==========
+  function createOceanField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, rays = [], bubbles = [], raf, time = 0;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 5; i++) rays.push({ x: W*(0.1+i*0.2), width: 60+Math.random()*80, speed: 0.003+Math.random()*0.005, phase: Math.random()*Math.PI*2 });
+    for (let i = 0; i < 25; i++) bubbles.push({ x: Math.random()*W, y: Math.random()*H, r: 1+Math.random()*4, speed: 0.3+Math.random()*0.8, drift: (Math.random()-0.5)*0.2 });
+    function draw() {
+      ctx.clearRect(0,0,W,H); time++;
+      rays.forEach(r => {
+        const x = r.x + Math.sin(time*r.speed+r.phase)*40;
+        const g = ctx.createLinearGradient(x, 0, x+r.width*0.3, H);
+        g.addColorStop(0, 'rgba(135,206,250,0.15)'); g.addColorStop(0.5, 'rgba(100,180,255,0.08)'); g.addColorStop(1, 'rgba(100,180,255,0)');
+        ctx.beginPath(); ctx.moveTo(x-r.width/2, 0); ctx.lineTo(x+r.width/2, 0); ctx.lineTo(x+r.width*0.8, H); ctx.lineTo(x-r.width*0.3, H); ctx.closePath();
+        ctx.fillStyle = g; ctx.fill();
+      });
+      bubbles.forEach(b => {
+        b.y -= b.speed; b.x += b.drift + Math.sin(time*0.02+b.y*0.01)*0.3;
+        if (b.y < -b.r*2) { b.y = H+b.r; b.x = Math.random()*W; }
+        if (b.x < -b.r) b.x = W+b.r; if (b.x > W+b.r) b.x = -b.r;
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI*2);
+        ctx.strokeStyle = 'rgba(173,216,230,0.5)'; ctx.lineWidth = 1; ctx.stroke();
+        ctx.fillStyle = 'rgba(173,216,230,0.1)'; ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 星空漫游 ==========
+  function createWarpField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [], raf;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 300; i++) {
+      const angle = Math.random()*Math.PI*2, dist = Math.random()*Math.min(W,H)*0.5;
+      stars.push({ angle: angle, dist: dist, speed: 0.5+Math.random()*2, size: 0.5+Math.random()*1.5, color: Math.random()>0.8?'#88ccff':'#ffffff' });
+    }
+    function draw() {
+      ctx.fillStyle = 'rgba(0,0,0,0.15)'; ctx.fillRect(0,0,W,H);
+      const cx = W/2, cy = H/2;
+      stars.forEach(s => {
+        const x1 = cx + Math.cos(s.angle)*s.dist, y1 = cy + Math.sin(s.angle)*s.dist;
+        s.dist += s.speed;
+        if (s.dist > Math.min(W,H)*0.55) { s.dist = 5; s.angle = Math.random()*Math.PI*2; }
+        const x2 = cx + Math.cos(s.angle)*s.dist, y2 = cy + Math.sin(s.angle)*s.dist;
+        const alpha = Math.min(1, s.dist/(Math.min(W,H)*0.3));
+        ctx.beginPath(); ctx.moveTo(x1, y1); ctx.lineTo(x2, y2);
+        ctx.strokeStyle = s.color; ctx.lineWidth = s.size; ctx.globalAlpha = alpha*0.8;
+        ctx.shadowColor = s.color; ctx.shadowBlur = 5; ctx.stroke();
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 羽毛飘落 ==========
+  function createFeatherField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, feathers = [], raf;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 15; i++) {
+      feathers.push({ x: Math.random()*W, y: Math.random()*H, size: 20+Math.random()*25, speed: 0.3+Math.random()*0.6, rot: Math.random()*Math.PI*2, rotSpeed: (Math.random()-0.5)*0.015, sway: Math.random()*Math.PI*2, swaySpeed: 0.008+Math.random()*0.012, color: Math.random()>0.5?'rgba(255,255,255,':'rgba(200,220,255,' });
+    }
+    function drawFeather(x, y, size, rot, color) {
+      ctx.save(); ctx.translate(x, y); ctx.rotate(rot);
+      ctx.beginPath();
+      ctx.moveTo(0, -size); ctx.quadraticCurveTo(size*0.5, -size*0.3, size*0.3, size*0.5);
+      ctx.quadraticCurveTo(size*0.1, size*0.8, 0, size); ctx.quadraticCurveTo(-size*0.1, size*0.8, -size*0.3, size*0.5);
+      ctx.quadraticCurveTo(-size*0.5, -size*0.3, 0, -size);
+      ctx.fillStyle = color + '0.5)'; ctx.shadowColor = '#fff'; ctx.shadowBlur = 10; ctx.fill();
+      ctx.beginPath(); ctx.moveTo(0, -size*0.8); ctx.lineTo(0, size*0.8); ctx.strokeStyle = color + '0.8)'; ctx.lineWidth = 1; ctx.stroke();
+      for (let i = -3; i <= 3; i++) { const yy = i*size*0.2; ctx.beginPath(); ctx.moveTo(0, yy); ctx.lineTo(size*0.25*Math.sign(i), yy+size*0.1); ctx.strokeStyle = color + '0.4)'; ctx.lineWidth = 0.5; ctx.stroke(); }
+      ctx.shadowBlur = 0; ctx.restore();
+    }
+    function draw() {
+      ctx.fillStyle = 'rgba(26,26,46,0.04)'; ctx.fillRect(0,0,W,H);
+      feathers.forEach(f => {
+        f.sway += f.swaySpeed; f.y += f.speed; f.rot += f.rotSpeed;
+        const x = f.x + Math.sin(f.sway)*35;
+        if (f.y > H+f.size) { f.y = -f.size; f.x = Math.random()*W; }
+        drawFeather(x, f.y, f.size, f.rot, f.color);
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 霓虹圆环 ==========
+  function createNeonringField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, raf, time = 0;
+    const rings = [
+      { r: 80, color: '#ff00ff', speed: 0.008, width: 2, phase: 0 },
+      { r: 140, color: '#00ffff', speed: -0.006, width: 1.5, phase: 1 },
+      { r: 200, color: '#ffff00', speed: 0.004, width: 1.5, phase: 2 },
+      { r: 260, color: '#ff00ff', speed: -0.003, width: 1, phase: 0.5 },
+      { r: 320, color: '#00ffff', speed: 0.002, width: 1, phase: 1.5 }
+    ];
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    function draw() {
+      ctx.fillStyle = 'rgba(5,5,16,0.06)'; ctx.fillRect(0,0,W,H); time++;
+      const cx = W/2, cy = H/2;
+      rings.forEach((ring, idx) => {
+        const pulseR = ring.r + Math.sin(time*0.02+ring.phase)*15;
+        ctx.beginPath(); ctx.arc(cx, cy, pulseR, 0, Math.PI*2);
+        ctx.strokeStyle = ring.color; ctx.lineWidth = ring.width; ctx.globalAlpha = 0.4+Math.sin(time*0.03+ring.phase)*0.2;
+        ctx.shadowColor = ring.color; ctx.shadowBlur = 20; ctx.stroke();
+        // 圆环上的光点
+        for (let i = 0; i < 4; i++) {
+          const a = (i/4)*Math.PI*2 + time*ring.speed + ring.phase;
+          const px = cx + Math.cos(a)*pulseR, py = cy + Math.sin(a)*pulseR;
+          ctx.beginPath(); ctx.arc(px, py, 3, 0, Math.PI*2); ctx.fillStyle = ring.color; ctx.globalAlpha = 0.9; ctx.shadowBlur = 15; ctx.fill();
+        }
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 火焰粒子 ==========
+  function createFireField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, particles = [], raf;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    function spawn() {
+      particles.push({ x: W*0.3+Math.random()*W*0.4, y: H+10, vx: (Math.random()-0.5)*1, vy: -1.5-Math.random()*2, life: 1, decay: 0.008+Math.random()*0.012, size: 15+Math.random()*25, hue: 15+Math.random()*35 });
+    }
+    for (let i = 0; i < 50; i++) { spawn(); particles[i].life = Math.random(); particles[i].y = H - Math.random()*H*0.5; }
+    function draw() {
+      ctx.fillStyle = 'rgba(26,5,0,0.12)'; ctx.fillRect(0,0,W,H);
+      if (particles.length < 80) spawn();
+      particles = particles.filter(p => p.life > 0);
+      particles.forEach(p => {
+        p.x += p.vx + Math.sin(p.life*10)*0.3; p.y += p.vy; p.vy *= 0.99; p.life -= p.decay; p.size *= 0.995;
+        const alpha = p.life * 0.6;
+        const g = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.size);
+        g.addColorStop(0, `hsla(${p.hue+20}, 100%, 70%, ${alpha})`);
+        g.addColorStop(0.4, `hsla(${p.hue}, 100%, 50%, ${alpha*0.7})`);
+        g.addColorStop(1, `hsla(${p.hue-10}, 100%, 30%, 0)`);
+        ctx.beginPath(); ctx.arc(p.x, p.y, p.size, 0, Math.PI*2); ctx.fillStyle = g; ctx.fill();
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
+  // ========== 星轨旋转 ==========
+  function createStarTrailField() {
+    const canvas = document.createElement('canvas');
+    canvas.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;';
+    document.body.insertBefore(canvas, document.body.firstChild);
+    const ctx = canvas.getContext('2d');
+    let W, H, stars = [], raf, angle = 0;
+    function resize() { W = canvas.width = window.innerWidth; H = canvas.height = window.innerHeight; }
+    resize(); window.addEventListener('resize', resize);
+    for (let i = 0; i < 250; i++) {
+      const a = Math.random()*Math.PI*2, d = 20+Math.random()*Math.min(W,H)*0.45;
+      stars.push({ angle: a, dist: d, size: 0.5+Math.random()*2, speed: 0.001+Math.random()*0.003, color: Math.random()>0.7?'#88ccff':'#ffffff' });
+    }
+    function draw() {
+      ctx.fillStyle = 'rgba(5,5,20,0.04)'; ctx.fillRect(0,0,W,H); angle += 0.002;
+      const cx = W/2, cy = H/2;
+      stars.forEach(s => {
+        const a1 = s.angle + angle*s.speed*50;
+        const x1 = cx + Math.cos(a1)*s.dist, y1 = cy + Math.sin(a1)*s.dist;
+        const a2 = a1 - 0.02;
+        const x2 = cx + Math.cos(a2)*s.dist, y2 = cy + Math.sin(a2)*s.dist;
+        ctx.beginPath(); ctx.moveTo(x2, y2); ctx.lineTo(x1, y1);
+        ctx.strokeStyle = s.color; ctx.lineWidth = s.size; ctx.globalAlpha = 0.7;
+        ctx.shadowColor = s.color; ctx.shadowBlur = s.size*3; ctx.stroke();
+        ctx.shadowBlur = 0; ctx.globalAlpha = 1;
+      });
+      raf = requestAnimationFrame(draw);
+    }
+    draw();
+    return { destroy: function() { cancelAnimationFrame(raf); window.removeEventListener('resize', resize); canvas.remove(); } };
+  }
+
   function toggleMusicSwitch() {
     config.music.enabled = !config.music.enabled;
     const sw = document.getElementById('music-switch');
@@ -2541,6 +3568,33 @@
     if (waveField) { waveField.destroy(); waveField = null; }
     if (glowField) { glowField.destroy(); glowField = null; }
     if (meteorField) { meteorField.destroy(); meteorField = null; }
+    if (bubbleField) { bubbleField.destroy(); bubbleField = null; }
+    if (petalField) { petalField.destroy(); petalField = null; }
+    if (snowField) { snowField.destroy(); snowField = null; }
+    if (fireflyField) { fireflyField.destroy(); fireflyField = null; }
+    if (smokeField) { smokeField.destroy(); smokeField = null; }
+    if (matrixField) { matrixField.destroy(); matrixField = null; }
+    if (heartField) { heartField.destroy(); heartField = null; }
+    if (pulseField) { pulseField.destroy(); pulseField = null; }
+    if (lineField) { lineField.destroy(); lineField = null; }
+    if (spiralField) { spiralField.destroy(); spiralField = null; }
+    if (confettiField) { confettiField.destroy(); confettiField = null; }
+    if (fluidField) { fluidField.destroy(); fluidField = null; }
+    if (networkField) { networkField.destroy(); networkField = null; }
+    if (kaleidoField) { kaleidoField.destroy(); kaleidoField = null; }
+    if (rippleField) { rippleField.destroy(); rippleField = null; }
+    if (shardField) { shardField.destroy(); shardField = null; }
+    if (gradWaveField) { gradWaveField.destroy(); gradWaveField = null; }
+    if (neonFlowField) { neonFlowField.destroy(); neonFlowField = null; }
+    if (galaxyField) { galaxyField.destroy(); galaxyField = null; }
+    if (fireField) { fireField.destroy(); fireField = null; }
+    if (starTrailField) { starTrailField.destroy(); starTrailField = null; }
+    if (vortexField) { vortexField.destroy(); vortexField = null; }
+    if (goldenField) { goldenField.destroy(); goldenField = null; }
+    if (oceanField) { oceanField.destroy(); oceanField = null; }
+    if (warpField) { warpField.destroy(); warpField = null; }
+    if (featherField) { featherField.destroy(); featherField = null; }
+    if (neonringField) { neonringField.destroy(); neonringField = null; }
 
     // 隐藏视频
     const video = document.getElementById('bg-video');
@@ -2552,7 +3606,7 @@
     if (kenburns) kenburns.style.display = 'none';
 
     const type = config.background.type;
-    const darkTypes = ['stars', 'aurora', 'image', 'video', 'rain', 'cyber', 'waves', 'gradient', 'glow', 'meteor'];
+    const darkTypes = ['stars', 'aurora', 'image', 'video', 'rain', 'cyber', 'waves', 'gradient', 'glow', 'meteor', 'bubbles', 'petals', 'snow', 'firefly', 'smoke', 'matrix', 'hearts', 'pulse', 'lines', 'spiral', 'confetti', 'fluid', 'network', 'kaleidoscope', 'ripples', 'shards', 'gradientWave', 'neonFlow', 'galaxy', 'vortex', 'golden', 'ocean', 'warp', 'feather', 'neonring', 'fire', 'startrail'];
 
     if (darkTypes.indexOf(type) !== -1) {
       body.classList.add('bg-dark');
@@ -2583,6 +3637,87 @@
     } else if (type === 'meteor') {
       body.style.background = 'linear-gradient(180deg, #020208 0%, #0a0a1a 50%, #0d1025 100%)';
       meteorField = createMeteorField();
+    } else if (type === 'bubbles') {
+      body.style.background = 'linear-gradient(160deg, #0c1445 0%, #1a237e 50%, #283593 100%)';
+      bubbleField = createBubbleField();
+    } else if (type === 'petals') {
+      body.style.background = 'linear-gradient(180deg, #1a0a1a 0%, #2d1b2e 50%, #1a0a1a 100%)';
+      petalField = createPetalField();
+    } else if (type === 'snow') {
+      body.style.background = 'linear-gradient(180deg, #1a2a3a 0%, #2c3e50 50%, #1a2a3a 100%)';
+      snowField = createSnowField();
+    } else if (type === 'firefly') {
+      body.style.background = 'linear-gradient(180deg, #0a1a0a 0%, #1a2a1a 50%, #0a1a0a 100%)';
+      fireflyField = createFireflyField();
+    } else if (type === 'smoke') {
+      body.style.background = 'linear-gradient(160deg, #1a0a2e 0%, #2d1b4e 50%, #1a0a2e 100%)';
+      smokeField = createSmokeField();
+    } else if (type === 'matrix') {
+      body.style.background = '#000';
+      matrixField = createMatrixField();
+    } else if (type === 'hearts') {
+      body.style.background = 'linear-gradient(180deg, #1a0a1a 0%, #2d1b2e 50%, #1a0a1a 100%)';
+      heartField = createHeartField();
+    } else if (type === 'pulse') {
+      body.style.background = 'linear-gradient(160deg, #0a0a1a 0%, #1a0a2a 50%, #0a1a2a 100%)';
+      pulseField = createPulseField();
+    } else if (type === 'lines') {
+      body.style.background = 'linear-gradient(180deg, #0a0a1a 0%, #1a1a3a 50%, #0a0a1a 100%)';
+      lineField = createLineField();
+    } else if (type === 'spiral') {
+      body.style.background = 'radial-gradient(ellipse at center, #1a0a3a 0%, #0a0a1a 70%, #000 100%)';
+      spiralField = createSpiralField();
+    } else if (type === 'confetti') {
+      body.style.background = 'linear-gradient(180deg, #1a1a2e 0%, #2d2d4e 50%, #1a1a2e 100%)';
+      confettiField = createConfettiField();
+    } else if (type === 'fluid') {
+      body.style.background = 'linear-gradient(160deg, #0a0a1a 0%, #1a0a2a 50%, #0a1a2a 100%)';
+      fluidField = createFluidField();
+    } else if (type === 'network') {
+      body.style.background = 'linear-gradient(160deg, #050510 0%, #0a0a20 50%, #05101a 100%)';
+      networkField = createNetworkField();
+    } else if (type === 'kaleidoscope') {
+      body.style.background = 'linear-gradient(160deg, #0a0a1a 0%, #1a0a2a 50%, #0a1a2a 100%)';
+      kaleidoField = createKaleidoscopeField();
+    } else if (type === 'ripples') {
+      body.style.background = 'linear-gradient(180deg, #0a1628 0%, #0d2137 50%, #0a1628 100%)';
+      rippleField = createRippleField();
+    } else if (type === 'shards') {
+      body.style.background = 'linear-gradient(160deg, #0a0a1a 0%, #1a1a2a 50%, #0a0a1a 100%)';
+      shardField = createShardField();
+    } else if (type === 'gradientWave') {
+      body.style.background = 'linear-gradient(180deg, #0a0a1a 0%, #1a0a2a 50%, #0a1a2a 100%)';
+      gradWaveField = createGradientWaveField();
+    } else if (type === 'neonFlow') {
+      body.style.background = 'linear-gradient(180deg, #050510 0%, #0a0a20 50%, #050510 100%)';
+      neonFlowField = createNeonFlowField();
+    } else if (type === 'galaxy') {
+      body.style.background = 'radial-gradient(ellipse at center, #1a0a3a 0%, #0a0a1a 60%, #000 100%)';
+      galaxyField = createGalaxyField();
+    } else if (type === 'vortex') {
+      body.style.background = 'radial-gradient(circle at center, #0a1628 0%, #050510 70%, #000 100%)';
+      vortexField = createVortexField();
+    } else if (type === 'golden') {
+      body.style.background = 'linear-gradient(160deg, #1a1208 0%, #2a1f0a 50%, #1a1208 100%)';
+      goldenField = createGoldenField();
+    } else if (type === 'ocean') {
+      body.style.background = 'linear-gradient(180deg, #001a33 0%, #003366 40%, #004080 70%, #001a33 100%)';
+      oceanField = createOceanField();
+    } else if (type === 'warp') {
+      body.style.background = 'radial-gradient(circle at center, #0a0a2a 0%, #000 80%)';
+      warpField = createWarpField();
+    } else if (type === 'feather') {
+      body.style.background = 'linear-gradient(180deg, #1a1a2e 0%, #2d2d4e 50%, #1a1a2e 100%)';
+      featherField = createFeatherField();
+    } else if (type === 'neonring') {
+      body.style.background = 'radial-gradient(circle at center, #0a0a1a 0%, #000 80%)';
+      neonringField = createNeonringField();
+    } else if (type === 'fire') {
+      body.style.background = 'linear-gradient(180deg, #1a0500 0%, #2a0a00 50%, #1a0500 100%)';
+      fireField = createFireField();
+    } else if (type === 'startrail') {
+      body.style.background = 'radial-gradient(circle at center, #0a0a2a 0%, #000 80%)';
+      starTrailField = createStarTrailField();
     } else if (type === 'image') {
       body.style.background = '#0a0a1a';
       if (config.background.image) {
@@ -2611,7 +3746,7 @@
     config.background.type = type;
     applyBackground();
     saveConfig();
-    const names = { orbs:'渐变光斑', gradient:'流动渐变', stars:'星空粒子', rain:'雨滴', cyber:'霓虹网格', waves:'波浪', aurora:'极光', glow:'荧光颗粒', meteor:'流星', image:'自定义图片', video:'视频背景' };
+    const names = { orbs:'渐变光斑', gradient:'流动渐变', stars:'星空粒子', rain:'雨滴', cyber:'霓虹网格', waves:'波浪', aurora:'极光', glow:'荧光颗粒', meteor:'流星', bubbles:'彩色气泡', petals:'花瓣飘落', snow:'雪花', firefly:'萤火虫', smoke:'彩色烟雾', matrix:'数字雨', hearts:'爱心飘落', pulse:'光晕脉冲', lines:'彩色线条', spiral:'螺旋星系', confetti:'彩色纸屑', fluid:'流体渐变', network:'粒子网络', kaleidoscope:'万花筒', ripples:'水波涟漪', shards:'彩色碎片', gradientWave:'渐变波浪', neonFlow:'霓虹光流', galaxy:'银河星云', vortex:'粒子漩涡', golden:'金色粒子', ocean:'深海光线', warp:'星空漫游', feather:'羽毛飘落', neonring:'霓虹圆环', fire:'火焰粒子', startrail:'星轨旋转', image:'自定义图片', video:'视频背景' };
     showToast('已切换到' + (names[type] || type));
     const showImage = type === 'image';
     const showVideo = type === 'video';
@@ -3439,7 +4574,25 @@
   let toastTimer;
   function showToast(msg) {
     const toast = document.getElementById('toast');
-    toast.textContent = msg;
+    // 根据消息内容自动选择图标
+    let iconSvg = '', iconColor = '#007aff';
+    const successKw = ['成功','已保存','已设置','已启用','已复制','已生成','已清除','已加载','已同步','完成','已连接','已断开','已导入','已导出','已切换','已选择','已处理'];
+    const errorKw = ['失败','错误','过大','无效','不存在'];
+    const warnKw = ['请','注意','提示'];
+    if (successKw.some(k => msg.includes(k))) {
+      iconColor = '#34c759';
+      iconSvg = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="'+iconColor+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+    } else if (errorKw.some(k => msg.includes(k))) {
+      iconColor = '#ff3b30';
+      iconSvg = '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="'+iconColor+'" stroke-width="2"/><path d="M12 8v5M12 16.5v.5" stroke="'+iconColor+'" stroke-width="2.5" stroke-linecap="round"/></svg>';
+    } else if (warnKw.some(k => msg.includes(k))) {
+      iconColor = '#ff9500';
+      iconSvg = '<svg viewBox="0 0 24 24" fill="none"><path d="M12 3L2 21h20L12 3z" stroke="'+iconColor+'" stroke-width="2" stroke-linejoin="round"/><path d="M12 10v4M12 17v.5" stroke="'+iconColor+'" stroke-width="2.5" stroke-linecap="round"/></svg>';
+    } else {
+      iconColor = '#007aff';
+      iconSvg = '<svg viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="9" stroke="'+iconColor+'" stroke-width="2"/><path d="M12 11v5M12 8v.5" stroke="'+iconColor+'" stroke-width="2.5" stroke-linecap="round"/></svg>';
+    }
+    toast.innerHTML = '<span class="toast-icon">' + iconSvg + '</span><span class="toast-msg">' + msg + '</span>';
     toast.classList.remove('hide');
     toast.classList.add('show');
     clearTimeout(toastTimer);
@@ -3449,7 +4602,7 @@
         toast.classList.remove('show');
         toast.classList.remove('hide');
       }, 300);
-    }, 2000);
+    }, 2200);
   }
 
   document.addEventListener('keydown', (e) => {
